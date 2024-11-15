@@ -91,7 +91,10 @@ public class AddFlashcards extends JFrame implements ActionListener {
             if (term.getText().equals("") || definition.getText().equals("")) {
                 try {
                     String currentPath = System.getProperty("user.dir");
-                    File newFile = new File(currentPath + File.separator + "src" + File.separator + "decks" + File.separator + deckTitle + ".json");
+                    String filePath = currentPath + File.separator + "src" + File.separator + "decks";
+                    File dir = new File(filePath);
+                    dir.mkdirs();
+                    File newFile = new File(filePath + File.separator + deckTitle + ".json");
                     ObjectMapper mapper = new ObjectMapper();
                     mapper.writeValue(newFile, deck);
                     JOptionPane.showMessageDialog(null, "Successfully added all the card(s) to '" + deckTitle + "'", "Success", JOptionPane.INFORMATION_MESSAGE, new ImageIcon(iconSmooth));

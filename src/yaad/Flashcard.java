@@ -9,6 +9,10 @@ public class Flashcard {
         this.definition = definition;
     }
     
+    Flashcard() {
+        
+    }
+    
     public void setTerm(String term) {
         this.term = term;
     }
@@ -25,7 +29,4 @@ public class Flashcard {
         return definition;
     }
     
-    public static void main(String args[]) {
-        
-    }
 }
