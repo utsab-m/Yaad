@@ -5,6 +5,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
+import java.io.*;
 
 public class Settings extends JFrame implements ActionListener {
     
@@ -12,24 +13,27 @@ public class Settings extends JFrame implements ActionListener {
     JCheckBox darkMode;
     
     Color backgroundColor, buttonColor, fontColor;
-    Color[] colors;
+    Color[] colors = new Color[3];
     Font font;
     
+    ObjectMapper mapper = new ObjectMapper();
+    String currentPath = System.getProperty("user.dir");
+    String filePath = currentPath + File.separator + "src";
+    File dir = new File(filePath);
+    File file;
     
-    Settings() {
+    Settings() throws IOException {
         
         setLayout(null);
         
-        ObjectMapper mapper = new ObjectMapper();
-        String currentPath = System.getProperty("user.dir");
-        String filePath = currentPath + File.separator + "src";
-        File dir = new File(filePath);
-        dir.mkdirs();
-        File file = new File(filePath + File.separator + "settings.json");
+        colors[0] = Color.DARK_GRAY;
+        colors[1] = Color.BLACK;
+        colors[2] = Color.WHITE;
         
-        try {
-            colors = mapper.readValue(file, Color[].class);
-        } catch (IOException e) {
+        dir.mkdirs();
+        file = new File(filePath + File.separator + "settings.json");
+        
+        if (file.length() == 0) {
             colors = new Color[3];
             colors[0] = Color.DARK_GRAY;
             backgroundColor = colors[0];
@@ -38,6 +42,13 @@ public class Settings extends JFrame implements ActionListener {
             colors[2] = Color.WHITE;
             fontColor = colors[2];
             mapper.writeValue(file, colors);
+        }
+        else {
+            try {
+                colors = mapper.readValue(file, Color[].class);
+            } catch (IOException e) {
+                System.out.println(e);
+            } 
         }
         
         save = new JButton("Save");
@@ -106,19 +117,35 @@ public class Settings extends JFrame implements ActionListener {
             Color initialColor = Color.DARK_GRAY;
             backgroundColor = JColorChooser.showDialog(this, "Select a color", initialColor);
             backgroundChooser.setBackground(backgroundColor);
-            System.out.println(backgroundColor.getRed());
+            System.out.println("(" + backgroundColor.getRed() + ", " + backgroundColor.getGreen() + ", " + backgroundColor.getBlue() + ")");
         } else if (ae.getSource() == buttonChooser) {
             Color initialColor = Color.DARK_GRAY;
             buttonColor = JColorChooser.showDialog(this, "Select a color", initialColor);
             buttonChooser.setBackground(buttonColor);
+            System.out.println("(" + buttonColor.getRed() + ", " + buttonColor.getGreen() + ", " + buttonColor.getBlue() + ")");
         } else if (ae.getSource() == fontColorChooser) {
             Color initialColor = Color.DARK_GRAY;
             fontColor = JColorChooser.showDialog(this, "Select a color", initialColor);
             fontColorChooser.setBackground(fontColor);
+            System.out.println("(" + fontColor.getRed() + ", " + fontColor.getGreen() + ", " + fontColor.getBlue() + ")");
+        } else if (ae.getSource() == save) {
+            colors[0] = backgroundColor;
+            colors[1] = buttonColor;
+            colors[2] = fontColor;
+            try {
+                mapper.writeValue(file, colors);
+                JOptionPane.showMessageDialog(null, "Successfully saved settings!");
+            } catch (IOException e) {
+                System.out.println(e);
+            }
         }
     }
     
     public static void main(String args[]) {
-        new Settings();
+        try {
+            new Settings();
+        } catch (IOException e) {
+            System.out.println(e);
+        }
     }
 }

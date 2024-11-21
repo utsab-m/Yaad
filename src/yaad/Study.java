@@ -6,7 +6,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 
-public class Study extends JFrame implements ActionListener {
+public class Study extends JFrame implements ActionListener, KeyListener {
     
     JButton back, left, right;
     JLabel flashcard, number;
@@ -20,6 +20,8 @@ public class Study extends JFrame implements ActionListener {
         this.deckTitle = deckTitle;
         
         setLayout(null);
+        
+        addKeyListener(this);
         
         ImageIcon image = new ImageIcon(ClassLoader.getSystemResource("images/study.jpeg"));
         setIconImage(image.getImage());
@@ -99,7 +101,7 @@ public class Study extends JFrame implements ActionListener {
         right.setForeground(Color.WHITE);
         right.setBounds(450, 400, 50, 30);
         right.addActionListener(this);
-        if (total == 0) right.setVisible(false);
+        if (total == 0 || total == 1) right.setVisible(false);
         add(right);
         
         back = new JButton("Back");
@@ -108,8 +110,6 @@ public class Study extends JFrame implements ActionListener {
         back.setBounds(680, 530, 100, 30);
         back.addActionListener(this);
         add(back);
-        
-        this.deckTitle = deckTitle;
         
         setTitle("Study " + deckTitle);
         getContentPane().setBackground(Color.DARK_GRAY);
@@ -124,22 +124,48 @@ public class Study extends JFrame implements ActionListener {
         if (ae.getSource() == back) {
             setVisible(false);
         } else if (ae.getSource() == left) {
-            flashcardNumber--;
-            flashcard.setText("<html><p style=\"text-align: center;\">" + flashcards[flashcardNumber - 1].getTerm() + "</p></html>");
-            number.setText(Integer.toString(flashcardNumber) + "/" + total);
-            if (flashcardNumber < 2) {
-                left.setVisible(false);
-            }
-            if (total != 0) right.setVisible(true);
+            left();
         } else if (ae.getSource() == right) {
-            flashcardNumber++;
-            flashcard.setText("<html><p style=\"text-align: center;\">" + flashcards[flashcardNumber - 1].getTerm() + "</p></html>");
-            number.setText(Integer.toString(flashcardNumber) + "/" + total);
-            if (flashcardNumber == total) {
-                right.setVisible(false);
-            }
-            if (total != 0) left.setVisible(true);
+            right();
         }
     }
     
+    @Override
+    public void keyTyped(KeyEvent ke) {
+        System.out.println(ke.getKeyCode());
+    }
+    
+    @Override
+    public void keyPressed(KeyEvent ke) {
+        System.out.println(ke.getKeyChar());
+    }
+    
+    @Override
+    public void keyReleased(KeyEvent ke) {
+        System.out.println(ke.getKeyCode());
+    }
+    
+    public void left() {
+        flashcardNumber--;
+        flashcard.setText("<html><p style=\"text-align: center;\">" + flashcards[flashcardNumber - 1].getTerm() + "</p></html>");
+        number.setText(Integer.toString(flashcardNumber) + "/" + total);
+        if (flashcardNumber < 2) {
+            left.setVisible(false);
+        }
+        if (total != 0) right.setVisible(true);
+    }
+    
+    public void right() {
+        flashcardNumber++;
+        flashcard.setText("<html><p style=\"text-align: center;\">" + flashcards[flashcardNumber - 1].getTerm() + "</p></html>");
+        number.setText(Integer.toString(flashcardNumber) + "/" + total);
+        if (flashcardNumber == total) {
+            right.setVisible(false);
+        }
+        if (total != 0) left.setVisible(true);
+    }
+    
+    public static void main(String args[]) {
+        new Study("Capitals");
+    }
 }

@@ -47,7 +47,6 @@ public class CreateDeck extends JFrame implements ActionListener {
         getContentPane().setBackground(Color.DARK_GRAY);
         setSize(600, 150);
         setTitle("Create Deck");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
         setVisible(true);
         setLocationRelativeTo(null);
@@ -77,7 +76,8 @@ public class CreateDeck extends JFrame implements ActionListener {
             }
             
         } else {
-            
+            int c = JOptionPane.showConfirmDialog(null, "Are you sure you want to cancel?");
+            setVisible(!(c == JOptionPane.YES_OPTION));
         }
     }
     

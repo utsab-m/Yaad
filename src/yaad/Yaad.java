@@ -4,6 +4,7 @@ import java.io.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.*;
 
 public class Yaad extends JFrame implements ActionListener {
     
@@ -17,6 +18,8 @@ public class Yaad extends JFrame implements ActionListener {
     String currentPath = System.getProperty("user.dir");
     String filePath = currentPath + File.separator + "src" + File.separator + "decks";
     
+    ArrayList<File> files = new ArrayList<File>();
+    
     Yaad() {
         
         fontColor = Color.WHITE;
@@ -29,10 +32,13 @@ public class Yaad extends JFrame implements ActionListener {
         setIconImage(image.getImage());
         
         menuBar = new JMenuBar();
-        refresh = new JMenu("Refresh");
-        menuBar.add(refresh);
-        add(menuBar);
+        fileMenu = new JMenu("Menu");
+        refresh = new JMenuItem("Refresh");
+        refresh.addActionListener(this);
+        fileMenu.add(refresh);
+        menuBar.add(fileMenu);
         
+        setJMenuBar(menuBar);        
         
         create = new JButton("Create Deck");
         create.setBounds(20, 20, 200, 80);
@@ -84,11 +90,14 @@ public class Yaad extends JFrame implements ActionListener {
         File dir = new File(filePath);
         dir.mkdirs();
         File[] fileList = dir.listFiles();
+        
+        Collections.addAll(files, fileList);
+
         for (File f: fileList) {
             System.out.println(f.getName());
         }
-        GridLayout gl = new GridLayout(fileList.length, 1);
-        deckDisplay.setLayout(gl);
+        
+        deckDisplay.setLayout(new GridLayout(fileList.length, 1));
         
         
         for (File f: fileList) {
@@ -131,9 +140,6 @@ public class Yaad extends JFrame implements ActionListener {
         }        
         add(deckDisplay, BorderLayout.CENTER);
         
-        
-        
-        
         setTitle("Yaad");
         setSize(800, 800);
         setLocationRelativeTo(null);
@@ -151,13 +157,68 @@ public class Yaad extends JFrame implements ActionListener {
             new EditDeck();
         } else if (ae.getSource() == settings) {
             new Settings();
+        } else if (ae.getSource() == refresh) {
+            update();
         }
     }
     
     public void update() {
+        System.out.println("ok");
+        deckDisplay.removeAll();
+        File dir = new File(filePath);
+        dir.mkdirs();
+        File[] fileList = dir.listFiles();
         
+        files.clear();
         
-        repaint();
+        Collections.addAll(files, fileList);
+
+        for (File f: fileList) {
+            System.out.println(f.getName());
+        }
+        deckDisplay.setLayout(new GridLayout(fileList.length, 1));
+        
+        for (File f: fileList) {
+            String fileName = f.getName();
+            JLabel deck = new JLabel(fileName.replace(".json", ""));
+            
+            Font bold = new Font("Raleway", Font.BOLD, 22);
+            Font italic = new Font("Raleway", Font.ITALIC, 22);
+            
+            deck.setFont(bold);
+            deck.setForeground(fontColor);
+            deck.setBorder(BorderFactory.createLineBorder(buttonColor));
+            deck.setHorizontalAlignment(SwingConstants.CENTER);
+            deck.addMouseListener(new MouseAdapter() {
+                public void mouseClicked(MouseEvent me) {
+                    JLabel source = (JLabel)me.getSource();
+                    String sourceText = source.getText();
+                    String text = sourceText.replace("<html><u>", "");
+                    text = text.replace("</u></html>", "");
+                    new Study(text);
+                }
+                public void mouseEntered(MouseEvent me) {
+                    JLabel source = (JLabel)me.getSource();
+                    String sourceText = source.getText();
+                    source.setFont(italic);
+                    source.setText("<html><u>" + sourceText + "</u></html>");
+                    source.setForeground(Color.BLUE);
+                }
+                public void mouseExited(MouseEvent me) {
+                    JLabel source = (JLabel)me.getSource();
+                    String sourceText = source.getText();
+                    String text = sourceText.replace("<html><u>", "");
+                    text = text.replace("</u></html>", "");
+                    source.setFont(bold);
+                    source.setText(text);
+                    source.setForeground(fontColor);
+                }
+            });
+            deckDisplay.add(deck);
+        }     
+        deckDisplay.revalidate();
+        deckDisplay.repaint();
+        
     }
     
     public static void main(String[] args) {
