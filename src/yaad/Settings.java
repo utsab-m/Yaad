@@ -1,6 +1,7 @@
 package yaad;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -27,35 +28,30 @@ public class Settings extends JFrame implements ActionListener {
         setLayout(null);
         
         colors[0] = Color.DARK_GRAY;
+        backgroundColor = colors[0];
         colors[1] = Color.BLACK;
+        buttonColor = colors[1];
         colors[2] = Color.WHITE;
+        fontColor = colors[2];
         
         dir.mkdirs();
         file = new File(filePath + File.separator + "settings.json");
         
-        if (file.length() == 0) {
-            colors = new Color[3];
-            colors[0] = Color.DARK_GRAY;
-            backgroundColor = colors[0];
-            colors[1] = Color.BLACK;
-            buttonColor = colors[1];
-            colors[2] = Color.WHITE;
-            fontColor = colors[2];
-            mapper.writeValue(file, colors);
-        }
-        else {
-            try {
-                colors = mapper.readValue(file, Color[].class);
-            } catch (IOException e) {
-                System.out.println(e);
-            } 
-        }
+        String jsonSource = "{\"backgroundColor\": " + backgroundColor.getRGB() + ", \"buttonColor\": " + buttonColor.getRGB() + ", \"fontColor\": " + fontColor.getRGB() + "}";
+        System.out.println(jsonSource);
+        JsonNode node = mapper.readTree(jsonSource);
+        
+        
+        System.out.println(file.length());
+        
+        
         
         save = new JButton("Save");
         save.setBackground(buttonColor);
         save.setForeground(fontColor);
         save.setFont(new Font("Raleway", Font.BOLD, 16));
         save.setBounds(100, 400, 80, 40);
+        save.setFocusable(false);
         add(save);
         
         ImageIcon i1 = new ImageIcon(ClassLoader.getSystemResource("images/blackSettings.png"));
@@ -114,17 +110,17 @@ public class Settings extends JFrame implements ActionListener {
     
     public void actionPerformed(ActionEvent ae) {
         if (ae.getSource() == backgroundChooser) {
-            Color initialColor = Color.DARK_GRAY;
+            Color initialColor = backgroundColor;
             backgroundColor = JColorChooser.showDialog(this, "Select a color", initialColor);
             backgroundChooser.setBackground(backgroundColor);
             System.out.println("(" + backgroundColor.getRed() + ", " + backgroundColor.getGreen() + ", " + backgroundColor.getBlue() + ")");
         } else if (ae.getSource() == buttonChooser) {
-            Color initialColor = Color.DARK_GRAY;
+            Color initialColor = buttonColor;
             buttonColor = JColorChooser.showDialog(this, "Select a color", initialColor);
             buttonChooser.setBackground(buttonColor);
             System.out.println("(" + buttonColor.getRed() + ", " + buttonColor.getGreen() + ", " + buttonColor.getBlue() + ")");
         } else if (ae.getSource() == fontColorChooser) {
-            Color initialColor = Color.DARK_GRAY;
+            Color initialColor = fontColor;
             fontColor = JColorChooser.showDialog(this, "Select a color", initialColor);
             fontColorChooser.setBackground(fontColor);
             System.out.println("(" + fontColor.getRed() + ", " + fontColor.getGreen() + ", " + fontColor.getBlue() + ")");

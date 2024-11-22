@@ -21,6 +21,7 @@ public class Study extends JFrame implements ActionListener, KeyListener {
         
         setLayout(null);
         
+        setFocusable(true);
         addKeyListener(this);
         
         ImageIcon image = new ImageIcon(ClassLoader.getSystemResource("images/study.jpeg"));
@@ -67,15 +68,7 @@ public class Study extends JFrame implements ActionListener, KeyListener {
         flashcard.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent me) {
-                if (term) {
-                    flashcard.setText("<html><p style=\"text-align: center;\">" + flashcards[flashcardNumber - 1].getDefinition() + "</p></html>");
-                    term = false;
-                    definition = true;
-                } else {
-                    flashcard.setText("<html><p style=\"text-align: center;\">" + flashcards[flashcardNumber - 1].getTerm() + "</p></html>");
-                    definition = false;
-                    term = true;
-                }
+                flip();
             }
         });
         add(flashcard);
@@ -86,6 +79,7 @@ public class Study extends JFrame implements ActionListener, KeyListener {
         left.setBounds(300, 400, 50, 30);
         left.addActionListener(this);
         left.setVisible(false);
+        left.setFocusable(false);
         add(left);
         
         number = new JLabel(flashcardNumber + "/" + total);
@@ -101,6 +95,7 @@ public class Study extends JFrame implements ActionListener, KeyListener {
         right.setForeground(Color.WHITE);
         right.setBounds(450, 400, 50, 30);
         right.addActionListener(this);
+        right.setFocusable(false);
         if (total == 0 || total == 1) right.setVisible(false);
         add(right);
         
@@ -109,6 +104,7 @@ public class Study extends JFrame implements ActionListener, KeyListener {
         back.setForeground(Color.WHITE);
         back.setBounds(680, 530, 100, 30);
         back.addActionListener(this);
+        back.setFocusable(false);
         add(back);
         
         setTitle("Study " + deckTitle);
@@ -137,12 +133,16 @@ public class Study extends JFrame implements ActionListener, KeyListener {
     
     @Override
     public void keyPressed(KeyEvent ke) {
-        System.out.println(ke.getKeyChar());
+        switch (ke.getKeyCode()) {
+            case 32 -> flip();
+            case 37 -> {if (left.isShowing()) left();}
+            case 39 -> {if (right.isShowing()) right();}
+        }
     }
     
     @Override
     public void keyReleased(KeyEvent ke) {
-        System.out.println(ke.getKeyCode());
+        System.out.println(flashcardNumber + "/" + total);
     }
     
     public void left() {
@@ -163,6 +163,18 @@ public class Study extends JFrame implements ActionListener, KeyListener {
             right.setVisible(false);
         }
         if (total != 0) left.setVisible(true);
+    }
+    
+    public void flip() {
+        if (term) {
+            flashcard.setText("<html><p style=\"text-align: center;\">" + flashcards[flashcardNumber - 1].getDefinition() + "</p></html>");
+            term = false;
+            definition = true;
+        } else {
+            flashcard.setText("<html><p style=\"text-align: center;\">" + flashcards[flashcardNumber - 1].getTerm() + "</p></html>");
+            definition = false;
+            term = true;
+        }
     }
     
     public static void main(String args[]) {

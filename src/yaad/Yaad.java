@@ -46,6 +46,7 @@ public class Yaad extends JFrame implements ActionListener {
         create.setForeground(fontColor);
         create.setBackground(buttonColor);
         create.addActionListener(this);
+        create.setFocusable(false);
         add(create);
         
         delete = new JButton("Delete Deck");
@@ -54,6 +55,7 @@ public class Yaad extends JFrame implements ActionListener {
         delete.setForeground(fontColor);
         delete.setBackground(buttonColor);
         delete.addActionListener(this);
+        delete.setFocusable(false);
         add(delete);
         
         edit = new JButton("Edit Deck");
@@ -62,6 +64,7 @@ public class Yaad extends JFrame implements ActionListener {
         edit.setForeground(fontColor);
         edit.setBackground(buttonColor);
         edit.addActionListener(this);
+        edit.setFocusable(false);
         add(edit);
         
         ImageIcon s1 = new ImageIcon(ClassLoader.getSystemResource("images/whiteSettings.png"));
@@ -72,6 +75,7 @@ public class Yaad extends JFrame implements ActionListener {
         settings.setBounds(680, 20, 80, 80);
         settings.setBackground(buttonColor);
         settings.addActionListener(this);
+        settings.setFocusable(false);
         add(settings);
         
         edit = new JButton("Edit Deck");
@@ -80,6 +84,7 @@ public class Yaad extends JFrame implements ActionListener {
         edit.setForeground(fontColor);
         edit.setBackground(buttonColor);
         edit.addActionListener(this);
+        edit.setFocusable(false);
         add(edit);
         
         deckDisplay = new JPanel();
@@ -156,7 +161,11 @@ public class Yaad extends JFrame implements ActionListener {
         } else if (ae.getSource() == edit) {
             new EditDeck();
         } else if (ae.getSource() == settings) {
-            new Settings();
+            try {
+                new Settings();
+            } catch (IOException e) {
+                System.out.println(e);
+            }
         } else if (ae.getSource() == refresh) {
             update();
         }

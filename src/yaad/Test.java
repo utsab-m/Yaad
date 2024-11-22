@@ -12,13 +12,19 @@ public class Test extends JFrame implements ActionListener, KeyListener {
     JPanel display;
 
     Test() {
-
+        
+        Color color = Color.BLACK;
+        System.out.println(color.getRGB());
+        
+        Color second = new Color(color.getRGB());
+        System.out.println(second.getRGB());
+        
         setLayout(null);
         
         addKeyListener(this);
         
         menuBar = new JMenuBar();
-        fileMenu = new JMenu("Menu");
+        fileMenu = new JMenu("Menu");where is
         refresh = new JMenuItem("Refresh");
         refresh.addActionListener(this);
         fileMenu.add(refresh);
