@@ -2,12 +2,15 @@ package yaad;
 
 import java.io.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 
 public class AddFlashcards extends JFrame implements ActionListener {
+    
+    Color backgroundColor, buttonColor, fontColor;
     
     String deckTitle;
     JTextField term, definition;
@@ -17,7 +20,11 @@ public class AddFlashcards extends JFrame implements ActionListener {
     ImageIcon check = new ImageIcon(ClassLoader.getSystemResource("images/check.png")); 
     Image iconSmooth = check.getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH);
     
+    ObjectMapper mapper = new ObjectMapper();
+    
     AddFlashcards(String deckTitle) {
+        
+        getSettings();
         
         this.deckTitle = deckTitle;
         
@@ -29,7 +36,7 @@ public class AddFlashcards extends JFrame implements ActionListener {
         
         JLabel termLabel = new JLabel("Term");
         termLabel.setFont(new Font("Raleway", Font.BOLD, 22));
-        termLabel.setForeground(Color.WHITE);
+        termLabel.setForeground(fontColor);
         termLabel.setBounds(20, 5, 100, 40);
         add(termLabel);
         
@@ -39,7 +46,7 @@ public class AddFlashcards extends JFrame implements ActionListener {
         
         JLabel definitionLabel = new JLabel("Definition");
         definitionLabel.setFont(new Font("Raleway", Font.BOLD, 22));
-        definitionLabel.setForeground(Color.WHITE);
+        definitionLabel.setForeground(fontColor);
         definitionLabel.setBounds(180, 5, 100, 40);
         add(definitionLabel);
         
@@ -48,28 +55,29 @@ public class AddFlashcards extends JFrame implements ActionListener {
         add(definition);
         
         add = new JButton("Add");
-        add.setBackground(Color.BLACK);
-        add.setForeground(Color.WHITE);
+        add.setBackground(buttonColor);
+        add.setForeground(fontColor);
         add.setBounds(180, 90, 80, 30);
         add.addActionListener(this);
         add(add);
         
         done = new JButton("Done");
-        done.setBackground(Color.BLACK);
-        done.setForeground(Color.WHITE);
+        done.setBackground(buttonColor);
+        done.setForeground(fontColor);
         done.setBounds(280, 90, 80, 30);
         done.addActionListener(this);
         add(done);
         
         cancel = new JButton("Cancel");
-        cancel.setBackground(Color.BLACK);
-        cancel.setForeground(Color.WHITE);
+        cancel.setBackground(buttonColor);
+        cancel.setForeground(fontColor);
         cancel.setBounds(380, 90, 80, 30);
         cancel.addActionListener(this);
         add(cancel);
         
-        getContentPane().setBackground(Color.DARK_GRAY);
-        setSize(500, 170);
+        getContentPane().setBackground(backgroundColor);
+        getContentPane().setPreferredSize(new Dimension(500, 170));
+        pack();
         setResizable(false);
         setLocationRelativeTo(null);
         setTitle("Add Flashcards to " + deckTitle);
@@ -95,7 +103,6 @@ public class AddFlashcards extends JFrame implements ActionListener {
                     File dir = new File(filePath);
                     dir.mkdirs();
                     File newFile = new File(filePath + File.separator + deckTitle + ".json");
-                    ObjectMapper mapper = new ObjectMapper();
                     mapper.writeValue(newFile, deck);
                     JOptionPane.showMessageDialog(null, "Successfully added all the card(s) to '" + deckTitle + "'", "Success", JOptionPane.INFORMATION_MESSAGE, new ImageIcon(iconSmooth));
                     setVisible(false);
@@ -109,7 +116,6 @@ public class AddFlashcards extends JFrame implements ActionListener {
                 try {
                     String currentPath = System.getProperty("user.dir");
                     File newFile = new File(currentPath + File.separator + "src" + File.separator + "decks" + File.separator + deckTitle + ".json");
-                    ObjectMapper mapper = new ObjectMapper();
                     mapper.writeValue(newFile, deck);
                     JOptionPane.showMessageDialog(null, "Successfully added all the card(s) to '" + deckTitle + "'", "Success", JOptionPane.INFORMATION_MESSAGE, new ImageIcon(iconSmooth));
                     setVisible(false);
@@ -125,6 +131,19 @@ public class AddFlashcards extends JFrame implements ActionListener {
             if (a == JOptionPane.YES_OPTION) {
                 setVisible(false);
             }
+        }
+    }
+    
+    public void getSettings() {
+        File file = new File(System.getProperty("user.dir") + File.separator + "src" + File.separator + "settings.json");
+        file.mkdirs();
+        try {
+            JsonNode node = mapper.readTree(file);
+            backgroundColor = new Color(node.get("backgroundColor").asInt());
+            buttonColor = new Color(node.get("buttonColor").asInt());
+            fontColor = new Color(node.get("fontColor").asInt());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
     

@@ -8,7 +8,7 @@ import javax.swing.*;
 import java.nio.file.*;
 import java.io.*;
 
-public class Test extends JFrame implements ActionListener, KeyListener {
+public class SettingTest extends JFrame implements ActionListener, KeyListener {
     JMenuBar menuBar;
     JMenu fileMenu;
     JMenuItem refresh;
@@ -17,22 +17,17 @@ public class Test extends JFrame implements ActionListener, KeyListener {
 
     private static final String directoryPath = System.getProperty("user.dir") + File.separator + "src";
     
-    int backgroundColor;
-    
-    Test() {
+    SettingTest() {
         
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            File file = new File(directoryPath + File.separator + "settings.json");
-            file.mkdirs();
-            JsonNode node = mapper.readTree(file);
-            backgroundColor = node.get("backgroundColor").asInt();
-            System.out.println(backgroundColor);            
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        File folder = new File(directoryPath);
+        folder.mkdirs();
+        File file = new File(directoryPath + File.separator + "settings.json");
         
+        Color color = Color.BLACK;
+        System.out.println(color.getRGB());
         
+        Color second = new Color(color.getRGB());
+        System.out.println(second.getRGB());
         
         setLayout(null);
         
@@ -100,7 +95,7 @@ public class Test extends JFrame implements ActionListener, KeyListener {
     }
     
     public static void main(String args[]) {
-        new Test();
+        new SettingTest();
     }
 
 }

@@ -1,39 +1,46 @@
 package yaad;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
 import java.io.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 
-public class Yaad extends JFrame implements ActionListener {
+public class Yaad extends JFrame implements ActionListener, KeyListener {
     
     JButton create, delete, edit, settings;
     JMenuBar menuBar;
     JMenu fileMenu;
     JMenuItem refresh;
     Color fontColor, backgroundColor, buttonColor;
+    int fontColorRGB, backgroundColorRGB, buttonColorRGB;
     JPanel deckDisplay;
+    String fontName = "Raleway";
     
-    String currentPath = System.getProperty("user.dir");
-    String filePath = currentPath + File.separator + "src" + File.separator + "decks";
+    String currentPath = System.getProperty("user.dir") + File.separator + "src";
+    String decksPath = currentPath + File.separator + "decks";
+    ObjectMapper mapper = new ObjectMapper();
     
     ArrayList<File> files = new ArrayList<File>();
     
     Yaad() {
-        
-        fontColor = Color.WHITE;
-        backgroundColor = Color.DARK_GRAY;
-        buttonColor = Color.BLACK;
+        getSettings();
+        fontColor = new Color(fontColorRGB);
+        backgroundColor = new Color(backgroundColorRGB);
+        buttonColor = new Color(buttonColorRGB);
         
         setLayout(null);
+        setFocusable(true);
+        addKeyListener(this);
         
         ImageIcon image = new ImageIcon(ClassLoader.getSystemResource("images/Yaad.jpg"));
         setIconImage(image.getImage());
         
         menuBar = new JMenuBar();
-        fileMenu = new JMenu("Menu");
-        refresh = new JMenuItem("Refresh");
+        fileMenu = new JMenu("<html><u>M</u>enu</html>");
+        refresh = new JMenuItem("<html><u>R</u>efresh</html>");
         refresh.addActionListener(this);
         fileMenu.add(refresh);
         menuBar.add(fileMenu);
@@ -42,7 +49,7 @@ public class Yaad extends JFrame implements ActionListener {
         
         create = new JButton("Create Deck");
         create.setBounds(20, 20, 200, 80);
-        create.setFont(new Font("Raleway", Font.BOLD, 16));
+        create.setFont(new Font(fontName, Font.BOLD, 16));
         create.setForeground(fontColor);
         create.setBackground(buttonColor);
         create.addActionListener(this);
@@ -51,7 +58,7 @@ public class Yaad extends JFrame implements ActionListener {
         
         delete = new JButton("Delete Deck");
         delete.setBounds(240, 20, 200, 80);
-        delete.setFont(new Font("Raleway", Font.BOLD, 16));
+        delete.setFont(new Font(fontName, Font.BOLD, 16));
         delete.setForeground(fontColor);
         delete.setBackground(buttonColor);
         delete.addActionListener(this);
@@ -60,7 +67,7 @@ public class Yaad extends JFrame implements ActionListener {
         
         edit = new JButton("Edit Deck");
         edit.setBounds(460, 20, 200, 80);
-        edit.setFont(new Font("Raleway", Font.BOLD, 16));
+        edit.setFont(new Font(fontName, Font.BOLD, 16));
         edit.setForeground(fontColor);
         edit.setBackground(buttonColor);
         edit.addActionListener(this);
@@ -80,7 +87,7 @@ public class Yaad extends JFrame implements ActionListener {
         
         edit = new JButton("Edit Deck");
         edit.setBounds(460, 20, 200, 80);
-        edit.setFont(new Font("Raleway", Font.BOLD, 16));
+        edit.setFont(new Font(fontName, Font.BOLD, 16));
         edit.setForeground(fontColor);
         edit.setBackground(buttonColor);
         edit.addActionListener(this);
@@ -92,9 +99,7 @@ public class Yaad extends JFrame implements ActionListener {
         deckDisplay.setOpaque(false);
         deckDisplay.setBackground(backgroundColor);
         
-        File dir = new File(filePath);
-        dir.mkdirs();
-        File[] fileList = dir.listFiles();
+        File[] fileList = listFiles();
         
         Collections.addAll(files, fileList);
 
@@ -104,13 +109,12 @@ public class Yaad extends JFrame implements ActionListener {
         
         deckDisplay.setLayout(new GridLayout(fileList.length, 1));
         
-        
         for (File f: fileList) {
             String fileName = f.getName();
             JLabel deck = new JLabel(fileName.replace(".json", ""));
             
-            Font bold = new Font("Raleway", Font.BOLD, 22);
-            Font italic = new Font("Raleway", Font.ITALIC, 22);
+            Font bold = new Font(fontName, Font.BOLD, 22);
+            Font italic = new Font(fontName, Font.ITALIC, 22);
             
             deck.setFont(bold);
             deck.setForeground(fontColor);
@@ -146,13 +150,15 @@ public class Yaad extends JFrame implements ActionListener {
         add(deckDisplay, BorderLayout.CENTER);
         
         setTitle("Yaad");
-        setSize(800, 800);
+        getContentPane().setPreferredSize(new Dimension(800, 800));
+        pack();
         setLocationRelativeTo(null);
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         getContentPane().setBackground(backgroundColor);
     }
     
+    @Override
     public void actionPerformed(ActionEvent ae) {
         if (ae.getSource() == create) {
             new CreateDeck();
@@ -171,15 +177,42 @@ public class Yaad extends JFrame implements ActionListener {
         }
     }
     
+    @Override
+    public void keyPressed(KeyEvent ke) {
+        System.out.println(ke.getKeyCode());
+        if ((ke.isControlDown() || ke.isAltDown()) && ke.getKeyCode() == KeyEvent.VK_R) update();
+    }
+    
+    @Override
+    public void keyReleased(KeyEvent ke) {
+        
+    }
+    
+    @Override
+    public void keyTyped(KeyEvent ke) {
+        
+    }
+    
     public void update() {
         System.out.println("ok");
+        getSettings();
+        
+        create.setBackground(buttonColor);
+        create.setForeground(fontColor);
+        
+        delete.setBackground(buttonColor);
+        delete.setForeground(fontColor);
+        
+        edit.setBackground(buttonColor);
+        edit.setForeground(buttonColor);
+        
+        settings.setBackground(buttonColor);
+        settings.setForeground(buttonColor);
+        
         deckDisplay.removeAll();
-        File dir = new File(filePath);
-        dir.mkdirs();
-        File[] fileList = dir.listFiles();
         
+        File[] fileList = listFiles();
         files.clear();
-        
         Collections.addAll(files, fileList);
 
         for (File f: fileList) {
@@ -191,14 +224,15 @@ public class Yaad extends JFrame implements ActionListener {
             String fileName = f.getName();
             JLabel deck = new JLabel(fileName.replace(".json", ""));
             
-            Font bold = new Font("Raleway", Font.BOLD, 22);
-            Font italic = new Font("Raleway", Font.ITALIC, 22);
+            Font bold = new Font(fontName, Font.BOLD, 22);
+            Font italic = new Font(fontName, Font.ITALIC, 22);
             
             deck.setFont(bold);
             deck.setForeground(fontColor);
             deck.setBorder(BorderFactory.createLineBorder(buttonColor));
             deck.setHorizontalAlignment(SwingConstants.CENTER);
             deck.addMouseListener(new MouseAdapter() {
+                @Override
                 public void mouseClicked(MouseEvent me) {
                     JLabel source = (JLabel)me.getSource();
                     String sourceText = source.getText();
@@ -206,6 +240,7 @@ public class Yaad extends JFrame implements ActionListener {
                     text = text.replace("</u></html>", "");
                     new Study(text);
                 }
+                @Override
                 public void mouseEntered(MouseEvent me) {
                     JLabel source = (JLabel)me.getSource();
                     String sourceText = source.getText();
@@ -213,6 +248,7 @@ public class Yaad extends JFrame implements ActionListener {
                     source.setText("<html><u>" + sourceText + "</u></html>");
                     source.setForeground(Color.BLUE);
                 }
+                @Override
                 public void mouseExited(MouseEvent me) {
                     JLabel source = (JLabel)me.getSource();
                     String sourceText = source.getText();
@@ -224,10 +260,31 @@ public class Yaad extends JFrame implements ActionListener {
                 }
             });
             deckDisplay.add(deck);
-        }     
+        }
         deckDisplay.revalidate();
         deckDisplay.repaint();
         
+    }
+    
+    public File[] listFiles() {
+        File dir = new File(decksPath);
+        dir.mkdirs();
+        return dir.listFiles();
+    }
+    
+    public void getSettings() {
+        File fSettings = new File(currentPath + File.separator + "settings.json");
+        try {
+            JsonNode node = mapper.readTree(fSettings);
+            backgroundColorRGB = node.get("backgroundColor").asInt();
+            backgroundColor = new Color(backgroundColorRGB);
+            buttonColorRGB = node.get("buttonColor").asInt();
+            buttonColor = new Color(buttonColorRGB);
+            fontColorRGB = node.get("fontColor").asInt();
+            fontColor = new Color(fontColorRGB);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     
     public static void main(String[] args) {

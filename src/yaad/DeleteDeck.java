@@ -1,5 +1,7 @@
 package yaad;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
 import javax.swing.*;
 import java.io.File;
 import java.awt.*;
@@ -13,13 +15,12 @@ public class DeleteDeck extends JFrame {
     String currentPath = System.getProperty("user.dir");
     String filePath = currentPath + File.separator + "src" + File.separator + "decks";
     
+    ObjectMapper mapper = new ObjectMapper();
+    
     DeleteDeck() {
         
+        getSettings();
         setLayout(null);
-        
-        fontColor = Color.WHITE;
-        buttonColor = Color.BLACK;
-        backgroundColor = Color.DARK_GRAY;
         
         deckDisplay.setBounds(100, 75, 400, 400);
         deckDisplay.setOpaque(false);
@@ -27,9 +28,11 @@ public class DeleteDeck extends JFrame {
         paintPanel();
         add(deckDisplay, BorderLayout.CENTER);
         
-        setSize(600, 600);
+        setTitle("Delete Decks");
         setVisible(true);
         getContentPane().setBackground(backgroundColor);
+        getContentPane().setPreferredSize(new Dimension(600, 600));
+        pack();
     }
     
     public void delete(String deck) {
@@ -99,6 +102,19 @@ public class DeleteDeck extends JFrame {
         }        
         deckDisplay.revalidate();
         deckDisplay.repaint();
+    }
+    
+    public void getSettings() {
+        File file = new File(System.getProperty("user.dir") + File.separator + "src" + File.separator + "settings.json");
+        file.mkdirs();
+        try {
+            JsonNode node = mapper.readTree(file);
+            backgroundColor = new Color(node.get("backgroundColor").asInt());
+            buttonColor = new Color(node.get("buttonColor").asInt());
+            fontColor = new Color(node.get("fontColor").asInt());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     
     public static void main(String args[]) {

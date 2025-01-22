@@ -1,5 +1,7 @@
 package yaad;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
 import java.io.*;
 import javax.swing.*;
 import java.awt.*;
@@ -11,8 +13,12 @@ public class CreateDeck extends JFrame implements ActionListener {
     JButton next, cancel;
     String deckTitle;
     
+    Color backgroundColor, buttonColor, fontColor;
+    ObjectMapper mapper = new ObjectMapper();
+    
     CreateDeck() {
         
+        getSettings();        
         setLayout(null);
         
         ImageIcon icon = new ImageIcon(ClassLoader.getSystemResource("images/create.png"));
@@ -21,8 +27,8 @@ public class CreateDeck extends JFrame implements ActionListener {
         
         JLabel text = new JLabel("Deck Title");
         text.setFont(new Font("Raleway", Font.BOLD, 16));
-        text.setForeground(Color.WHITE);
-        text.setBackground(Color.DARK_GRAY);
+        text.setForeground(fontColor);
+        text.setBackground(buttonColor);
         text.setBounds(20, 20, 100, 40);
         add(text);
         
@@ -31,21 +37,22 @@ public class CreateDeck extends JFrame implements ActionListener {
         add(deckTF);
         
         next = new JButton("Next");
-        next.setBackground(Color.BLACK);
-        next.setForeground(Color.WHITE);
+        next.setBackground(buttonColor);
+        next.setForeground(fontColor);
         next.setBounds(240, 70, 100, 30);
         next.addActionListener(this);
         add(next);
         
         cancel = new JButton("Cancel");
-        cancel.setBackground(Color.BLACK);
-        cancel.setForeground(Color.WHITE);
+        cancel.setBackground(buttonColor);
+        cancel.setForeground(fontColor);
         cancel.setBounds(360, 70, 100, 30);
         cancel.addActionListener(this);
         add(cancel);
         
-        getContentPane().setBackground(Color.DARK_GRAY);
-        setSize(600, 150);
+        getContentPane().setBackground(backgroundColor);
+        getContentPane().setPreferredSize(new Dimension(600, 150));
+        pack();
         setTitle("Create Deck");
         setResizable(false);
         setVisible(true);
@@ -78,6 +85,18 @@ public class CreateDeck extends JFrame implements ActionListener {
         } else {
             int c = JOptionPane.showConfirmDialog(null, "Are you sure you want to cancel?");
             setVisible(!(c == JOptionPane.YES_OPTION));
+        }
+    }
+    
+    public void getSettings() {
+        File file = new File(System.getProperty("user.dir") + File.separator + "src" + File.separator + "settings.json");
+        try {
+            JsonNode node = mapper.readTree(file);
+            backgroundColor = new Color(node.get("backgroundColor").asInt());
+            buttonColor = new Color(node.get("buttonColor").asInt());
+            fontColor = new Color(node.get("fontColor").asInt());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
     

@@ -1,6 +1,7 @@
 package yaad;
 
-import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -13,12 +14,15 @@ public class Study extends JFrame implements ActionListener, KeyListener {
     String deckTitle;
     Flashcard[] flashcards;
     int flashcardNumber = 0, total = 0;
-    boolean term = true, definition = false;
+    boolean term = true;
+    
+    Color backgroundColor, buttonColor, fontColor, fontName;
+    ObjectMapper mapper = new ObjectMapper();
     
     Study(String deckTitle) {
         
         this.deckTitle = deckTitle;
-        
+        getSettings();
         setLayout(null);
         
         setFocusable(true);
@@ -30,7 +34,7 @@ public class Study extends JFrame implements ActionListener, KeyListener {
         JPanel deckDisplay = new JPanel();
         deckDisplay.setBounds(20, 100, 600, 600);
         deckDisplay.setOpaque(true);
-        deckDisplay.setBackground(Color.DARK_GRAY);
+        deckDisplay.setBackground(buttonColor);
         
         String currentPath = System.getProperty("user.dir");
         String filePath = currentPath + File.separator + "src" + File.separator + "decks";
@@ -41,8 +45,8 @@ public class Study extends JFrame implements ActionListener, KeyListener {
         try {
             flashcards = mapper.readValue(file, Flashcard[].class);
             total = flashcards.length;
-            flashcardNumber++;
-        } catch (Exception e) {
+            if (total > 0) flashcardNumber++;
+        } catch (IOException e) {
             System.out.println(e);
         }
         
@@ -52,17 +56,17 @@ public class Study extends JFrame implements ActionListener, KeyListener {
         }
         
         JLabel title = new JLabel(deckTitle);
-        title.setFont(new Font("Raleway", Font.BOLD, 22));
-        title.setBounds(350, 20, 100, 40);
-        title.setForeground(Color.WHITE);
+        title.setFont(new Font("Raleway", Font.BOLD, 20));
+        title.setBounds(0, 20, 800, 40);
+        title.setForeground(fontColor);
         title.setHorizontalAlignment(SwingConstants.CENTER);
         add(title);
         
         String firstText = (total == 0) ? "You have no flashcards in this deck. Go back to edit this deck." : "<html>" + flashcards[0].getTerm() + "</html>";
         flashcard = new JLabel(firstText);
         flashcard.setOpaque(true);
-        flashcard.setBackground(Color.BLACK);
-        flashcard.setForeground(Color.WHITE);
+        flashcard.setBackground(buttonColor);
+        flashcard.setForeground(fontColor);
         flashcard.setBounds(200, 80, 400, 300);
         flashcard.setHorizontalAlignment(JLabel.CENTER);
         flashcard.addMouseListener(new MouseAdapter() {
@@ -74,8 +78,8 @@ public class Study extends JFrame implements ActionListener, KeyListener {
         add(flashcard);
         
         left = new JButton("←");
-        left.setBackground(Color.BLACK);
-        left.setForeground(Color.WHITE);
+        left.setBackground(buttonColor);
+        left.setForeground(fontColor);
         left.setBounds(300, 400, 50, 30);
         left.addActionListener(this);
         left.setVisible(false);
@@ -84,32 +88,33 @@ public class Study extends JFrame implements ActionListener, KeyListener {
         
         number = new JLabel(flashcardNumber + "/" + total);
         number.setOpaque(true);
-        number.setBackground(Color.BLACK);
-        number.setForeground(Color.WHITE);
+        number.setBackground(buttonColor);
+        number.setForeground(fontColor);
         number.setBounds(350, 400, 100, 30);
         number.setHorizontalAlignment(SwingConstants.CENTER);
         add(number);
         
         right = new JButton("→");
-        right.setBackground(Color.BLACK);
-        right.setForeground(Color.WHITE);
+        right.setBackground(buttonColor);
+        right.setForeground(fontColor);
         right.setBounds(450, 400, 50, 30);
         right.addActionListener(this);
         right.setFocusable(false);
-        if (total == 0 || total == 1) right.setVisible(false);
+        if (total <= 1) right.setVisible(false);
         add(right);
         
         back = new JButton("Back");
-        back.setBackground(Color.BLACK);
-        back.setForeground(Color.WHITE);
+        back.setBackground(buttonColor);
+        back.setForeground(fontColor);
         back.setBounds(680, 530, 100, 30);
         back.addActionListener(this);
         back.setFocusable(false);
         add(back);
         
         setTitle("Study " + deckTitle);
-        getContentPane().setBackground(Color.DARK_GRAY);
-        setSize(800, 600);
+        getContentPane().setBackground(backgroundColor);
+        getContentPane().setPreferredSize(new Dimension(800, 600));
+        pack();
         setVisible(true);
         setResizable(false);
         
@@ -169,11 +174,22 @@ public class Study extends JFrame implements ActionListener, KeyListener {
         if (term) {
             flashcard.setText("<html><p style=\"text-align: center;\">" + flashcards[flashcardNumber - 1].getDefinition() + "</p></html>");
             term = false;
-            definition = true;
         } else {
             flashcard.setText("<html><p style=\"text-align: center;\">" + flashcards[flashcardNumber - 1].getTerm() + "</p></html>");
-            definition = false;
             term = true;
+        }
+    }
+    
+    public void getSettings() {
+        File file = new File(System.getProperty("user.dir") + File.separator + "src" + File.separator + "settings.json");
+        file.mkdirs();
+        try {
+            JsonNode node = mapper.readTree(file);
+            backgroundColor = new Color(node.get("backgroundColor").asInt());
+            buttonColor = new Color(node.get("buttonColor").asInt());
+            fontColor = new Color(node.get("fontColor").asInt());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
     
