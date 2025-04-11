@@ -2,6 +2,7 @@ package yaad;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.JsonNode;
+import javax.swing.border.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -9,14 +10,20 @@ import java.io.*;
 
 public class Study extends JFrame implements ActionListener, KeyListener {
     
-    JButton back, left, right;
+    JButton back, left, right, termButton, definitionButton;
     JLabel flashcard, number;
     String deckTitle;
     Flashcard[] flashcards;
     int flashcardNumber = 0, total = 0;
     boolean term = true;
+    boolean termIsShowing = true;
     
-    Color backgroundColor, buttonColor, fontColor, fontName;
+    LineBorder thinBorder;
+    LineBorder thickBorder;
+    
+    Color backgroundColor, buttonColor, fontColor;
+    String fontName = "Raleway";
+    
     ObjectMapper mapper = new ObjectMapper();
     
     Study(String deckTitle) {
@@ -25,6 +32,9 @@ public class Study extends JFrame implements ActionListener, KeyListener {
         getSettings();
         setLayout(null);
         
+        thinBorder = (LineBorder)BorderFactory.createLineBorder(fontColor, 1);
+        thickBorder = (LineBorder)BorderFactory.createLineBorder(fontColor, 2);
+        
         setFocusable(true);
         addKeyListener(this);
         
@@ -32,7 +42,7 @@ public class Study extends JFrame implements ActionListener, KeyListener {
         setIconImage(image.getImage());
         
         JPanel deckDisplay = new JPanel();
-        deckDisplay.setBounds(20, 100, 600, 600);
+        deckDisplay.setBounds(100, 100, 600, 600);
         deckDisplay.setOpaque(true);
         deckDisplay.setBackground(buttonColor);
         
@@ -55,8 +65,8 @@ public class Study extends JFrame implements ActionListener, KeyListener {
             System.out.println(f.getDefinition());
         }
         
-        JLabel title = new JLabel(deckTitle);
-        title.setFont(new Font("Raleway", Font.BOLD, 20));
+        JLabel title = new JLabel("<html>" + deckTitle + "<html>");
+        title.setFont(new Font(fontName, Font.BOLD, 20));
         title.setBounds(0, 20, 800, 40);
         title.setForeground(fontColor);
         title.setHorizontalAlignment(SwingConstants.CENTER);
@@ -100,16 +110,34 @@ public class Study extends JFrame implements ActionListener, KeyListener {
         right.setBounds(450, 400, 50, 30);
         right.addActionListener(this);
         right.setFocusable(false);
-        if (total <= 1) right.setVisible(false);
+        if (total < 2) right.setVisible(false);
         add(right);
         
         back = new JButton("Back");
         back.setBackground(buttonColor);
         back.setForeground(fontColor);
-        back.setBounds(680, 530, 100, 30);
+        back.setBounds(680, 550, 100, 30);
         back.addActionListener(this);
         back.setFocusable(false);
         add(back);
+        
+        termButton = new JButton("Term");
+        termButton.setBackground(buttonColor);
+        termButton.setForeground(fontColor);
+        termButton.setBounds(300, 450, 100, 30);
+        termButton.addActionListener(this);
+        termButton.setFocusable(false);
+        termButton.setBorder(BorderFactory.createLineBorder(fontColor, 2));
+        add(termButton);
+        
+        definitionButton = new JButton("Definition");
+        definitionButton.setBackground(buttonColor);
+        definitionButton.setForeground(fontColor);
+        definitionButton.setBounds(400, 450, 100, 30);
+        definitionButton.addActionListener(this);
+        definitionButton.setFocusable(false);
+        definitionButton.setBorder(BorderFactory.createLineBorder(fontColor, 1));
+        add(definitionButton);
         
         setTitle("Study " + deckTitle);
         getContentPane().setBackground(backgroundColor);
@@ -128,6 +156,16 @@ public class Study extends JFrame implements ActionListener, KeyListener {
             left();
         } else if (ae.getSource() == right) {
             right();
+        } else if (ae.getSource() == termButton) {
+            term = true;
+            termButton.setBorder(thickBorder);
+            definitionButton.setBorder(thinBorder);
+            flip();
+        } else if (ae.getSource() == definitionButton) {
+            term = false;
+            definitionButton.setBorder(thickBorder);
+            termButton.setBorder(thinBorder);
+            flip();
         }
     }
     
@@ -139,9 +177,12 @@ public class Study extends JFrame implements ActionListener, KeyListener {
     @Override
     public void keyPressed(KeyEvent ke) {
         switch (ke.getKeyCode()) {
+            case 8 -> setVisible(false);
             case 32 -> flip();
             case 37 -> {if (left.isShowing()) left();}
+            case 38 -> flip();
             case 39 -> {if (right.isShowing()) right();}
+            case 40 -> flip();
         }
     }
     
@@ -151,8 +192,9 @@ public class Study extends JFrame implements ActionListener, KeyListener {
     }
     
     public void left() {
+        String flashcardText = term == true ? flashcards[flashcardNumber - 1].getTerm() : flashcards[flashcardNumber - 1].getDefinition();
         flashcardNumber--;
-        flashcard.setText("<html><p style=\"text-align: center;\">" + flashcards[flashcardNumber - 1].getTerm() + "</p></html>");
+        flashcard.setText("<html><p style=\"text-align: center;\">" + flashcardText + "</p></html>");
         number.setText(Integer.toString(flashcardNumber) + "/" + total);
         if (flashcardNumber < 2) {
             left.setVisible(false);
@@ -161,8 +203,9 @@ public class Study extends JFrame implements ActionListener, KeyListener {
     }
     
     public void right() {
+        String flashcardText = (term == true) ? flashcards[flashcardNumber - 1].getTerm() : flashcards[flashcardNumber - 1].getDefinition();
         flashcardNumber++;
-        flashcard.setText("<html><p style=\"text-align: center;\">" + flashcards[flashcardNumber - 1].getTerm() + "</p></html>");
+        flashcard.setText("<html><p style=\"text-align: center;\">" + flashcardText + "</p></html>");
         number.setText(Integer.toString(flashcardNumber) + "/" + total);
         if (flashcardNumber == total) {
             right.setVisible(false);
@@ -170,13 +213,17 @@ public class Study extends JFrame implements ActionListener, KeyListener {
         if (total != 0) left.setVisible(true);
     }
     
+    public void showCard(int number) {
+        String flashcardText = (term == true) ? flashcards[flashcardNumber - 1].getTerm() : flashcards[flashcardNumber - 1].getDefinition();
+    }
+    
     public void flip() {
-        if (term) {
+        if (termIsShowing) {
             flashcard.setText("<html><p style=\"text-align: center;\">" + flashcards[flashcardNumber - 1].getDefinition() + "</p></html>");
-            term = false;
+            termIsShowing = false;
         } else {
             flashcard.setText("<html><p style=\"text-align: center;\">" + flashcards[flashcardNumber - 1].getTerm() + "</p></html>");
-            term = true;
+            termIsShowing = true;
         }
     }
     

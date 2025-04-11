@@ -141,31 +141,47 @@ public class Settings extends JFrame implements ActionListener {
         if (ae.getSource() == backgroundChooser) {
             Color initialColor = backgroundColor;
             backgroundColor = JColorChooser.showDialog(this, "Select a color", initialColor);
+            if (backgroundColor == null) backgroundColor = initialColor;
             backgroundChooser.setBackground(backgroundColor);
             System.out.println("(" + backgroundColor.getRed() + ", " + backgroundColor.getGreen() + ", " + backgroundColor.getBlue() + ")");
         } else if (ae.getSource() == buttonChooser) {
             Color initialColor = buttonColor;
             buttonColor = JColorChooser.showDialog(this, "Select a color", initialColor);
+            if (buttonColor == null) buttonColor = initialColor;
             buttonChooser.setBackground(buttonColor);
             System.out.println("(" + buttonColor.getRed() + ", " + buttonColor.getGreen() + ", " + buttonColor.getBlue() + ")");
         } else if (ae.getSource() == fontColorChooser) {
             Color initialColor = fontColor;
             fontColor = JColorChooser.showDialog(this, "Select a color", initialColor);
+            if (fontColor == null) fontColor = initialColor;
             fontColorChooser.setBackground(fontColor);
             System.out.println("(" + fontColor.getRed() + ", " + fontColor.getGreen() + ", " + fontColor.getBlue() + ")");
         } else if (ae.getSource() == save) {
             System.out.println("save");
             System.out.println(getJsonSource());
             write();
-            // write();
             color();
         } else if (ae.getSource() == close) {
             read();
-            if (backgroundColor != backgroundChooser.getBackground() || buttonColor != buttonChooser.getBackground() || fontColor != fontColorChooser.getBackground()) {
+            if (backgroundColor != (Color)backgroundChooser.getBackground() 
+                    || buttonColor != (Color)buttonChooser.getBackground() 
+                    || fontColor != (Color)fontColorChooser.getBackground()) {
                 int a = JOptionPane.showConfirmDialog(null, "Are you sure you want to close settings without saving your choices?");
                 if (a == JOptionPane.YES_OPTION) {
                     setVisible(false);
                 }
+            }
+        } else if (ae.getSource() == reset) {
+            int a = JOptionPane.showConfirmDialog(null, "Are you sure you want to reset the settings?");
+            if (a == JOptionPane.YES_OPTION) {
+                backgroundColor = Color.DARK_GRAY;
+                backgroundChooser.setBackground(backgroundColor);
+                buttonColor = Color.BLACK;
+                buttonChooser.setBackground(buttonColor);
+                fontColor = Color.WHITE;
+                fontColorChooser.setBackground(fontColor);
+                write();
+                color();
             }
         }
     }
