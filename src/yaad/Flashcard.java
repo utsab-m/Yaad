@@ -2,7 +2,7 @@ package yaad;
 
 public class Flashcard {
     
-    String term, definition;
+    private String term, definition;
     
     Flashcard(String term, String definition) {
         this.term = term;

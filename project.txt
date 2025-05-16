@@ -1,0 +1,6 @@
+Fix scrollbar
+Fix IndexOutOfBoundsException
+Get rid of DeleteDeck and EditDeck
+Add delete feature for flashcards on the OG Yaad thing
+Add edit feature in Study.java
+Add font feature in settings

@@ -12,10 +12,13 @@ public class Settings extends JFrame implements ActionListener {
     
     JButton save, close, reset, backgroundChooser, buttonChooser, fontColorChooser;
     JButton[] buttons = new JButton[3];
+    
     JLabel backgroundLabel, buttonLabel, fontColorLabel, fontLabel;
     JLabel[] labels = new JLabel[4];
     
     Color backgroundColor, buttonColor, fontColor;
+    Color[] colors = new Color[3];
+    
     int backgroundColorRGB, buttonColorRGB, fontColorRGB;
     String fontName;
     
@@ -47,83 +50,37 @@ public class Settings extends JFrame implements ActionListener {
         
         System.out.println(getJsonSource());
         
-        save = new JButton("Save");
-        buttons[0] = save;
-        save.setBackground(buttonColor);
-        save.setForeground(fontColor);
-        save.setFont(new Font(fontName, Font.BOLD, 16));
-        save.setBounds(10, 400, 80, 40);
-        save.setFocusable(false);
-        save.addActionListener(this);
+        save = createStyledButton("Save", 0, 10);
         add(save);
         
-        close = new JButton("Close");
-        buttons[1] = close;
-        close.setBackground(buttonColor);
-        close.setForeground(fontColor);
-        close.setFont(new Font(fontName, Font.BOLD, 16));
-        close.setBounds(110, 400, 80, 40);
-        close.setFocusable(false);
-        close.addActionListener(this);
+        close = createStyledButton("Close", 1, 110);
         add(close);
         
-        reset = new JButton("Reset");
-        buttons[2] = reset;
-        reset.setBackground(buttonColor);
-        reset.setForeground(fontColor);
-        reset.setFont(new Font(fontName, Font.BOLD, 16));
-        reset.setBounds(210, 400, 80, 40);
-        reset.setFocusable(false);
-        reset.addActionListener(this);
+        reset = createStyledButton("Reset", 2, 210);
         add(reset);
         
         ImageIcon i1 = new ImageIcon(ClassLoader.getSystemResource("images/blackSettings.png"));
         Image i2 = i1.getImage().getScaledInstance(64, 64, Image.SCALE_SMOOTH);
  
-        backgroundLabel = new JLabel("Change background color");
-        labels[0] = backgroundLabel;
-        backgroundLabel.setFont(new Font(fontName, Font.BOLD, 16));
-        backgroundLabel.setForeground(fontColor);
-        backgroundLabel.setBounds(20, 20, 200, 20);
+        backgroundLabel = createLabel("Change background color", 0, 20);
         add(backgroundLabel);
         
-        backgroundChooser = new JButton();
-        backgroundChooser.setBackground(backgroundColor);
-        backgroundChooser.setBounds(240, 20, 20, 20);
-        backgroundChooser.addActionListener(this);
+        backgroundChooser = createColorChooser(backgroundColor, 20);
         add(backgroundChooser);
         
-        buttonLabel = new JLabel("Change button color");
-        labels[1] = buttonLabel;
-        buttonLabel.setFont(new Font(fontName, Font.BOLD, 16));
-        buttonLabel.setForeground(fontColor);
-        buttonLabel.setBounds(20, 60, 200, 20);
+        buttonLabel = createLabel("Change button color", 1, 60);
         add(buttonLabel);
         
-        buttonChooser = new JButton();
-        buttonChooser.setBackground(buttonColor);
-        buttonChooser.setBounds(240, 60, 20, 20);
-        buttonChooser.addActionListener(this);
+        buttonChooser = createColorChooser(buttonColor, 60);
         add(buttonChooser);
         
-        fontColorLabel = new JLabel("Change font color");
-        labels[2] = fontColorLabel;
-        fontColorLabel.setFont(new Font(fontName, Font.BOLD, 16));
-        fontColorLabel.setForeground(fontColor);
-        fontColorLabel.setBounds(20, 100, 200, 20);
+        fontColorLabel = createLabel("Change font color", 2, 100);
         add(fontColorLabel);
         
-        fontColorChooser = new JButton();
-        fontColorChooser.setBackground(fontColor);
-        fontColorChooser.setBounds(240, 100, 20, 20);
-        fontColorChooser.addActionListener(this);
+        fontColorChooser = createColorChooser(fontColor, 100);
         add(fontColorChooser);
         
-        fontLabel = new JLabel("Change font");
-        labels[3] = fontLabel;
-        fontLabel.setFont(new Font(fontName, Font.BOLD, 16));
-        fontLabel.setForeground(fontColor);
-        fontLabel.setBounds(20, 140, 200, 20);
+        fontLabel = createLabel("Change font", 3, 140);
         add(fontLabel);
         
         setTitle("Settings");
@@ -136,54 +93,102 @@ public class Settings extends JFrame implements ActionListener {
         setIconImage(i2);
     }
     
+    public JButton createStyledButton(String text, int n, int x) {
+        JButton button = new JButton(text);
+        buttons[n] = button;
+        button.setBackground(buttonColor);
+        button.setForeground(fontColor);
+        button.setFont(new Font(fontName, Font.BOLD, 16));
+        button.setBounds(x, 400, 80, 40);
+        button.setFocusable(false);
+        button.addActionListener(this);
+        return button;
+    }
+    
+    public JButton createColorChooser(Color color, int y) {
+        JButton button = new JButton();
+        button.setBackground(color);
+        button.setBounds(240, y, 20, 20);
+        button.addActionListener(this);
+        return button;
+    }
+    
+    public JLabel createLabel(String text, int n, int y) {
+        JLabel label = new JLabel(text);
+        labels[n] = label;
+        label.setFont(new Font(fontName, Font.BOLD, 16));
+        label.setForeground(fontColor);
+        label.setBounds(20, y, 200, 20);
+        return label;
+    }
+    
     @Override
     public void actionPerformed(ActionEvent ae) {
         if (ae.getSource() == backgroundChooser) {
-            Color initialColor = backgroundColor;
-            backgroundColor = JColorChooser.showDialog(this, "Select a color", initialColor);
-            if (backgroundColor == null) backgroundColor = initialColor;
+            backgroundColor = showColorChooser(backgroundColor);
             backgroundChooser.setBackground(backgroundColor);
             System.out.println("(" + backgroundColor.getRed() + ", " + backgroundColor.getGreen() + ", " + backgroundColor.getBlue() + ")");
         } else if (ae.getSource() == buttonChooser) {
-            Color initialColor = buttonColor;
-            buttonColor = JColorChooser.showDialog(this, "Select a color", initialColor);
-            if (buttonColor == null) buttonColor = initialColor;
+            buttonColor = showColorChooser(buttonColor);
             buttonChooser.setBackground(buttonColor);
             System.out.println("(" + buttonColor.getRed() + ", " + buttonColor.getGreen() + ", " + buttonColor.getBlue() + ")");
         } else if (ae.getSource() == fontColorChooser) {
-            Color initialColor = fontColor;
-            fontColor = JColorChooser.showDialog(this, "Select a color", initialColor);
-            if (fontColor == null) fontColor = initialColor;
+            fontColor = showColorChooser(fontColor);
             fontColorChooser.setBackground(fontColor);
             System.out.println("(" + fontColor.getRed() + ", " + fontColor.getGreen() + ", " + fontColor.getBlue() + ")");
         } else if (ae.getSource() == save) {
-            System.out.println("save");
-            System.out.println(getJsonSource());
-            write();
-            color();
-        } else if (ae.getSource() == close) {
-            read();
-            if (backgroundColor != (Color)backgroundChooser.getBackground() 
-                    || buttonColor != (Color)buttonChooser.getBackground() 
-                    || fontColor != (Color)fontColorChooser.getBackground()) {
-                int a = JOptionPane.showConfirmDialog(null, "Are you sure you want to close settings without saving your choices?");
-                if (a == JOptionPane.YES_OPTION) {
+            System.out.println(same());
+            if (same()) {
+                int input = JOptionPane.showConfirmDialog(null, "Are you sure you don't want to make any changes?");
+                if (input == JOptionPane.YES_OPTION) {
                     setVisible(false);
                 }
+                return;
+            }
+            System.out.println("save");
+            System.out.println(getJsonSource());
+            if (write()) {
+                color();
+                JOptionPane.showMessageDialog(null, "Successfully saved settings!");
+            }
+        } else if (ae.getSource() == close) {
+            if (!same()) {
+                int input = JOptionPane.showConfirmDialog(null, "Are you sure you want to close settings without saving your choices?");
+                if (input == JOptionPane.YES_OPTION) {
+                    setVisible(false);
+                }
+            } else {
+                setVisible(false);
             }
         } else if (ae.getSource() == reset) {
-            int a = JOptionPane.showConfirmDialog(null, "Are you sure you want to reset the settings?");
-            if (a == JOptionPane.YES_OPTION) {
+            int input = JOptionPane.showConfirmDialog(null, "Are you sure you want to reset the settings?");
+            if (input == JOptionPane.YES_OPTION) {
                 backgroundColor = Color.DARK_GRAY;
                 backgroundChooser.setBackground(backgroundColor);
                 buttonColor = Color.BLACK;
                 buttonChooser.setBackground(buttonColor);
                 fontColor = Color.WHITE;
                 fontColorChooser.setBackground(fontColor);
-                write();
-                color();
+                if (write()) {
+                    color();
+                    JOptionPane.showMessageDialog(null, "Successfully saved settings!");
+                }
             }
         }
+    }
+    
+    public Color showColorChooser(Color initialColor) {
+        Color color = JColorChooser.showDialog(this, "Select a color", initialColor);
+        return (color == null) ? initialColor : color;
+    }
+    
+    public boolean same() {
+        // check if changes have been made to the settings
+        // if changes have been made, return false. otherwise, return true.
+        read();
+        return (backgroundColor.getRGB() == backgroundChooser.getBackground().getRGB()
+                    && buttonColor.getRGB() == buttonChooser.getBackground().getRGB() 
+                    && fontColor.getRGB() == fontColorChooser.getBackground().getRGB());
     }
     
     public void read() {
@@ -201,16 +206,20 @@ public class Settings extends JFrame implements ActionListener {
         }
     }
     
-    public void write() {
+    public boolean write() {
         try {
+            backgroundColor = backgroundChooser.getBackground();
+            buttonColor = buttonChooser.getBackground();
+            fontColor = fontColorChooser.getBackground();
+            
             System.out.println(getJsonSource());
             FileWriter f2 = new FileWriter(file, false);
             f2.write(getJsonSource());
             f2.close();
-            JOptionPane.showMessageDialog(null, "Successfully saved settings!");
-            
+            return true;
         } catch (IOException e) {
             System.out.println(e);
+            return false;
         }
     }
     
@@ -220,8 +229,8 @@ public class Settings extends JFrame implements ActionListener {
     
     public void color() {
         getContentPane().setBackground(backgroundColor);
-        for (int i = 0; i < buttons.length; i++) {
-            System.out.println(buttons[i].getBackground().getRGB());
+        for (JButton button: buttons) {
+            System.out.println(button.getBackground().getRGB());
         }
         for (JButton button: buttons) {
             if (button == null) break;

@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.time.temporal.ChronoUnit;
 
 public class Study extends JFrame implements ActionListener, KeyListener {
     
@@ -18,8 +19,7 @@ public class Study extends JFrame implements ActionListener, KeyListener {
     boolean term = true;
     boolean termIsShowing = true;
     
-    LineBorder thinBorder;
-    LineBorder thickBorder;
+    LineBorder thinBorder, thickBorder;
     
     Color backgroundColor, buttonColor, fontColor;
     String fontName = "Raleway";
@@ -87,13 +87,8 @@ public class Study extends JFrame implements ActionListener, KeyListener {
         });
         add(flashcard);
         
-        left = new JButton("←");
-        left.setBackground(buttonColor);
-        left.setForeground(fontColor);
-        left.setBounds(300, 400, 50, 30);
-        left.addActionListener(this);
+        left = createStyledButton("←", 300, 400, 50, 30);
         left.setVisible(false);
-        left.setFocusable(false);
         add(left);
         
         number = new JLabel(flashcardNumber + "/" + total);
@@ -104,38 +99,18 @@ public class Study extends JFrame implements ActionListener, KeyListener {
         number.setHorizontalAlignment(SwingConstants.CENTER);
         add(number);
         
-        right = new JButton("→");
-        right.setBackground(buttonColor);
-        right.setForeground(fontColor);
-        right.setBounds(450, 400, 50, 30);
-        right.addActionListener(this);
-        right.setFocusable(false);
+        right = createStyledButton("→", 450, 400, 50, 30);
         if (total < 2) right.setVisible(false);
         add(right);
         
-        back = new JButton("Back");
-        back.setBackground(buttonColor);
-        back.setForeground(fontColor);
-        back.setBounds(680, 550, 100, 30);
-        back.addActionListener(this);
-        back.setFocusable(false);
+        back = createStyledButton("Back", 680, 550, 100, 30);
         add(back);
         
-        termButton = new JButton("Term");
-        termButton.setBackground(buttonColor);
-        termButton.setForeground(fontColor);
-        termButton.setBounds(300, 450, 100, 30);
-        termButton.addActionListener(this);
-        termButton.setFocusable(false);
+        termButton = createStyledButton("Term", 300, 450, 100, 30);
         termButton.setBorder(BorderFactory.createLineBorder(fontColor, 2));
         add(termButton);
         
-        definitionButton = new JButton("Definition");
-        definitionButton.setBackground(buttonColor);
-        definitionButton.setForeground(fontColor);
-        definitionButton.setBounds(400, 450, 100, 30);
-        definitionButton.addActionListener(this);
-        definitionButton.setFocusable(false);
+        definitionButton = createStyledButton("Definition", 400, 450, 100, 30);
         definitionButton.setBorder(BorderFactory.createLineBorder(fontColor, 1));
         add(definitionButton);
         
@@ -146,6 +121,16 @@ public class Study extends JFrame implements ActionListener, KeyListener {
         setVisible(true);
         setResizable(false);
         
+    }
+    
+    public JButton createStyledButton(String text, int x, int y, int width, int height) {
+        JButton button = new JButton(text);
+        button.setBounds(x, y, width, height);
+        button.setForeground(fontColor);
+        button.setBackground(buttonColor);
+        button.setFocusable(false);
+        button.addActionListener(this);
+        return button;
     }
     
     @Override
@@ -192,8 +177,8 @@ public class Study extends JFrame implements ActionListener, KeyListener {
     }
     
     public void left() {
-        String flashcardText = term == true ? flashcards[flashcardNumber - 1].getTerm() : flashcards[flashcardNumber - 1].getDefinition();
         flashcardNumber--;
+        String flashcardText = term == true ? flashcards[flashcardNumber - 1].getTerm() : flashcards[flashcardNumber - 1].getDefinition();
         flashcard.setText("<html><p style=\"text-align: center;\">" + flashcardText + "</p></html>");
         number.setText(Integer.toString(flashcardNumber) + "/" + total);
         if (flashcardNumber < 2) {
@@ -203,8 +188,8 @@ public class Study extends JFrame implements ActionListener, KeyListener {
     }
     
     public void right() {
-        String flashcardText = (term == true) ? flashcards[flashcardNumber - 1].getTerm() : flashcards[flashcardNumber - 1].getDefinition();
         flashcardNumber++;
+        String flashcardText = (term == true) ? flashcards[flashcardNumber - 1].getTerm() : flashcards[flashcardNumber - 1].getDefinition();
         flashcard.setText("<html><p style=\"text-align: center;\">" + flashcardText + "</p></html>");
         number.setText(Integer.toString(flashcardNumber) + "/" + total);
         if (flashcardNumber == total) {
