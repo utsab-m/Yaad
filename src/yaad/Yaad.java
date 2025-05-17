@@ -93,9 +93,7 @@ public class Yaad extends JFrame implements ActionListener, KeyListener {
         getContentPane().setBackground(backgroundColor);
         
         update();
-        for (Component c: deckDisplay.getComponents()) {
-            System.out.println(c.getName());
-        }
+        
         
     }
     
@@ -115,13 +113,17 @@ public class Yaad extends JFrame implements ActionListener, KeyListener {
         System.out.println("updated");
         if (getSettings()) setColors();
         
-        Set<File> newFiles = listFiles();
+        SortedSet<File> newFiles = setFiles();
         
         //If the file inventory is empty and the current file list is empty, 
         //do nothing. This means that there were no files and there still are
         //no files. If files is empty but the current file list isn't empty,
         //then that means that files were added sometime in between.
-        //If files isn't empty
+        //If files isn't empty:
+        //If newFiles is empty, remove all decks because that means there
+        //are no new decks, and there weren't any decks to begin with.
+        //If newFiles isn't empty, compare the decks to see which should be
+        //added and which should be removed.
         if (files.isEmpty()) {
             if (newFiles.isEmpty()) {
                 System.out.println("Files and newFiles are empty");
@@ -131,10 +133,15 @@ public class Yaad extends JFrame implements ActionListener, KeyListener {
                 updateDecks(newFiles);
             }
         } else {
-            if (!newFiles.isEmpty()) {
+            if (newFiles.isEmpty()) {
                 removeAllDecks();
             } else {
-                
+                for (File f: files) {
+                    if (newFiles.contains(f)) newFiles.remove(f);
+                    else {
+                        removeDeck(f);
+                    }
+                }
             }
         }
         
@@ -145,24 +152,22 @@ public class Yaad extends JFrame implements ActionListener, KeyListener {
     }
     
     public void addDeck(File f) {
+        int i = findIndex(f);
+        addDeck(i, f);
         System.out.println("Method: addDeck(f), File name: " + f.getName() + ", Files size: " + files.size() + ", Decks size: " + decks.size());
-        files.add(f);
-        JLabel deck = createDeck(removeExt(f.getName()));
-        deckDisplay.add(deck);
-        
-        fix(deckDisplay);
     }
     
     public void addDeck(int i, File f) {
-        System.out.println("Method: addDeck(i, f), Index: " + i + ", Files size: " + files.size() + ", Decks size: " + decks.size());
         files.add(i, f);
         JLabel deck = createDeck(removeExt(f.getName()));
         deckDisplay.add(deck, i);
         
         fix(deckDisplay);
+        System.out.println("Method: addDeck(i, f), Index: " + i + ", Files size: " + files.size() + ", Decks size: " + decks.size());
     }
     
     public String removeExt(String fileName) {
+        System.out.println("Removed ext for fileName");
         return (fileName.replace(".json", ""));
     }
     
@@ -172,11 +177,15 @@ public class Yaad extends JFrame implements ActionListener, KeyListener {
     }
     
     public void removeDeck(int i) {
-        System.out.println("Method: removeDeck, Index: " + i + ", Files size: " + files.size() + ", Decks size: " + decks.size());
         deckDisplay.remove(decks.get(i));
         fix(deckDisplay);
         decks.remove(i);
         files.remove(i);
+        System.out.println("Method: removeDeck, Index: " + i + ", Files size: " + files.size() + ", Decks size: " + decks.size());
+    }
+    
+    public void removeDeck(File f) {
+        
     }
     
     public void removeAllDecks() {
@@ -184,12 +193,25 @@ public class Yaad extends JFrame implements ActionListener, KeyListener {
         fix(deckDisplay);
     }
     
+    public int findIndex(File f) {
+        //Assume files is updated
+        if (files.isEmpty()) return 0;
+        int size = files.size();
+        //If the file name is lexicographically less than the first file name, return -1
+        if (f.getName().compareTo(files.get(0).getName()) < 0) return 0;
+        for (int i = 0; i < files.size()-1; i++) {
+            String fileName = files.get(i).getName();
+            if (fileName.compareTo(files.get(i+1).getName()) < 0) return i+1;
+        }
+        return size;
+    }
+    
     public void fix(Component component) {
         component.revalidate();
         component.repaint();
     }
     
-    public void updateDecks(ArrayList<File> fileList) {
+    public void updateDecks(Collection<File> fileList) {
         for (File f: fileList) {
             addDeck(f);
         }
@@ -278,10 +300,10 @@ public class Yaad extends JFrame implements ActionListener, KeyListener {
         return new ArrayList(Arrays.asList(dir.listFiles()));
     }
     
-    public Set<File> setFiles() {
+    public SortedSet<File> setFiles() {
         File dir = new File(decksPath);
         dir.mkdirs();
-        return new HashSet(Arrays.asList(dir.listFiles()));
+        return new TreeSet(Arrays.asList(dir.listFiles()));
     }
     
     public void setUpMenu() {
