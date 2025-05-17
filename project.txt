@@ -10,3 +10,4 @@ Add font feature in settings
 Fix AddFlashcards
 Put AddFlashcards in Study
 Add refresh button to Study
+Change deck to being an object

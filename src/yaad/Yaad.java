@@ -31,8 +31,8 @@ public class Yaad extends JFrame implements ActionListener, KeyListener {
     File settingsFile = new File(currentPath + File.separator + "settings.json");
     ObjectMapper mapper = new ObjectMapper();
     
-    ArrayList<File> files = new ArrayList<File>();
-    ArrayList<JLabel> decks = new ArrayList<JLabel>();
+    ArrayList<File> files = new ArrayList<>();
+    ArrayList<JLabel> decks = new ArrayList<>();
     
     Yaad() {
         setLayout(new BorderLayout());
@@ -145,7 +145,8 @@ public class Yaad extends JFrame implements ActionListener, KeyListener {
     
     public void addDeck(int i, File f) {
         files.add(i, f);
-        JLabel deck = createDeck(removeExt(f.getName()));
+        String deckTitle = removeExt(f.getName());
+        JLabel deck = createDeck(deckTitle);
         deckDisplay.add(deck, i);
         
         fix(deckDisplay);
@@ -180,10 +181,9 @@ public class Yaad extends JFrame implements ActionListener, KeyListener {
     }
     
     public int findIndex(File f) {
-        //Assume files is updated because it is called from methods where files is fixed before findIndex is called
-        if (files.isEmpty()) return 0;
+        //Assume files is updated because it is called from methods where files is fixed before findIndex is called\
         int size = files.size();
-        
+        if (files.isEmpty()) return 0;
         String newFileName = f.getName(), oldFileName = files.get(0).getName();
         
         if (newFileName.compareTo(oldFileName) < 0) return 0;
