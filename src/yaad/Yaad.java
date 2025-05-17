@@ -40,7 +40,6 @@ public class Yaad extends JFrame implements ActionListener, KeyListener {
         addKeyListener(this);
         getSettings();
         
-        // Button panel
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
         buttonPanel.setOpaque(false);
         buttonPanel.setPreferredSize(new Dimension (width, 110));
@@ -50,7 +49,6 @@ public class Yaad extends JFrame implements ActionListener, KeyListener {
         //buttonPanel.add(delete);
         //buttonPanel.add(edit);
         
-        // Settings button
         ImageIcon s1 = new ImageIcon(ClassLoader.getSystemResource("images/whiteSettings.png"));
         Image s2 = s1.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
         ImageIcon s3 = new ImageIcon(s2);
@@ -63,7 +61,6 @@ public class Yaad extends JFrame implements ActionListener, KeyListener {
 
         add(buttonPanel, BorderLayout.NORTH);
         
-        // Deck display
         deckDisplay = new JPanel();
         deckDisplay.setPreferredSize(null);
         deckDisplay.setAlignmentY(Component.TOP_ALIGNMENT);
@@ -72,17 +69,14 @@ public class Yaad extends JFrame implements ActionListener, KeyListener {
         deckDisplay.setLayout(new BoxLayout(deckDisplay, BoxLayout.Y_AXIS));
         deckDisplay.setOpaque(false);
         
-        // Scroll pane
         scrollPane = new JScrollPane(deckDisplay, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.getVerticalScrollBar().setUnitIncrement(10);
         scrollPane.setBackground(backgroundColor);
         scrollPane.getViewport().setBackground(backgroundColor);
         add(scrollPane, BorderLayout.CENTER);
         
-        // Menu bar
         setUpMenu();
         
-        // Window
         setTitle("Yaad");
         getContentPane().setPreferredSize(new Dimension(width, height));
         pack();
@@ -115,15 +109,7 @@ public class Yaad extends JFrame implements ActionListener, KeyListener {
         
         SortedSet<File> newFiles = setFiles();
         
-        //If the file inventory is empty and the current file list is empty, 
-        //do nothing. This means that there were no files and there still are
-        //no files. If files is empty but the current file list isn't empty,
-        //then that means that files were added sometime in between.
-        //If files isn't empty:
-        //If newFiles is empty, remove all decks because that means there
-        //are no new decks, and there weren't any decks to begin with.
-        //If newFiles isn't empty, compare the decks to see which should be
-        //added and which should be removed.
+        
         if (files.isEmpty()) {
             if (newFiles.isEmpty()) {
                 System.out.println("Files and newFiles are empty");
@@ -194,14 +180,16 @@ public class Yaad extends JFrame implements ActionListener, KeyListener {
     }
     
     public int findIndex(File f) {
-        //Assume files is updated
+        //Assume files is updated because it is called from methods where files is fixed before findIndex is called
         if (files.isEmpty()) return 0;
         int size = files.size();
-        //If the file name is lexicographically less than the first file name, return -1
-        if (f.getName().compareTo(files.get(0).getName()) < 0) return 0;
+        
+        String newFileName = f.getName(), oldFileName = files.get(0).getName();
+        
+        if (newFileName.compareTo(oldFileName) < 0) return 0;
         for (int i = 0; i < files.size()-1; i++) {
-            String fileName = files.get(i).getName();
-            if (fileName.compareTo(files.get(i+1).getName()) < 0) return i+1;
+            oldFileName = files.get(i+1).getName();
+            if (newFileName.compareTo(oldFileName) < 0) return i+1;
         }
         return size;
     }
@@ -269,6 +257,8 @@ public class Yaad extends JFrame implements ActionListener, KeyListener {
     public void setColors() {
         create.setBackground(buttonColor);
         create.setForeground(fontColor);
+        System.out.println(create.getForeground().getRGB());
+        System.out.println(fontColor.getRGB());
         
         //delete.setBackground(buttonColor);
         //delete.setForeground(fontColor);

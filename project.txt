@@ -1,8 +1,12 @@
 Fix scrollbar
-- Fix IndexOutOfBoundsException
+- Fix IndexOutOfBoundsException \
 - Fix functionality of files/decks arrays
+- Must be in alphabetical order
  - Fix algorithm ^^
 Get rid of DeleteDeck and EditDeck
 Add delete feature for flashcards on the OG Yaad thing
 Add edit feature in Study.java
 Add font feature in settings
+Fix AddFlashcards
+Put AddFlashcards in Study
+Add refresh button to Study

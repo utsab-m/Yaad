@@ -87,6 +87,15 @@ public class Study extends JFrame implements ActionListener, KeyListener {
         });
         add(flashcard);
         
+        if (total != 0) {
+            
+            ImageIcon icon = new ImageIcon(ClassLoader.getSystemResource("images/add.png"));
+            Image iconSmooth = icon.getImage().getScaledInstance(128, 128, Image.SCALE_SMOOTH);
+            JButton button = new JButton((Icon)iconSmooth);
+            button.setBounds(250, 250, 100, 100);
+            add(button);
+        }
+        
         left = createStyledButton("←", 300, 400, 50, 30);
         left.setVisible(false);
         add(left);

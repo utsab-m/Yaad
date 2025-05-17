@@ -34,45 +34,29 @@ public class AddFlashcards extends JFrame implements ActionListener {
         Image iconSmooth = icon.getImage().getScaledInstance(128, 128, Image.SCALE_SMOOTH);
         setIconImage(iconSmooth);
         
-        JLabel termLabel = new JLabel("Term");
-        termLabel.setFont(new Font("Raleway", Font.BOLD, 22));
-        termLabel.setForeground(fontColor);
-        termLabel.setBounds(20, 5, 100, 40);
+        JLabel termLabel = new JLabel("Term", 20);
         add(termLabel);
         
         term = new JTextField();
         term.setBounds(20, 40, 140, 40);
         add(term);
         
-        JLabel definitionLabel = new JLabel("Definition");
+        JLabel definitionLabel = new JLabel("Definition", 180);
         definitionLabel.setFont(new Font("Raleway", Font.BOLD, 22));
         definitionLabel.setForeground(fontColor);
         definitionLabel.setBounds(180, 5, 100, 40);
         add(definitionLabel);
         
-        definition = new JTextField();
-        definition.setBounds(180, 40, 280, 40);
+        definition = createTextField(180, 280, 40);
         add(definition);
         
-        add = new JButton("Add");
-        add.setBackground(buttonColor);
-        add.setForeground(fontColor);
-        add.setBounds(180, 90, 80, 30);
-        add.addActionListener(this);
+        add = createButton("Add", 180);
         add(add);
         
-        done = new JButton("Done");
-        done.setBackground(buttonColor);
-        done.setForeground(fontColor);
-        done.setBounds(280, 90, 80, 30);
-        done.addActionListener(this);
+        done = createButton("Done", 280);
         add(done);
         
-        cancel = new JButton("Cancel");
-        cancel.setBackground(buttonColor);
-        cancel.setForeground(fontColor);
-        cancel.setBounds(380, 90, 80, 30);
-        cancel.addActionListener(this);
+        cancel = createButton("Cancel", 380);
         add(cancel);
         
         getContentPane().setBackground(backgroundColor);
@@ -132,6 +116,29 @@ public class AddFlashcards extends JFrame implements ActionListener {
                 setVisible(false);
             }
         }
+    }
+    
+    public JTextField createTextField(int x, int w, int h) {
+        JTextField textField = new JTextField();
+        textField.setBounds(x, 40, w, h);
+        return textField;
+    }
+    
+    public JButton createButton(String text, int x) {
+        JButton button = new JButton(text);
+        button.setBackground(buttonColor);
+        button.setForeground(fontColor);
+        button.setBounds(x, 90, 80, 30);
+        button.addActionListener(this);
+        return button;
+    }
+    
+    public JLabel createLabel(String text, int x) {
+        JLabel label = new JLabel(text);
+        label.setFont(new Font("Raleway", Font.BOLD, 22));
+        label.setForeground(fontColor);
+        label.setBounds(x, 5, 100, 40);
+        return label;
     }
     
     public void getSettings() {
