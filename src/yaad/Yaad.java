@@ -31,7 +31,7 @@ public class Yaad extends JFrame implements ActionListener, KeyListener {
     File settingsFile = new File(currentPath + File.separator + "settings.json");
     ObjectMapper mapper = new ObjectMapper();
     
-    ArrayList<File> files = new ArrayList<>();
+    ArrayList<File> files = listFiles();
     ArrayList<JLabel> decks = new ArrayList<>();
     
     Yaad() {
@@ -86,19 +86,15 @@ public class Yaad extends JFrame implements ActionListener, KeyListener {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         getContentPane().setBackground(backgroundColor);
         
-        update();
-        
-        
+        if (getSettings()) setColors();
+        updateDecks(files);
     }
-    
-    
     
     public void update() {
         System.out.println("updated");
         if (getSettings()) setColors();
         
         SortedSet<File> newFiles = setFiles();
-        
         
         if (files.isEmpty()) {
             if (newFiles.isEmpty()) {
@@ -110,91 +106,28 @@ public class Yaad extends JFrame implements ActionListener, KeyListener {
             }
         } else {
             if (newFiles.isEmpty()) {
+                System.out.println("Files isn't empty, but newFiles is");
                 removeAllDecks();
             } else {
                 for (File f: files) {
-                    if (newFiles.contains(f)) newFiles.remove(f);
-                    else {
-                        removeDeck(f);
+                    if (newFiles.contains(f)) {
+                        System.out.println("newFiles contains " + f.getName());
+                        newFiles.remove(f);
+                        System.out.println("Removed from newFiles");
+                        
                     }
+                    else {
+                        System.out.println("newFiles does not contain " + f.getName());
+                        removeDeck(f);
+                        System.out.println("Removed from the screen");
+                    }
+                }
+                for (File newFile: newFiles) {
+                    System.out.println("Listing files: " + newFile.getName());
+                    addDeck(newFile);
                 }
             }
         }
-        
-        for (File f: newFiles) {
-            System.out.println("Listing files: " + f.getName());
-        }
-        
-    }
-    
-    public void addDeck(File f) {
-        int i = findIndex(f);
-        addDeck(i, f);
-        System.out.println("Method: addDeck(f), File name: " + f.getName() + ", Files size: " + files.size() + ", Decks size: " + decks.size());
-    }
-    
-    public void addDeck(int i, File f) {
-        files.add(i, f);
-        String deckTitle = removeExt(f.getName());
-        JLabel deck = createDeck(deckTitle);
-        deckDisplay.add(deck, i);
-        
-        fix(deckDisplay);
-        System.out.println("Method: addDeck(i, f), Index: " + i + ", Files size: " + files.size() + ", Decks size: " + decks.size());
-    }
-    
-    public String removeExt(String fileName) {
-        System.out.println("Removed ext for fileName");
-        return (fileName.replace(".json", ""));
-    }
-    
-    public String getFileName(int i) {
-        System.out.println("Method: getFileName, Index: " + i + ", Files size: " + files.size() + ", Decks size: " + decks.size());
-        return files.get(i).getName();
-    }
-    
-    public void removeDeck(int i) {
-        deckDisplay.remove(decks.get(i));
-        fix(deckDisplay);
-        decks.remove(i);
-        files.remove(i);
-        System.out.println("Method: removeDeck, Index: " + i + ", Files size: " + files.size() + ", Decks size: " + decks.size());
-    }
-    
-    public void removeDeck(File f) {
-        
-    }
-    
-    public void removeAllDecks() {
-        
-        fix(deckDisplay);
-    }
-    
-    public int findIndex(File f) {
-        //Assume files is updated because it is called from methods where files is fixed before findIndex is called\
-        int size = files.size();
-        if (files.isEmpty()) return 0;
-        String newFileName = f.getName(), oldFileName = files.get(0).getName();
-        
-        if (newFileName.compareTo(oldFileName) < 0) return 0;
-        for (int i = 0; i < files.size()-1; i++) {
-            oldFileName = files.get(i+1).getName();
-            if (newFileName.compareTo(oldFileName) < 0) return i+1;
-        }
-        return size;
-    }
-    
-    public void fix(Component component) {
-        component.revalidate();
-        component.repaint();
-    }
-    
-    public void updateDecks(Collection<File> fileList) {
-        for (File f: fileList) {
-            addDeck(f);
-        }
-        
-        deckDisplay.revalidate();
     }
     
     public JLabel createDeck(String title) {
@@ -242,6 +175,79 @@ public class Yaad extends JFrame implements ActionListener, KeyListener {
         });
         
         return deck;
+    }
+    
+    public void addDeck(File f) {
+        int i = findIndex(f);
+        addDeck(i, f);
+        System.out.println("Method: addDeck(f), File name: " + f.getName() + ", Files size: " + files.size() + ", Decks size: " + decks.size());
+    }
+    
+    public void addDeck(int i, File f) {
+        files.add(i, f);
+        String deckTitle = removeExt(f.getName());
+        JLabel deck = createDeck(deckTitle);
+        try {
+            deckDisplay.add(deck, i);
+        } catch (Exception e) {
+            deckDisplay.add(deck);
+        }
+        
+        fix(deckDisplay);
+        System.out.println("Method: addDeck(i, f), Index: " + i + ", Files size: " + files.size() + ", Decks size: " + decks.size());
+    }
+    
+    public void updateDecks(Collection<File> fileList) {
+        for (File f: fileList) {
+            addDeck(f);
+        }
+        fix(deckDisplay);
+    }
+    
+    public void removeDeck(int i) {
+        deckDisplay.remove(i);
+        fix(deckDisplay);
+        decks.remove(i);
+        files.remove(i);
+        System.out.println("Method: removeDeck, Index: " + i + ", Files size: " + files.size() + ", Decks size: " + decks.size());
+    }
+    
+    public void removeDeck(File f) {
+        removeDeck(findIndex(f));
+    }
+    
+    public void removeAllDecks() {
+        for (File f: files) removeDeck(f);
+        fix(deckDisplay);
+    }
+    
+    public String removeExt(String fileName) {
+        System.out.println("Removed ext for fileName");
+        return (fileName.replace(".json", ""));
+    }
+    
+    public String getFileName(int i) {
+        System.out.println("Method: getFileName, Index: " + i + ", Files size: " + files.size() + ", Decks size: " + decks.size());
+        return files.get(i).getName();
+    }
+    
+    public int findIndex(File f) {
+        //Assume files is updated because it is called from methods where files is fixed before findIndex is called\
+        int size = files.size();
+        if (files.isEmpty()) return 0;
+        String newFileName = f.getName(), oldFileName = files.get(0).getName();
+        
+        if (newFileName.compareToIgnoreCase(oldFileName) < 0) return 0;
+        for (int i = 0; i < files.size()-1; i++) {
+            oldFileName = files.get(i+1).getName();
+            if (newFileName.compareToIgnoreCase(oldFileName) < 0) return i+1;
+        }
+        return size;
+    }
+    
+    public void fix(Component component) {
+        component.revalidate();
+        component.repaint();
     }
     
     public void setColors() {

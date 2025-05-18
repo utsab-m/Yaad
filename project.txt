@@ -9,6 +9,7 @@ Add font feature in settings
 Put AddFlashcards in Study
 Add refresh button to Study
 Change deck to being an object
-Import from Quizlet
+Add Import from Quizlet feature
 
-* Fix AddFlashcards/CreateDeck
+* Test out how removing stuff from a BoxLayout works with an array
+* Implement that into Yaad

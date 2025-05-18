@@ -26,7 +26,7 @@ public class Study extends JFrame implements ActionListener, KeyListener {
     
     ObjectMapper mapper = new ObjectMapper();
     
-    Study(String deckTitle) {
+    public Study(String deckTitle) {
         
         this.deckTitle = deckTitle;
         getSettings();
