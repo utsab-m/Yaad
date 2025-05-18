@@ -10,7 +10,7 @@ import java.util.*;
 
 public class Yaad extends JFrame implements ActionListener, KeyListener {
     
-    final int width = 800, height = 800;
+    final int width = 600, height = 600;
     
     JButton create = createStyledButton("Create Deck"), 
             // delete = createStyledButton("Delete Deck"), 
@@ -91,17 +91,7 @@ public class Yaad extends JFrame implements ActionListener, KeyListener {
         
     }
     
-    @Override
-    public void keyPressed(KeyEvent ke) {
-        System.out.println(ke.getKeyCode());
-        if ((ke.isControlDown() || ke.isAltDown()) && ke.getKeyCode() == KeyEvent.VK_R) update();
-    }
     
-    @Override
-    public void keyReleased(KeyEvent ke) {}
-    
-    @Override
-    public void keyTyped(KeyEvent ke) {}
     
     public void update() {
         System.out.println("updated");
@@ -360,6 +350,18 @@ public class Yaad extends JFrame implements ActionListener, KeyListener {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(Yaad::new);
     }
+    
+    @Override
+    public void keyPressed(KeyEvent ke) {
+        System.out.println(ke.getKeyCode());
+        if ((ke.isControlDown() || ke.isAltDown()) && ke.getKeyCode() == KeyEvent.VK_R) update();
+    }
+    
+    @Override
+    public void keyReleased(KeyEvent ke) {}
+    
+    @Override
+    public void keyTyped(KeyEvent ke) {}
     
     @Override
     public void actionPerformed(ActionEvent ae) {

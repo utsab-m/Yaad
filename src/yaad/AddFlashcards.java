@@ -20,13 +20,17 @@ public class AddFlashcards extends JFrame implements ActionListener {
     ImageIcon check = new ImageIcon(ClassLoader.getSystemResource("images/check.png")); 
     Image iconSmooth = check.getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH);
     
+    File deckFile;
+    
     ObjectMapper mapper = new ObjectMapper();
     
-    AddFlashcards(String deckTitle) {
+    AddFlashcards(File file) {
+        
+        deckFile = file;
         
         getSettings();
         
-        this.deckTitle = deckTitle;
+        this.deckTitle = deckFile.getName().replace(".json", "");
         
         setLayout(null);
         
@@ -34,14 +38,14 @@ public class AddFlashcards extends JFrame implements ActionListener {
         Image iconSmooth = icon.getImage().getScaledInstance(128, 128, Image.SCALE_SMOOTH);
         setIconImage(iconSmooth);
         
-        JLabel termLabel = new JLabel("Term", 20);
+        JLabel termLabel = createLabel("Term", 20);
         add(termLabel);
         
         term = new JTextField();
         term.setBounds(20, 40, 140, 40);
         add(term);
         
-        JLabel definitionLabel = new JLabel("Definition", 180);
+        JLabel definitionLabel = createLabel("Definition", 180);
         definitionLabel.setFont(new Font("Raleway", Font.BOLD, 22));
         definitionLabel.setForeground(fontColor);
         definitionLabel.setBounds(180, 5, 100, 40);
@@ -111,7 +115,7 @@ public class AddFlashcards extends JFrame implements ActionListener {
 
             }
         } else if (ae.getSource() == cancel) {
-            int a = JOptionPane.showConfirmDialog(null, "Are you sure you want to cancel? You will lose all your flashcards.");
+            int a = JOptionPane.showConfirmDialog(null, "Are you sure you want to cancel? You will lose all your new flashcards.");
             if (a == JOptionPane.YES_OPTION) {
                 setVisible(false);
             }
@@ -142,10 +146,10 @@ public class AddFlashcards extends JFrame implements ActionListener {
     }
     
     public void getSettings() {
-        File file = new File(System.getProperty("user.dir") + File.separator + "src" + File.separator + "settings.json");
-        file.mkdirs();
+        File settings = new File(System.getProperty("user.dir") + File.separator + "src" + File.separator + "settings.json");
+        settings.mkdirs();
         try {
-            JsonNode node = mapper.readTree(file);
+            JsonNode node = mapper.readTree(settings);
             backgroundColor = new Color(node.get("backgroundColor").asInt());
             buttonColor = new Color(node.get("buttonColor").asInt());
             fontColor = new Color(node.get("fontColor").asInt());
@@ -155,6 +159,6 @@ public class AddFlashcards extends JFrame implements ActionListener {
     }
     
     public static void main(String args[]) {
-        new AddFlashcards("Capitals");
+        new AddFlashcards(new File(System.getProperty("user.dir") + File.separator + "src" + File.separator + "decks" + File.separator + "Capitals.json"));
     }
 }

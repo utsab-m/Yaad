@@ -72,7 +72,7 @@ public class CreateDeck extends JFrame implements ActionListener {
                     dir.mkdirs();
                     File newFile = new File(filePath + File.separator + deckTitle + ".json");
                     if (newFile.createNewFile()) {
-                        new AddFlashcards(deckTitle); 
+                        new AddFlashcards(newFile); 
                         setVisible(false);
                     } else {
                         JOptionPane.showMessageDialog(null, "Deck with this title already exists!");

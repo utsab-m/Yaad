@@ -52,6 +52,7 @@ public class DeleteDeck extends JFrame {
 
             setTitle("Delete Deck");
             setVisible(true);
+            setResizable(false);
             getContentPane().setBackground(backgroundColor);
             getContentPane().setPreferredSize(new Dimension(width, height));
             pack();
