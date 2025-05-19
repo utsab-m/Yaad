@@ -10,6 +10,10 @@ import java.io.*;
 
 public class Study extends JFrame implements ActionListener, KeyListener {
     
+    String currentPath = System.getProperty("user.dir") + File.separator + "src";
+    String decksPath = currentPath + File.separator + "decks";
+    File f = new File(decksPath + File.separator + "Capitals.json");
+    
     JButton back, left, right, termButton, definitionButton;
     JLabel flashcard, number;
     String deckTitle;
@@ -233,7 +237,4 @@ public class Study extends JFrame implements ActionListener, KeyListener {
         }
     }
     
-    public static void main(String args[]) {
-        
-    }
 }

@@ -25,6 +25,7 @@ public class Yaad extends JFrame implements ActionListener, KeyListener {
     JPanel deckDisplay;
     JScrollPane scrollPane;
     String fontName = "Raleway";
+    Font bold = new Font(fontName, Font.BOLD, 22), italic = new Font(fontName, Font.ITALIC, 22);
     
     String currentPath = System.getProperty("user.dir") + File.separator + "src";
     String decksPath = currentPath + File.separator + "decks";
@@ -95,7 +96,6 @@ public class Yaad extends JFrame implements ActionListener, KeyListener {
         
         for (File f: listFiles()) {
             Deck deck = new Deck(f, fontName, fontColor, backgroundColor, buttonColor, width);
-            addMouse(deck);
             deckDisplay.add(deck);
             decks.add(deck);
             System.out.println("added " + deck.getTitle());
@@ -252,37 +252,6 @@ public class Yaad extends JFrame implements ActionListener, KeyListener {
         button.setFocusable(false);
         button.setOpaque(true);
         return button;
-    }
-    
-    public void addMouse(Deck deck) {
-        deck.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent me) {
-                JLabel source = (JLabel)me.getSource();
-                String sourceText = source.getText();
-                String text = sourceText.replace("<html><u>", "");
-                text = text.replace("</u></html>", "");
-                new Study(deck);
-            }
-            @Override
-            public void mouseEntered(MouseEvent me) {
-                JLabel source = (JLabel)me.getSource();
-                String sourceText = source.getText();
-                source.setFont(italic);
-                source.setText("<html><u>" + sourceText + "</u></html>");
-                source.setForeground(Color.BLUE);
-            }
-            @Override
-            public void mouseExited(MouseEvent me) {
-                JLabel source = (JLabel)me.getSource();
-                String sourceText = source.getText();
-                String text = sourceText.replace("<html><u>", "");
-                text = text.replace("</u></html>", "");
-                source.setFont(bold);
-                source.setText(text);
-                source.setForeground(fontColor);
-            }
-        });
     }
     
     public ArrayList<File> listFiles() {

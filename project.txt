@@ -2,13 +2,10 @@ Fix IndexOutOfBoundsException \
 Fix functionality of files/decks arrays
 Must be in alphabetical order
 Fix algorithm ^^
-Get rid of DeleteDeck and EditDeck
-Add delete feature for flashcards on the OG Yaad thing
-Add edit feature in Study.java
+Add delete feature on top of the decks (Yaad)
+Add edit feature (Study?)
 Add font feature in settings
 Put AddFlashcards in Study
-Add refresh button to Study
-Change deck to being an object
 Add Import from Quizlet feature
 
 * Test out how removing stuff from a BoxLayout works with an array

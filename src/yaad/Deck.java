@@ -9,7 +9,7 @@ import java.io.File;
 import java.util.*;
 import javax.swing.*;
 
-public class Deck extends JLabel implements MouseListener {
+public class Deck extends JLabel {
     
     int width;
     File file;
@@ -40,92 +40,63 @@ public class Deck extends JLabel implements MouseListener {
         setAlignmentX(Component.CENTER_ALIGNMENT);
         setFocusable(false);
         
-    }
-    
-    public int getWidth() {
-        return width;
-    }
-    
-    public void setWidth(int w) {
-        width = w;
-    }
-    
-    public File getFile() {
-        return file;
-    }
-    
-    public void setFile(File f) {
-        file = f;
-    }
-    
-    public String getFontName() {
-        return fontName;
-    }
-    
-    public void setFontName(String name) {
-        fontName = name;
-    }
+        this.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent me) {
+                Deck source = (Deck)me.getSource();
+                new Study(Deck.this);
+            }
+            @Override
+            public void mouseEntered(MouseEvent me) {
+                JLabel source = (JLabel)me.getSource();
+                String sourceText = source.getText();
+                source.setFont(italic);
+                source.setText("<html><u>" + sourceText + "</u></html>");
+                source.setForeground(Color.BLUE);
+            }
+            @Override
+            public void mouseExited(MouseEvent me) {
+                JLabel source = (JLabel)me.getSource();
+                String sourceText = source.getText();
+                String text = sourceText.replace("<html><u>", "");
+                text = text.replace("</u></html>", "");
+                source.setFont(bold);
+                source.setText(text);
+                source.setForeground(fontColor);
+            }
+        });
         
-    public Color getFontColor() {
-        return fontColor;
     }
     
-    public void setFontColor(Color c) {
-        fontColor = c;
-    }
+    public int getDeckWidth() {return width;}
     
-    public Color getBackgroundColor() {
-        return backgroundColor;
-    }
+    public void setDeckWidth(int w) {width=w;}
     
-    public void setBackgroundColor(Color c) {
-        backgroundColor = c;
-    }
+    public File getFile() {return file;}
     
-    public Color getButtonColor() {
-        return buttonColor;
-    }
+    public void setFile(File f) {file = f;}
     
-    public void setButtonColor(Color c) {
-        buttonColor = c;
-    }
+    public String getFontName() {return fontName;}
     
-    public String getTitle() {
-        return title;
-    }
+    public void setFontName(String name) {fontName = name;}
+        
+    public Color getFontColor() {return fontColor;}
     
-    public void setTitle(String t) {
-        title = t;
-    }
+    public void setFontColor(Color c) {fontColor = c;}
     
-    public String removeExt(File f) {
-        return f.getName().replace(".json", "");
-    }
+    public Color getBackgroundColor() {return backgroundColor;}
     
-    @Override
-    public void mouseClicked(MouseEvent me) {
-        JLabel source = (JLabel)me.getSource();
-        String sourceText = source.getText();
-        String text = sourceText.replace("<html><u>", "");
-        text = text.replace("</u></html>", "");
-        new Study(deck);
-    }
-    @Override
-    public void mouseEntered(MouseEvent me) {
-        JLabel source = (JLabel)me.getSource();
-        String sourceText = source.getText();
-        source.setFont(italic);
-        source.setText("<html><u>" + sourceText + "</u></html>");
-        source.setForeground(Color.BLUE);
-    }
-    @Override
-    public void mouseExited(MouseEvent me) {
-        JLabel source = (JLabel)me.getSource();
-        String sourceText = source.getText();
-        String text = sourceText.replace("<html><u>", "");
-        text = text.replace("</u></html>", "");
-        source.setFont(bold);
-        source.setText(text);
-        source.setForeground(fontColor);
-    }
+    public void setBackgroundColor(Color c) {backgroundColor = c;}
+    
+    public Color getButtonColor() {return buttonColor;}
+    
+    public void setButtonColor(Color c) {buttonColor = c;}
+    
+    public String getTitle() {return title;}
+    
+    public void setTitle(String t) {title = t;}
+    
+    public static String removeExt(File f) {return f.getName().replace(".json", "");}
+    
+    
 }
