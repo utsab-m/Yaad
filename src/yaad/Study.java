@@ -7,7 +7,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
-import java.time.temporal.ChronoUnit;
 
 public class Study extends JFrame implements ActionListener, KeyListener {
     
@@ -26,9 +25,9 @@ public class Study extends JFrame implements ActionListener, KeyListener {
     
     ObjectMapper mapper = new ObjectMapper();
     
-    public Study(String deckTitle) {
+    public Study(Deck deck) {
         
-        this.deckTitle = deckTitle;
+        this.deckTitle = deck.getTitle();
         getSettings();
         setLayout(null);
         
@@ -235,6 +234,6 @@ public class Study extends JFrame implements ActionListener, KeyListener {
     }
     
     public static void main(String args[]) {
-        new Study("Capitals");
+        
     }
 }

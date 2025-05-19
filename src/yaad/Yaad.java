@@ -31,8 +31,7 @@ public class Yaad extends JFrame implements ActionListener, KeyListener {
     File settingsFile = new File(currentPath + File.separator + "settings.json");
     ObjectMapper mapper = new ObjectMapper();
     
-    ArrayList<File> files = listFiles();
-    ArrayList<JLabel> decks = new ArrayList<>();
+    ArrayList<Deck> decks = new ArrayList<>();
     
     Yaad() {
         setLayout(new BorderLayout());
@@ -62,7 +61,6 @@ public class Yaad extends JFrame implements ActionListener, KeyListener {
         add(buttonPanel, BorderLayout.NORTH);
         
         deckDisplay = new JPanel();
-        deckDisplay.setPreferredSize(null);
         deckDisplay.setAlignmentY(Component.TOP_ALIGNMENT);
         deckDisplay.setAlignmentX(Component.CENTER_ALIGNMENT);
         deckDisplay.setBackground(backgroundColor);
@@ -87,13 +85,25 @@ public class Yaad extends JFrame implements ActionListener, KeyListener {
         getContentPane().setBackground(backgroundColor);
         
         if (getSettings()) setColors();
-        updateDecks(files);
+        update();
     }
+    
     
     public void update() {
         System.out.println("updated");
         if (getSettings()) setColors();
         
+        for (File f: listFiles()) {
+            Deck deck = new Deck(f, fontName, fontColor, backgroundColor, buttonColor, width);
+            addMouse(deck);
+            deckDisplay.add(deck);
+            decks.add(deck);
+            System.out.println("added " + deck.getTitle());
+        }
+        
+        fix(deckDisplay);
+        
+        /*
         SortedSet<File> newFiles = setFiles();
         
         if (files.isEmpty()) {
@@ -128,57 +138,11 @@ public class Yaad extends JFrame implements ActionListener, KeyListener {
                 }
             }
         }
+        */
     }
-    
-    public JLabel createDeck(String title) {
-        JLabel deck = new JLabel(title);
-            
-        Font bold = new Font(fontName, Font.BOLD, 22);
-        Font italic = new Font(fontName, Font.ITALIC, 22);
-
-        deck.setOpaque(false);
-        deck.setFont(bold);
-        deck.setForeground(fontColor);
-        deck.setBackground(backgroundColor);
-        deck.setBorder(BorderFactory.createLineBorder(buttonColor));
-        deck.setMaximumSize(new Dimension(width, 50));
-        deck.setHorizontalAlignment(SwingConstants.CENTER);
-        deck.setAlignmentX(Component.CENTER_ALIGNMENT);
-        deck.setFocusable(false);
-        deck.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent me) {
-                JLabel source = (JLabel)me.getSource();
-                String sourceText = source.getText();
-                String text = sourceText.replace("<html><u>", "");
-                text = text.replace("</u></html>", "");
-                new Study(text);
-            }
-            @Override
-            public void mouseEntered(MouseEvent me) {
-                JLabel source = (JLabel)me.getSource();
-                String sourceText = source.getText();
-                source.setFont(italic);
-                source.setText("<html><u>" + sourceText + "</u></html>");
-                source.setForeground(Color.BLUE);
-            }
-            @Override
-            public void mouseExited(MouseEvent me) {
-                JLabel source = (JLabel)me.getSource();
-                String sourceText = source.getText();
-                String text = sourceText.replace("<html><u>", "");
-                text = text.replace("</u></html>", "");
-                source.setFont(bold);
-                source.setText(text);
-                source.setForeground(fontColor);
-            }
-        });
-        
-        return deck;
-    }
-    
+    /*
     public void addDeck(File f) {
-        int i = findIndex(f);
+        int i = findInsertionPoint(f);
         addDeck(i, f);
         System.out.println("Method: addDeck(f), File name: " + f.getName() + ", Files size: " + files.size() + ", Decks size: " + decks.size());
     }
@@ -187,10 +151,12 @@ public class Yaad extends JFrame implements ActionListener, KeyListener {
         files.add(i, f);
         String deckTitle = removeExt(f.getName());
         JLabel deck = createDeck(deckTitle);
+        
         try {
             deckDisplay.add(deck, i);
+            decks.add(i, deck);
         } catch (Exception e) {
-            deckDisplay.add(deck);
+            e.printStackTrace();
         }
         
         fix(deckDisplay);
@@ -213,7 +179,9 @@ public class Yaad extends JFrame implements ActionListener, KeyListener {
     }
     
     public void removeDeck(File f) {
-        removeDeck(findIndex(f));
+        int i = findIndex(f);
+        removeDeck(i);
+        System.out.println("Method: removeDeck, Index: " + i + ", Files size: " + files.size() + ", Decks size: " + decks.size());
     }
     
     public void removeAllDecks() {
@@ -231,20 +199,26 @@ public class Yaad extends JFrame implements ActionListener, KeyListener {
         return files.get(i).getName();
     }
     
-    public int findIndex(File f) {
+    public int findInsertionPoint(File f) {
         //Assume files is updated because it is called from methods where files is fixed before findIndex is called\
         int size = files.size();
-        if (files.isEmpty()) return 0;
-        String newFileName = f.getName(), oldFileName = files.get(0).getName();
         
-        if (newFileName.compareToIgnoreCase(oldFileName) < 0) return 0;
-        for (int i = 0; i < files.size()-1; i++) {
-            oldFileName = files.get(i+1).getName();
-            if (newFileName.compareToIgnoreCase(oldFileName) < 0) return i+1;
+        String newFileName = f.getName();
+        
+        for (int i = 0; i < size; i++) {
+            String oldFileName = files.get(i).getName();
+            if (newFileName.compareToIgnoreCase(oldFileName) < 0) return i;
         }
         return size;
     }
     
+    public int findIndex(File f) {
+        for (int i = 0; i < files.size(); i++) {
+            if (files.get(i).equals(f)) return i;
+        }
+        return -1;
+    }
+    */
     public void fix(Component component) {
         component.revalidate();
         component.repaint();
@@ -278,6 +252,37 @@ public class Yaad extends JFrame implements ActionListener, KeyListener {
         button.setFocusable(false);
         button.setOpaque(true);
         return button;
+    }
+    
+    public void addMouse(Deck deck) {
+        deck.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent me) {
+                JLabel source = (JLabel)me.getSource();
+                String sourceText = source.getText();
+                String text = sourceText.replace("<html><u>", "");
+                text = text.replace("</u></html>", "");
+                new Study(deck);
+            }
+            @Override
+            public void mouseEntered(MouseEvent me) {
+                JLabel source = (JLabel)me.getSource();
+                String sourceText = source.getText();
+                source.setFont(italic);
+                source.setText("<html><u>" + sourceText + "</u></html>");
+                source.setForeground(Color.BLUE);
+            }
+            @Override
+            public void mouseExited(MouseEvent me) {
+                JLabel source = (JLabel)me.getSource();
+                String sourceText = source.getText();
+                String text = sourceText.replace("<html><u>", "");
+                text = text.replace("</u></html>", "");
+                source.setFont(bold);
+                source.setText(text);
+                source.setForeground(fontColor);
+            }
+        });
     }
     
     public ArrayList<File> listFiles() {
@@ -332,7 +337,6 @@ public class Yaad extends JFrame implements ActionListener, KeyListener {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
     }
     
     public void defaultSettings() {
