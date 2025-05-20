@@ -94,12 +94,34 @@ public class Yaad extends JFrame implements ActionListener, KeyListener {
         System.out.println("updated");
         if (getSettings()) setColors();
         
+        fileLoop:
         for (File f: listFiles()) {
+            for (Deck d: decks) {
+                if (d.getFile().getAbsolutePath().equals(f.getAbsolutePath())) continue fileLoop;
+            }
             Deck deck = new Deck(f, fontName, fontColor, backgroundColor, buttonColor, width);
             deckDisplay.add(deck);
             decks.add(deck);
-            System.out.println("added " + deck.getTitle());
+            System.out.println("Added " + deck.getTitle());
         }
+        
+        ArrayList<Deck> removedDecks = new ArrayList();
+        
+        deckLoop:
+        for (Deck d: decks) {
+            for (File f: listFiles()) {
+                if (d.getFile().getAbsolutePath().equals(f.getAbsolutePath())) continue deckLoop;
+            }
+            deckDisplay.remove(d);
+            System.out.println("Removed " + d.getTitle());
+            removedDecks.add(d);
+        }
+        
+        for (Deck d: removedDecks) {
+            decks.remove(d);
+            System.out.println("Removed " + d.getFile().getName());
+        }
+        printDecks();
         
         fix(deckDisplay);
         
@@ -139,6 +161,12 @@ public class Yaad extends JFrame implements ActionListener, KeyListener {
             }
         }
         */
+    }
+    
+    public void printDecks() {
+        for (Deck d: decks) {
+            System.out.println(d.getFile().getName() + ", ");
+        }
     }
     /*
     public void addDeck(File f) {

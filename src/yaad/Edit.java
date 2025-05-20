@@ -8,7 +8,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 
-public class Study extends JFrame implements ActionListener, KeyListener {
+public class Edit extends JFrame implements ActionListener, KeyListener {
     
     JButton back, left, right, termButton, definitionButton;
     JLabel flashcard, number;
@@ -25,7 +25,7 @@ public class Study extends JFrame implements ActionListener, KeyListener {
     
     ObjectMapper mapper = new ObjectMapper();
     
-    Study(String deckTitle) {
+    Edit(String deckTitle) {
         
         this.deckTitle = deckTitle;
         getSettings();
@@ -201,6 +201,16 @@ public class Study extends JFrame implements ActionListener, KeyListener {
         String flashcardText = (term == true) ? flashcards[flashcardNumber - 1].getTerm() : flashcards[flashcardNumber - 1].getDefinition();
     }
     
+    public void flip() {
+        if (termIsShowing) {
+            flashcard.setText("<html><p style=\"text-align: center;\">" + flashcards[flashcardNumber - 1].getDefinition() + "</p></html>");
+            termIsShowing = false;
+        } else {
+            flashcard.setText("<html><p style=\"text-align: center;\">" + flashcards[flashcardNumber - 1].getTerm() + "</p></html>");
+            termIsShowing = true;
+        }
+    }
+    
     public void getSettings() {
         File file = new File(System.getProperty("user.dir") + File.separator + "src" + File.separator + "settings.json");
         file.mkdirs();
@@ -215,6 +225,6 @@ public class Study extends JFrame implements ActionListener, KeyListener {
     }
     
     public static void main(String args[]) {
-        new Study("Capitals");
+        new Edit("Capitals");
     }
 }

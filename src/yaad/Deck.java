@@ -43,8 +43,7 @@ public class Deck extends JLabel {
         this.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent me) {
-                Deck source = (Deck)me.getSource();
-                new Study(Deck.this);
+                new Study(title);
             }
             @Override
             public void mouseEntered(MouseEvent me) {

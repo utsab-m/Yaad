@@ -10,11 +10,12 @@ import java.io.*;
 
 public class Study extends JFrame implements ActionListener, KeyListener {
     
-    String currentPath = System.getProperty("user.dir") + File.separator + "src";
-    String decksPath = currentPath + File.separator + "decks";
-    File f = new File(decksPath + File.separator + "Capitals.json");
+    final int WIDTH = 800, HEIGHT = 600;
     
-    JButton back, left, right, termButton, definitionButton;
+    Deck deck;
+    File file;
+    
+    JButton add, back, left, right, termButton, definitionButton;
     JLabel flashcard, number;
     String deckTitle;
     Flashcard[] flashcards;
@@ -29,9 +30,11 @@ public class Study extends JFrame implements ActionListener, KeyListener {
     
     ObjectMapper mapper = new ObjectMapper();
     
-    public Study(Deck deck) {
+    public Study(String deckTitle) {
         
-        this.deckTitle = deck.getTitle();
+        this.deckTitle = deckTitle;
+        file = new File(System.getProperty("user.dir") + File.separator + "src" + File.separator + "decks" + File.separator + deckTitle + ".json");
+        
         getSettings();
         setLayout(null);
         
@@ -63,9 +66,9 @@ public class Study extends JFrame implements ActionListener, KeyListener {
             System.out.println(e);
         }
         
-        for (Flashcard f: flashcards) {
-            System.out.println(f.getTerm());
-            System.out.println(f.getDefinition());
+        for (Flashcard flashcard: flashcards) {
+            System.out.println(flashcard.getTerm());
+            System.out.println(flashcard.getDefinition());
         }
         
         JLabel title = new JLabel("<html>" + deckTitle + "<html>");
@@ -92,11 +95,15 @@ public class Study extends JFrame implements ActionListener, KeyListener {
         
         if (total != 0) {
             
-            ImageIcon icon = new ImageIcon(ClassLoader.getSystemResource("images/add.png"));
-            Image iconSmooth = icon.getImage().getScaledInstance(128, 128, Image.SCALE_SMOOTH);
-            JButton button = new JButton((Icon)iconSmooth);
-            button.setBounds(250, 250, 100, 100);
-            add(button);
+            ImageIcon i1 = new ImageIcon(ClassLoader.getSystemResource("images/add.png"));
+            Image i2 = i1.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+            ImageIcon i3 = new ImageIcon(i2);
+            
+            add = new JButton(i3);
+            add.setBounds(650, 150, 100, 100);
+            add.setBackground(buttonColor);
+            add.setForeground(fontColor);
+            add(add);
         }
         
         left = createStyledButton("←", 300, 400, 50, 30);
@@ -128,7 +135,7 @@ public class Study extends JFrame implements ActionListener, KeyListener {
         
         setTitle("Study " + deckTitle);
         getContentPane().setBackground(backgroundColor);
-        getContentPane().setPreferredSize(new Dimension(800, 600));
+        getContentPane().setPreferredSize(new Dimension(WIDTH, HEIGHT));
         pack();
         setVisible(true);
         setResizable(false);
@@ -225,10 +232,10 @@ public class Study extends JFrame implements ActionListener, KeyListener {
     }
     
     public void getSettings() {
-        File file = new File(System.getProperty("user.dir") + File.separator + "src" + File.separator + "settings.json");
-        file.mkdirs();
+        File f = new File(System.getProperty("user.dir") + File.separator + "src" + File.separator + "settings.json");
+        f.mkdirs();
         try {
-            JsonNode node = mapper.readTree(file);
+            JsonNode node = mapper.readTree(f);
             backgroundColor = new Color(node.get("backgroundColor").asInt());
             buttonColor = new Color(node.get("buttonColor").asInt());
             fontColor = new Color(node.get("fontColor").asInt());
