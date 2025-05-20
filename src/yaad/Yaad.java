@@ -13,7 +13,7 @@ public class Yaad extends JFrame implements ActionListener, KeyListener {
     final int width = 600, height = 600;
     
     JButton create = createStyledButton("Create Deck"), 
-            // delete = createStyledButton("Delete Deck"), 
+            delete = createStyledButton("Delete Deck"), 
             // edit = createStyledButton("Edit Deck"), 
             settings;
     
@@ -258,8 +258,8 @@ public class Yaad extends JFrame implements ActionListener, KeyListener {
         System.out.println(create.getForeground().getRGB());
         System.out.println(fontColor.getRGB());
         
-        //delete.setBackground(buttonColor);
-        //delete.setForeground(fontColor);
+        delete.setBackground(buttonColor);
+        delete.setForeground(fontColor);
         
         //edit.setBackground(buttonColor);
         //edit.setForeground(fontColor);

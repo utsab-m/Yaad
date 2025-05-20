@@ -10,6 +10,8 @@ import java.io.*;
 
 public class Settings extends JFrame implements ActionListener {
     
+    final int W = 300, H = 250;
+    
     JButton save, close, reset, backgroundChooser, buttonChooser, fontColorChooser;
     JButton[] buttons = new JButton[3];
     
@@ -17,7 +19,10 @@ public class Settings extends JFrame implements ActionListener {
     JLabel[] labels = new JLabel[4];
     
     Color backgroundColor, buttonColor, fontColor;
-    Color[] colors = new Color[3];
+    
+    GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+    String[] fonts = ge.getAvailableFontFamilyNames();
+    JComboBox<String> fontComboBox = new JComboBox(fonts);
     
     int backgroundColorRGB, buttonColorRGB, fontColorRGB;
     String fontName;
@@ -83,9 +88,14 @@ public class Settings extends JFrame implements ActionListener {
         fontLabel = createLabel("Change font", 3, 140);
         add(fontLabel);
         
+        fontComboBox.setBounds(150, 140, 125, 25);
+        fontComboBox.setEditable(true);
+        fontComboBox.setSelectedItem("Raleway");
+        add(fontComboBox);
+        
         setTitle("Settings");
         getContentPane().setBackground(backgroundColor);
-        getContentPane().setPreferredSize(new Dimension(300, 500));
+        getContentPane().setPreferredSize(new Dimension(W, H));
         pack();
         setResizable(false);
         setLocationRelativeTo(null);
@@ -99,7 +109,7 @@ public class Settings extends JFrame implements ActionListener {
         button.setBackground(buttonColor);
         button.setForeground(fontColor);
         button.setFont(new Font(fontName, Font.BOLD, 16));
-        button.setBounds(x, 400, 80, 40);
+        button.setBounds(x, 200, 80, 40);
         button.setFocusable(false);
         button.addActionListener(this);
         return button;
@@ -108,7 +118,7 @@ public class Settings extends JFrame implements ActionListener {
     public JButton createColorChooser(Color color, int y) {
         JButton button = new JButton();
         button.setBackground(color);
-        button.setBounds(240, y, 20, 20);
+        button.setBounds(255, y, 20, 20);
         button.addActionListener(this);
         return button;
     }
@@ -195,12 +205,13 @@ public class Settings extends JFrame implements ActionListener {
         JsonNode node;
         try {
             node = mapper.readTree(file);
-            backgroundColorRGB = node.get("backgroundColor").asInt();
+            backgroundColorRGB = node.get("backgroundColor").asInt(-12566464);
             backgroundColor = new Color(backgroundColorRGB);
-            buttonColorRGB = node.get("buttonColor").asInt();
+            buttonColorRGB = node.get("buttonColor").asInt(-16777216);
             buttonColor = new Color(buttonColorRGB);
-            fontColorRGB = node.get("fontColor").asInt();
+            fontColorRGB = node.get("fontColor").asInt(-1);
             fontColor = new Color(fontColorRGB);
+            fontName = node.get("fontName").asText("Raleway");
         } catch (IOException e) {
             System.out.println(e);
         }
@@ -211,6 +222,7 @@ public class Settings extends JFrame implements ActionListener {
             backgroundColor = backgroundChooser.getBackground();
             buttonColor = buttonChooser.getBackground();
             fontColor = fontColorChooser.getBackground();
+            fontName = (String)fontComboBox.getEditor().getItem();
             
             System.out.println(getJsonSource());
             FileWriter f2 = new FileWriter(file, false);
@@ -224,7 +236,8 @@ public class Settings extends JFrame implements ActionListener {
     }
     
     public String getJsonSource() {
-        return "{\"backgroundColor\": " + backgroundColor.getRGB() + ", \"buttonColor\": " + buttonColor.getRGB() + ", \"fontColor\": " + fontColor.getRGB() + "}";
+        return "{\"backgroundColor\": " + backgroundColor.getRGB() + ", \"buttonColor\": " + buttonColor.getRGB() + ", \"fontColor\": " + fontColor.getRGB() + 
+               ", \"fontName\": " + fontName + "}";
     }
     
     public void color() {

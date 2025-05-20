@@ -1,11 +1,10 @@
 Fix refresh button (it adds the decks again instead of adding only new ones and getting rid of ones no longer there)
-Fix IndexOutOfBoundsException \
-Fix functionality of files/decks arrays
-Must be in alphabetical order
-Fix algorithm ^^
-Add delete feature on top of the decks (Yaad)
-Add edit feature (Study?)
+ - Remove is fine
+ - Fix the add (alphabetical order)
+
+
 Add font feature in settings
+- Change how settings.json is updated, just add fontName
 Put AddFlashcards in Study
 Add Import from Quizlet feature
 Fix connections between files
@@ -13,3 +12,6 @@ Fix connections between files
 
 * Test out how removing stuff from a BoxLayout works with an array
 * Implement that into Yaad
+
+Add edit feature (Study?)
+Add delete feature on top of the decks (Yaad) ?
