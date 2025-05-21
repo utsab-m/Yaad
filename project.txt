@@ -3,6 +3,8 @@ Fix refresh button (it adds the decks again instead of adding only new ones and 
  - Fix the add (alphabetical order)
 
 
+Add GetSettings class where it does all of the settings logic so that other classes can use this easily
+
 Add font feature in settings
 - Change how settings.json is updated, just add fontName
 Put AddFlashcards in Study

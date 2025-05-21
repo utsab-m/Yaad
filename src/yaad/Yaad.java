@@ -12,24 +12,23 @@ public class Yaad extends JFrame implements ActionListener, KeyListener {
     
     final int width = 600, height = 600;
     
-    JButton create = createStyledButton("Create Deck"), 
-            delete = createStyledButton("Delete Deck"), 
+    JButton createButton = createStyledButton("Create Deck"), 
+            deleteButton = createStyledButton("Delete Deck"), 
             // edit = createStyledButton("Edit Deck"), 
-            settings;
+            settingsButton;
     
     JMenuBar menuBar;
     JMenu fileMenu;
     JMenuItem refresh;
-    Color fontColor, backgroundColor, buttonColor;
-    int fontColorRGB, backgroundColorRGB, buttonColorRGB;
+    Settings settings;
     JPanel deckDisplay;
     JScrollPane scrollPane;
+    Color backgroundColor, buttonColor, fontColor;
     String fontName = "Raleway";
     Font bold = new Font(fontName, Font.BOLD, 22), italic = new Font(fontName, Font.ITALIC, 22);
     
     String currentPath = System.getProperty("user.dir") + File.separator + "src";
     String decksPath = currentPath + File.separator + "decks";
-    File settingsFile = new File(currentPath + File.separator + "settings.json");
     ObjectMapper mapper = new ObjectMapper();
     
     ArrayList<Deck> decks = new ArrayList<>();
@@ -38,14 +37,18 @@ public class Yaad extends JFrame implements ActionListener, KeyListener {
         setLayout(new BorderLayout());
         setFocusable(true);
         addKeyListener(this);
-        getSettings();
+        SettingsHandler getSettings = new SettingsHandler();
+        Settings settings = getSettings.getSettings();
+        backgroundColor = settings.getBackgroundColor();
+        buttonColor = settings.getButtonColor();
+        fontColor = settings.getFontColor();
         
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
         buttonPanel.setOpaque(false);
         buttonPanel.setPreferredSize(new Dimension (width, 110));
         buttonPanel.setBackground(backgroundColor);
         
-        buttonPanel.add(create);
+        buttonPanel.add(createButton);
         //buttonPanel.add(delete);
         //buttonPanel.add(edit);
         
@@ -53,11 +56,11 @@ public class Yaad extends JFrame implements ActionListener, KeyListener {
         Image s2 = s1.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
         ImageIcon s3 = new ImageIcon(s2);
 
-        settings = new JButton(s3);
-        settings.setBackground(buttonColor);
-        settings.setFocusable(false);
-        settings.addActionListener(this);
-        buttonPanel.add(settings);
+        settingsButton = new JButton(s3);
+        settingsButton.setBackground(buttonColor);
+        settingsButton.setFocusable(false);
+        settingsButton.addActionListener(this);
+        buttonPanel.add(settingsButton);
 
         add(buttonPanel, BorderLayout.NORTH);
         
@@ -253,19 +256,19 @@ public class Yaad extends JFrame implements ActionListener, KeyListener {
     }
     
     public void setColors() {
-        create.setBackground(buttonColor);
-        create.setForeground(fontColor);
-        System.out.println(create.getForeground().getRGB());
+        createButton.setBackground(buttonColor);
+        createButton.setForeground(fontColor);
+        System.out.println(createButton.getForeground().getRGB());
         System.out.println(fontColor.getRGB());
         
-        delete.setBackground(buttonColor);
-        delete.setForeground(fontColor);
+        deleteButton.setBackground(buttonColor);
+        deleteButton.setForeground(fontColor);
         
         //edit.setBackground(buttonColor);
         //edit.setForeground(fontColor);
         
-        settings.setBackground(buttonColor);
-        settings.setForeground(fontColor);
+        settingsButton.setBackground(buttonColor);
+        settingsButton.setForeground(fontColor);
         
         scrollPane.getViewport().setBackground(backgroundColor);
         getContentPane().setBackground(backgroundColor);
@@ -305,62 +308,12 @@ public class Yaad extends JFrame implements ActionListener, KeyListener {
         setJMenuBar(menuBar);
     }
     
-    public boolean getSettings() {
-        if (!settingsFile.exists()) makeSettings();
-        if (settingsFile.length() == 0) defaultSettings();
-        try {
-            JsonNode node = mapper.readTree(settingsFile);
-            backgroundColorRGB = node.get("backgroundColor").asInt();
-            buttonColorRGB = node.get("buttonColor").asInt();
-            fontColorRGB = node.get("fontColor").asInt();
-            if (backgroundColor != null && (backgroundColor.getRGB() == backgroundColorRGB &&
-                buttonColor.getRGB() == buttonColorRGB &&
-                fontColor.getRGB() == fontColorRGB)) return false;
-            backgroundColor = new Color(backgroundColorRGB);
-            buttonColor = new Color(buttonColorRGB);
-            fontColor = new Color(fontColorRGB);
-        } catch (Exception e) {
-            makeSettings();
-            defaultSettings();
-            e.printStackTrace();
-        }
-        return true;
-    }
-    
-    public void makeSettings() {
-        settingsFile.getParentFile().mkdirs();
-        try {
-            settingsFile.createNewFile();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    
-    public void defaultSettings() {
-        try {
-            FileWriter fw = new FileWriter(settingsFile, false);
-            backgroundColor = Color.DARK_GRAY;
-            buttonColor = Color.BLACK;
-            fontColor = Color.WHITE;
-            fw.write(getJsonSource());
-            fw.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        
-    }
-    
-    public String getJsonSource() {
-        return "{\"backgroundColor\": " + backgroundColor.getRGB() + ", \"buttonColor\": " + buttonColor.getRGB() + ", \"fontColor\": " + fontColor.getRGB() + "}";
-    }
-    
     public static void main(String[] args) {
         SwingUtilities.invokeLater(Yaad::new);
     }
     
     @Override
     public void keyPressed(KeyEvent ke) {
-        System.out.println(ke.getKeyCode());
         if ((ke.isControlDown() || ke.isAltDown()) && ke.getKeyCode() == KeyEvent.VK_R) update();
     }
     
@@ -372,11 +325,11 @@ public class Yaad extends JFrame implements ActionListener, KeyListener {
     
     @Override
     public void actionPerformed(ActionEvent ae) {
-        if (ae.getSource() == create) {
+        if (ae.getSource() == createButton) {
             new CreateDeck();
-        } else if (ae.getSource() == settings) {
+        } else if (ae.getSource() == settingsButton) {
             try {
-                new Settings();
+                new ChangeSettings();
             } catch (IOException e) {
                 System.out.println(e);
             }
