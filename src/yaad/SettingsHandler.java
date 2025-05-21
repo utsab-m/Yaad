@@ -34,6 +34,15 @@ public class SettingsHandler {
         return !settings.equals(newSettings);
     }
     
+    public boolean write(Settings s) {
+        try {
+            mapper.writeValue(file, s);
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+    /*
     public boolean write(Color backgroundC, Color buttonC, Color fontC, String fontN) {
         try (FileWriter writer = new FileWriter(file, false)) {
             backgroundColor = backgroundC;
@@ -49,7 +58,7 @@ public class SettingsHandler {
             return false;
         }
     }
-    
+    */
     public Settings getSettings() {
         checkFile();
         if (file.length() == 0) defaultSettings();
@@ -87,7 +96,8 @@ public class SettingsHandler {
     }
     
     public void defaultSettings() {
-        write(Color.DARK_GRAY, Color.BLACK, Color.WHITE, "Raleway");        
+        Settings def = new Settings(Color.DARK_GRAY, Color.BLACK, Color.WHITE, "Raleway");
+        write(def);        
     }
     
     public void checkFile() {

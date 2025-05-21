@@ -174,6 +174,7 @@ public class ChangeSettings extends JFrame implements ActionListener {
                 JOptionPane.showMessageDialog(null, "Successfully saved settings!");
             }
         } else if (ae.getSource() == close) {
+            
             if (!same()) {
                 int input = JOptionPane.showConfirmDialog(null, "Are you sure you want to close settings without saving your choices?");
                 if (input == JOptionPane.YES_OPTION) {
@@ -203,7 +204,7 @@ public class ChangeSettings extends JFrame implements ActionListener {
         Color color = JColorChooser.showDialog(this, "Select a color", initialColor);
         return (color == null) ? initialColor : color;
     }
-    
+    /*
     public boolean same() {
         // check if changes have been made to the settings
         // if changes have been made, return false. otherwise, return true.
@@ -212,8 +213,7 @@ public class ChangeSettings extends JFrame implements ActionListener {
                     && buttonColor.getRGB() == buttonChooser.getBackground().getRGB() 
                     && fontColor.getRGB() == fontColorChooser.getBackground().getRGB());
     }
-    
-    /*
+
     public void read() {
         JsonNode node;
         try {
