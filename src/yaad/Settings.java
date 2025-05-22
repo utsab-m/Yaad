@@ -37,6 +37,11 @@ public class Settings {
     
     public void setFontName(String n) {fontName = n;} 
     
+    @Override
+    public String toString() {
+        return "Background color: " + backgroundColor.getRGB() + ", Button color: " + buttonColor.getRGB() + ", Font color: " + fontColor.getRGB() + ", Font name: " + fontName;
+    }
+    
     public boolean equals(Settings settings) {
         return (this.backgroundColor.equals(settings.backgroundColor) &&
                 this.buttonColor.equals(settings.buttonColor) && 

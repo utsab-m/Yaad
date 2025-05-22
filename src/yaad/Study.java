@@ -10,7 +10,9 @@ import java.io.*;
 
 public class Study extends JFrame implements ActionListener, KeyListener {
     
-    final int WIDTH = 800, HEIGHT = 600;
+    final int W = 800, H = 600;
+    
+    SettingsHandler sh = new SettingsHandler();
     
     Deck deck;
     File file;
@@ -135,7 +137,7 @@ public class Study extends JFrame implements ActionListener, KeyListener {
         
         setTitle("Study " + deckTitle);
         getContentPane().setBackground(backgroundColor);
-        getContentPane().setPreferredSize(new Dimension(WIDTH, HEIGHT));
+        getContentPane().setPreferredSize(new Dimension(W, H));
         pack();
         setVisible(true);
         setResizable(false);
@@ -232,16 +234,11 @@ public class Study extends JFrame implements ActionListener, KeyListener {
     }
     
     public void getSettings() {
-        File f = new File(System.getProperty("user.dir") + File.separator + "src" + File.separator + "settings.json");
-        f.mkdirs();
-        try {
-            JsonNode node = mapper.readTree(f);
-            backgroundColor = new Color(node.get("backgroundColor").asInt());
-            buttonColor = new Color(node.get("buttonColor").asInt());
-            fontColor = new Color(node.get("fontColor").asInt());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Settings settings = sh.getSettings();
+        backgroundColor = settings.getBackgroundColor();
+        buttonColor = settings.getButtonColor();
+        fontColor = settings.getFontColor();
+        fontName = settings.getFontName();
     }
     
 }

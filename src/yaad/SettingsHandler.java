@@ -1,10 +1,8 @@
 package yaad;
 
-import com.fasterxml.jackson.map.*;
 import com.fasterxml.jackson.databind.*;
 import java.awt.*;
 import java.io.File;
-import java.io.*;
 
 public class SettingsHandler {
     
@@ -16,7 +14,7 @@ public class SettingsHandler {
     
     public SettingsHandler() {
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        getSettingsData();
+        setSettings();
     }
     
     public Color getBackgroundColor() {return settings.getBackgroundColor();}
@@ -27,26 +25,30 @@ public class SettingsHandler {
     
     public String getFontName() {return settings.getFontName();}
     
-    public boolean changed() {
-        Settings newSettings = getSettings();
-        return !settings.equals(newSettings);
-    }
-    
     public Settings getSettings() {
         return settings;
     }
     
+    public void setSettings() {
+        settings = getSettingsData();
+    }
+    
     public Settings getSettingsData() {
         checkSettingsFile();
+        Settings s = new Settings();
         if (settingsFile.length() == 0) defaultSettings();
         try {
-            settings = mapper.readValue(settingsFile, Settings.class);
+            Settings s2 = mapper.readValue(settingsFile, Settings.class);
+            s.setBackgroundColor(s2.getBackgroundColor());
+            s.setButtonColor(s2.getButtonColor());
+            s.setFontColor(s2.getFontColor());
+            s.setFontName(s2.getFontName());
         } catch (Exception e) {
             makeSettingsFile();
             defaultSettings();
             e.printStackTrace();
         }
-        return settings;
+        return s;
     }
     
     public boolean updateSettings(Settings s) {
@@ -70,12 +72,19 @@ public class SettingsHandler {
     }
     
     public boolean defaultSettings() {
-        Settings def = new Settings(Color.DARK_GRAY, Color.BLACK, Color.WHITE, "Raleway");
+        Settings def = new Settings();
         return updateSettings(def);        
     }
     
     public void checkSettingsFile() {
         if (!settingsFile.exists()) makeSettingsFile();
+    }
+    
+    public boolean changed() {
+        Settings newSettings = getSettingsData();
+        System.out.println(newSettings.toString());
+        System.out.println(settings.toString());
+        return !settings.equals(newSettings);
     }
     
     public String getJsonSource() {
