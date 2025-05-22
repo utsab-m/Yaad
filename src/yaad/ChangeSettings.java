@@ -1,11 +1,8 @@
 package yaad;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.JsonNode;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.File;
 import java.io.*;
 
 public class ChangeSettings extends JFrame implements ActionListener {
@@ -22,42 +19,17 @@ public class ChangeSettings extends JFrame implements ActionListener {
     JLabel[] labels = new JLabel[4];
     
     Color backgroundColor, buttonColor, fontColor;
+    String fontName;
     
     GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
     String[] fonts = ge.getAvailableFontFamilyNames();
     JComboBox<String> fontComboBox = new JComboBox(fonts);
-    
-    int backgroundColorRGB, buttonColorRGB, fontColorRGB;
-    String fontName;
-    
-    ObjectMapper mapper = new ObjectMapper();
-    String currentPath = System.getProperty("user.dir");
-    String filePath = currentPath + File.separator + "src";
-    File dir = new File(filePath);
-    File file;
     
     ChangeSettings() throws IOException {
         
         changeSettings();
         
         setLayout(null);
-        
-        // make directories in case they have not alr been created
-        
-        dir.mkdirs();
-        file = new File(filePath + File.separator + "settings.json");
-        
-        // tries to read settings file and store colors and stuff in node var
-
-        try {
-            read();
-        } catch (Exception e) {
-            e.printStackTrace();
-            backgroundColor = Color.DARK_GRAY;
-            buttonColor = Color.BLACK;
-            fontColor = Color.WHITE;
-        }
-        
         
         save = createStyledButton("Save", 0, 10);
         add(save);
@@ -167,9 +139,8 @@ public class ChangeSettings extends JFrame implements ActionListener {
                 }
                 return;
             }
-            System.out.println("save");
-            System.out.println(getJsonSource());
-            if (write()) {
+            settings = getSelections();
+            if (settingsHandler.updateSettings(settings)) {
                 color();
                 JOptionPane.showMessageDialog(null, "Successfully saved settings!");
             }
@@ -186,13 +157,7 @@ public class ChangeSettings extends JFrame implements ActionListener {
         } else if (ae.getSource() == reset) {
             int input = JOptionPane.showConfirmDialog(null, "Are you sure you want to reset the settings?");
             if (input == JOptionPane.YES_OPTION) {
-                backgroundColor = Color.DARK_GRAY;
-                backgroundChooser.setBackground(backgroundColor);
-                buttonColor = Color.BLACK;
-                buttonChooser.setBackground(buttonColor);
-                fontColor = Color.WHITE;
-                fontColorChooser.setBackground(fontColor);
-                if (write()) {
+                if (settingsHandler.defaultSettings()) {
                     color();
                     JOptionPane.showMessageDialog(null, "Successfully saved settings!");
                 }
@@ -200,59 +165,22 @@ public class ChangeSettings extends JFrame implements ActionListener {
         }
     }
     
+    public Settings getSelections() {
+        Color backgroundC = backgroundChooser.getBackground();
+        Color buttonC = buttonChooser.getBackground();
+        Color fontC = fontColorChooser.getBackground();
+        String fontN = fontComboBox.getSelectedItem().toString();
+        return new Settings(backgroundC, buttonC, fontC, fontN);
+    }
+    
     public Color showColorChooser(Color initialColor) {
         Color color = JColorChooser.showDialog(this, "Select a color", initialColor);
         return (color == null) ? initialColor : color;
     }
-    /*
+    
     public boolean same() {
-        // check if changes have been made to the settings
-        // if changes have been made, return false. otherwise, return true.
-        read();
-        return (backgroundColor.getRGB() == backgroundChooser.getBackground().getRGB()
-                    && buttonColor.getRGB() == buttonChooser.getBackground().getRGB() 
-                    && fontColor.getRGB() == fontColorChooser.getBackground().getRGB());
+        return settingsHandler.getSettings().equals(getSelections());
     }
-
-    public void read() {
-        JsonNode node;
-        try {
-            node = mapper.readTree(file);
-            backgroundColorRGB = node.get("backgroundColor").asInt(-12566464);
-            backgroundColor = new Color(backgroundColorRGB);
-            buttonColorRGB = node.get("buttonColor").asInt(-16777216);
-            buttonColor = new Color(buttonColorRGB);
-            fontColorRGB = node.get("fontColor").asInt(-1);
-            fontColor = new Color(fontColorRGB);
-            fontName = node.get("fontName").asText("Raleway");
-        } catch (IOException e) {
-            System.out.println(e);
-        }
-    }
-    
-    public boolean write() {
-        try {
-            backgroundColor = backgroundChooser.getBackground();
-            buttonColor = buttonChooser.getBackground();
-            fontColor = fontColorChooser.getBackground();
-            fontName = (String)fontComboBox.getEditor().getItem();
-            
-            System.out.println(getJsonSource());
-            FileWriter f2 = new FileWriter(file, false);
-            f2.write(getJsonSource());
-            f2.close();
-            return true;
-        } catch (IOException e) {
-            System.out.println(e);
-            return false;
-        }
-    }
-    
-    public String getJsonSource() {
-        return "{\"backgroundColor\": " + backgroundColor.getRGB() + ", \"buttonColor\": " + buttonColor.getRGB() + ", \"fontColor\": " + fontColor.getRGB() + 
-               ", \"fontName\": " + fontName + "}";
-    }
-    */
     
     public void color() {
         getContentPane().setBackground(backgroundColor);
@@ -269,6 +197,8 @@ public class ChangeSettings extends JFrame implements ActionListener {
             label.setForeground(fontColor);
         }
     }
+    
+    
     
     public static void main(String args[]) {
         try {

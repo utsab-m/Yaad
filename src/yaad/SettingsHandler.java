@@ -1,7 +1,7 @@
 package yaad;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.map.*;
+import com.fasterxml.jackson.databind.*;
 import java.awt.*;
 import java.io.File;
 import java.io.*;
@@ -9,75 +9,38 @@ import java.io.*;
 public class SettingsHandler {
     
     Settings settings;
-    Color backgroundColor, buttonColor, fontColor;
-    int backgroundColorRGB, buttonColorRGB, fontColorRGB;
-    String fontName;
     String currentPath = System.getProperty("user.dir") + File.separator + "src";
-    File file = new File(currentPath + File.separator + "settings.json");
+    File settingsFile = new File(currentPath + File.separator + "settings.json");
     
     ObjectMapper mapper = new ObjectMapper();
     
     public SettingsHandler() {
-        getSettings();
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        getSettingsData();
     }
     
-    public Color getBackgroundColor() {return backgroundColor;}
+    public Color getBackgroundColor() {return settings.getBackgroundColor();}
     
-    public Color getButtonColor() {return buttonColor;}
+    public Color getButtonColor() {return settings.getButtonColor();}
     
-    public Color getFontColor() {return fontColor;}
+    public Color getFontColor() {return settings.getFontColor();}
     
-    public String getFontName() {return fontName;}
+    public String getFontName() {return settings.getFontName();}
     
     public boolean changed() {
         Settings newSettings = getSettings();
         return !settings.equals(newSettings);
     }
     
-    public boolean write(Settings s) {
-        try {
-            mapper.writeValue(file, s);
-            return true;
-        } catch (IOException e) {
-            return false;
-        }
-    }
-    /*
-    public boolean write(Color backgroundC, Color buttonC, Color fontC, String fontN) {
-        try (FileWriter writer = new FileWriter(file, false)) {
-            backgroundColor = backgroundC;
-            buttonColor = buttonC;
-            fontColor = fontC;
-            fontName = fontN;
-            
-            System.out.println(getJsonSource());
-            writer.write(getJsonSource());
-            return true;
-        } catch (IOException e) {
-            System.out.println(e);
-            return false;
-        }
-    }
-    */
     public Settings getSettings() {
-        checkFile();
-        if (file.length() == 0) defaultSettings();
+        return settings;
+    }
+    
+    public Settings getSettingsData() {
+        checkSettingsFile();
+        if (settingsFile.length() == 0) defaultSettings();
         try {
-            settings = mapper.readValue(file, Settings.class);
-            /*
-            buttonColor = settings.getButtonColor();
-            JsonNode node = mapper.readTree(file);
-            backgroundColorRGB = node.get("backgroundColor").asInt(-12566464);
-            buttonColorRGB = node.get("buttonColor").asInt(-16777216);
-            fontColorRGB = node.get("fontColor").asInt(-1);
-            fontName = node.get("fontName").asText("Raleway");
-            if (backgroundColor != null && (backgroundColor.getRGB() == backgroundColorRGB &&
-                buttonColor.getRGB() == buttonColorRGB &&
-                fontColor.getRGB() == fontColorRGB)) return false;
-            backgroundColor = new Color(backgroundColorRGB);
-            buttonColor = new Color(buttonColorRGB);
-            fontColor = new Color(fontColorRGB);
-*/
+            settings = mapper.readValue(settingsFile, Settings.class);
         } catch (Exception e) {
             makeSettingsFile();
             defaultSettings();
@@ -86,27 +49,38 @@ public class SettingsHandler {
         return settings;
     }
     
-    public void makeSettingsFile() {
-        file.getParentFile().mkdirs();
+    public boolean updateSettings(Settings s) {
         try {
-            file.createNewFile();
+            mapper.writeValue(settingsFile, s);
+            settings = s;
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    public void makeSettingsFile() {
+        settingsFile.getParentFile().mkdirs();
+        try {
+            settingsFile.createNewFile();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
     
-    public void defaultSettings() {
+    public boolean defaultSettings() {
         Settings def = new Settings(Color.DARK_GRAY, Color.BLACK, Color.WHITE, "Raleway");
-        write(def);        
+        return updateSettings(def);        
     }
     
-    public void checkFile() {
-        if (!file.exists()) makeSettingsFile();
+    public void checkSettingsFile() {
+        if (!settingsFile.exists()) makeSettingsFile();
     }
     
     public String getJsonSource() {
-        return "{\"backgroundColor\": " + backgroundColor.getRGB() + ", \"buttonColor\": " + buttonColor.getRGB() + ", \"fontColor\": " + fontColor.getRGB() + 
-               ", \"fontName\": " + fontName + "}";
+        return "{\"backgroundColor\": " + settings.backgroundColor.getRGB() + ", \"buttonColor\": " + settings.buttonColor.getRGB() + ", \"fontColor\": " + settings.fontColor.getRGB() + 
+               ", \"fontName\": " + settings.fontName + "}";
     }
     
 }
