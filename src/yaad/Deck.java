@@ -17,6 +17,10 @@ public class Deck extends JLabel {
     Color fontColor, backgroundColor, buttonColor;
     List<Flashcard> cards = new ArrayList();
     
+    public Deck(File f) {
+        this.file = f;
+    }
+    
     public Deck(File f, String fontName, Color fontColor, Color backgroundColor, Color buttonColor, int width) {
         this.file = f;
         this.fontName = fontName;
@@ -97,5 +101,7 @@ public class Deck extends JLabel {
     
     public static String removeExt(File f) {return f.getName().replace(".json", "");}
     
-    
+    public boolean equals(Deck d) {
+        return this.file.equals(d.getFile());
+    }
 }

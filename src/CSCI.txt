@@ -1,0 +1,94 @@
+value	1) cannot be simplified further
+2) and belong exclusively to some type
+type	defining shape of data, describes a set of valid values which follow a set of restrictions
+operator	describe computations which can be performed on a set number of values of a given type
+boolean	represents the logical value true or false
+integer	whole number between approximately -2 and 2 billion
+unsigned int	positive whole number which is a value between 0 and roughly 4 billion
+addition overflow	if the sum > int.MaxValue, overflow occurs, wrapping around to int.MinValue
+subtraction underflow	if the difference < int.MinValue, underflow occurs, wrapping around to int.MaxValue
+char	16-bit value type representing a single text character with a value between 0 and 65,535.
+character addition	Add:(char,int)→int returns the numeric result of adding a character's code and an integer
+Result is always an integer
+Original character is unchanged
+Common to cast result back to char
+ASCII character codes	65-90: Uppercase A-Z
+97-122: Lowercase a-z
+48-57: Digits 0-9
+'C' - 'A' returns 2
+'a' - 32 returns 'A' lowercase to uppercase
+'Z' + 32 returns 'z' uppercase to lowercase
+String	indexed immutable collection of characters.
+Fixed length once created
+Zero-based indexing
+Always uses double quotes
+string concatenation	Concat:(string,string)→string returns a new string containing all characters from both inputs in order
+Creates new string
+Original strings unchanged
+Length is sum of input lengths
+ToUpper() method	ToUpper:string→string returns a new string with all characters converted to uppercase
+Creates new string
+Original string unchanged
+Non-letters remain unchanged
+Culture-aware for international characters
+ToLower() method	ToLower:string→string returns a new string with all characters converted to lowercase
+Creates new string
+Original string unchanged
+Non-letters remain unchanged
+Culture-aware for international characters
+length property	Length:string→int returns the number of characters in the string
+"Cat".Length // 3
+"".Length // 0 (empty string)
+boolean NOT	NOT:Bool→Bool is the logical negation operator. It flips true to false, and vice versa. Represented by ! in C#.
+boolean AND	AND:(Bool,Bool)→Bool returns true when both operands are true. Otherwise it returns false. Represented by && in C#.
+boolean OR	OR:(Bool,Bool)→Bool returns true when either operand is true. Otherwise, it returns false. Represented by || in C#.
+addition	Add:(int,int)→int returns the sum of two integers.
+subtraction	Subtract:(int,int)→int returns the difference between two integers.
+multiplication	Multiply:(int,int)→int returns the product of two integers.
+integer division	Divide:(int,int)→int returns the quotient of two integers, discarding any remainder.
+modulo	Mod:(int,int)→int returns the remainder of a division between two integers.
+variable	reserved space in memory used to store a value of some type.
+type safety	The guarantee that operations will behave consistently based on their types, preventing unexpected bugs and crashes.
+program state	set of bindings at a given point of execution.
+program scope	hold boundaries of code, with a defined start and end, where any new entries to the programs state are cleared once execution crosses the end.
+expression	set of operators and/or entities which combine to evaluate to a single value.
+assignment	Before we assign or bind a value to a variable, the expression is fully evaluated.
+if statement	branching structure which contains a sequence of scopes with associated conditions. The only scope entered is the first sequence whose condition is met.
+loops	A loop is a control structure that repeats a block of code while a specified condition remains true. Every loop consists of:
+An initial state
+A condition
+An iteration step
+accumulation pattern	An accumulation loop maintains a running total or result that is updated throughout the execution of the loop. It involves:
+An accumulator, initialized before the loop
+A loop that updates the accumulator
+search pattern	A search loop continues until either:
+The desired item is found (success case)
+We've checked everything and confirmed it's not there (failure case)
+input validation loop	An input validation loop repeatedly:
+Prompts for input
+Checks if the input is valid
+Continues only if the input was invalid
+loop state	The state of a loop consists of all variables that:
+Control the loop's execution (loop variables)
+Accumulate results during the loop (accumulators)
+Track the loop's progress (flags and counters)
+loop conditions	A precondition is what must be true before a loop begins
+A postcondition is what must be true after the loop completes
+nested loop	A nested loop is a loop that contains another loop within its body. The inner loop completes all its iterations for each single iteration of the outer loop.
+loop control statements	break immediately exits the loop entirely
+continue skips the rest of the current iteration and moves to the next one
+for loops	Initialization (starting state)
+Condition (when to stop)
+Iteration (how to update)
+The variable defined in the initialization is only accessible within the loop's scope.
+array	ordered collection of elements which share a type. An array has a fixed size which cannot be changed, and each element has an index which it can be accessed with.
+2D array	ordered collection of elements which share a type, arranged in rows and columns. It has a fixed number of rows and columns which cannot be changed, and each element has a pair of indices [row, column] with which it can be accessed.
+linked list	ordered collection of nodes where each node contains (1) a value of some type and (2) a reference to the next node. A linked list has a dynamic size which can grow or shrink during execution, and nodes must be accessed sequentially from the first node.
+class	A class is a user-defined type that serves as a blueprint for creating objects, specifying both the data (fields) and operations (methods) that characterize all objects of that type.
+object	An object is a specific instance of a class that exists in memory during program execution, with its own unique state and the ability to perform the behaviors defined by its class.
+method	A method is a function defined within a class that performs operations related to that class, often accessing or modifying the object's fields.
+constructor	A constructor is a special method that has the same name as the class and is executed automatically when a new object is created. Its purpose is to initialize the object's state. Constructors have no return type (not even void) and are called implicitly when using the new keyword.
+encapsulation	Encapsulation is a principle of bundling data (fields) and the methods that operate on that data within a single unit (the class), and restricting direct access to some of the object's components (typically the fields). This principle is implemented by making fields private and providing public methods or properties to access and modify them in a controlled way.
+getters and setters	Getter methods provide controlled read access to private fields, while setter methods provide controlled write access to private fields, often including validation logic.
+generics	Generics allow you to define classes, interfaces, and methods with placeholder types (type parameters) that are specified only when the generic type or method is actually used. This enables type-safe code reuse across different data types. Generics use type parameters (conventionally named T, U, TKey, TValue, etc.) enclosed in angle brackets (<>) as placeholders for actual types that will be provided later.
+nullable reference types	Nullable reference types are a C# feature (enabled at the project level or via directives) that changes the default assumption: reference types are considered non-nullable unless explicitly marked otherwise. This helps prevent null reference exceptions by making potential nulls explicit and enabling compiler warnings. Using the ? suffix on a reference type indicates that the variable is allowed to be null.

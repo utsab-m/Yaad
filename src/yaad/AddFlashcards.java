@@ -10,7 +10,12 @@ import java.util.ArrayList;
 
 public class AddFlashcards extends JFrame implements ActionListener {
     
+    final int W = 480, H = 140;
+    
+    SettingsHandler sh = new SettingsHandler();
+    
     Color backgroundColor, buttonColor, fontColor;
+    String fontName;
     
     String deckTitle;
     JTextField term, definition;
@@ -64,7 +69,7 @@ public class AddFlashcards extends JFrame implements ActionListener {
         add(cancel);
         
         getContentPane().setBackground(backgroundColor);
-        getContentPane().setPreferredSize(new Dimension(500, 170));
+        getContentPane().setPreferredSize(new Dimension(W, H));
         pack();
         setResizable(false);
         setLocationRelativeTo(null);
@@ -146,16 +151,10 @@ public class AddFlashcards extends JFrame implements ActionListener {
     }
     
     public void getSettings() {
-        File settings = new File(System.getProperty("user.dir") + File.separator + "src" + File.separator + "settings.json");
-        settings.mkdirs();
-        try {
-            JsonNode node = mapper.readTree(settings);
-            backgroundColor = new Color(node.get("backgroundColor").asInt());
-            buttonColor = new Color(node.get("buttonColor").asInt());
-            fontColor = new Color(node.get("fontColor").asInt());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        backgroundColor = sh.getBackgroundColor();
+        buttonColor = sh.getButtonColor();
+        fontColor = sh.getFontColor();
+        fontName = sh.getFontName();
     }
     
     public static void main(String args[]) {
