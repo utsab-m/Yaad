@@ -9,13 +9,13 @@ import java.io.File;
 import java.util.*;
 import javax.swing.*;
 
-public class Deck extends JLabel {
+public class Deck extends JPanel {
     
     int width;
     File file;
     String fontName, title;    
     Color fontColor, backgroundColor, buttonColor;
-    List<Flashcard> cards = new ArrayList();
+    List<Flashcard> flashcards = new ArrayList();
     
     public Deck(File f) {
         this.file = f;
@@ -29,22 +29,30 @@ public class Deck extends JLabel {
         this.buttonColor = buttonColor;
         this.width = width;
         this.title = removeExt(f);
-        setText(title);
         
+        setBackground(backgroundColor);
+        add(createDeckLabel());
+        
+    }
+    
+    
+    
+    public JLabel createDeckLabel() {
         Font bold = new Font(fontName, Font.BOLD, 22);
         Font italic = new Font(fontName, Font.ITALIC, 22);
-
-        setOpaque(false);
-        setFont(bold);
-        setForeground(fontColor);
-        setBackground(backgroundColor);
-        setBorder(BorderFactory.createLineBorder(buttonColor));
-        setMaximumSize(new Dimension(width, 50));
-        setHorizontalAlignment(SwingConstants.CENTER);
-        setAlignmentX(Component.CENTER_ALIGNMENT);
-        setFocusable(false);
         
-        this.addMouseListener(new MouseAdapter() {
+        JLabel deckLabel = new JLabel(title);
+        deckLabel.setText(title);
+        deckLabel.setOpaque(false);
+        deckLabel.setFont(bold);
+        deckLabel.setForeground(fontColor);
+        deckLabel.setBackground(backgroundColor);
+        deckLabel.setBorder(BorderFactory.createLineBorder(buttonColor));
+        deckLabel.setMaximumSize(new Dimension(width, 50));
+        deckLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        deckLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        deckLabel.setFocusable(false);
+        deckLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent me) {
                 new Study(title);
@@ -69,6 +77,7 @@ public class Deck extends JLabel {
             }
         });
         
+        return deckLabel;
     }
     
     public int getDeckWidth() {return width;}
@@ -98,6 +107,8 @@ public class Deck extends JLabel {
     public String getTitle() {return title;}
     
     public void setTitle(String t) {title = t;}
+    
+    public List<Flashcard> getFlashcards() {return flashcards;}
     
     public static String removeExt(File f) {return f.getName().replace(".json", "");}
     

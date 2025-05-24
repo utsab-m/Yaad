@@ -44,11 +44,8 @@ public class Yaad extends JFrame implements ActionListener, KeyListener {
         createButton.setFocusable(false);
         createButton.setOpaque(true);
         
-        ImageIcon s1 = new ImageIcon(ClassLoader.getSystemResource("images/whiteSettings.png"));
-        Image s2 = s1.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
-        ImageIcon s3 = new ImageIcon(s2);
-        
-        settingsButton = new JButton(s3);
+        ImageIcon settingsImage = ImageHandler.scaleImageIcon("whiteSettings", 60, 60);
+        settingsButton = new JButton(settingsImage);
         settingsButton.setBackground(buttonColor);
         settingsButton.setFocusable(false);
         settingsButton.addActionListener(this);
@@ -96,74 +93,7 @@ public class Yaad extends JFrame implements ActionListener, KeyListener {
             updateSettings();
             setColors();
         }
-        
-        fileLoop:
-        for (File f: listFiles()) {
-            for (Deck d: decks) {
-                if (d.getFile().getAbsolutePath().equals(f.getAbsolutePath())) continue fileLoop;
-            }
-            Deck deck = new Deck(f, fontName, fontColor, backgroundColor, buttonColor, width);
-            deckDisplay.add(deck);
-            decks.add(deck);
-            System.out.println("Added " + deck.getTitle());
-        }
-        
-        ArrayList<Deck> removedDecks = new ArrayList();
-        
-        deckLoop:
-        for (Deck d: decks) {
-            for (File f: listFiles()) {
-                if (d.getFile().getAbsolutePath().equals(f.getAbsolutePath())) continue deckLoop;
-            }
-            deckDisplay.remove(d);
-            System.out.println("Removed " + d.getTitle());
-            removedDecks.add(d);
-        }
-        
-        for (Deck d: removedDecks) {
-            decks.remove(d);
-            System.out.println("Removed " + d.getFile().getName());
-        }
-        // printDecks();
-        
-        fix(deckDisplay);
-        
-        /*
-        SortedSet<File> newFiles = setFiles();
-        
-        if (files.isEmpty()) {
-            if (newFiles.isEmpty()) {
-                System.out.println("Files and newFiles are empty");
-                return;
-            } else {
-                System.out.println("Files is empty, but newFiles isn't");
-                updateDecks(newFiles);
-            }
-        } else {
-            if (newFiles.isEmpty()) {
-                System.out.println("Files isn't empty, but newFiles is");
-                removeAllDecks();
-            } else {
-                for (File f: files) {
-                    if (newFiles.contains(f)) {
-                        System.out.println("newFiles contains " + f.getName());
-                        newFiles.remove(f);
-                        System.out.println("Removed from newFiles");
-                        
-                    }
-                    else {
-                        System.out.println("newFiles does not contain " + f.getName());
-                        removeDeck(f);
-                        System.out.println("Removed from the screen");
-                    }
-                }
-                for (File newFile: newFiles) {
-                    System.out.println("Listing files: " + newFile.getName());
-                    addDeck(newFile);
-                }
-            }
-        }
-        */
+        updateDecks();
     }
     
     public void printDecks() {
@@ -185,6 +115,15 @@ public class Yaad extends JFrame implements ActionListener, KeyListener {
         fontName = sh.getFontName();
     }
     
+    public void updateDecks() {
+        deckDisplay.removeAll();
+        dh.updateDecks();
+        for (Deck deck: dh.getDecks()) {
+            deckDisplay.add(deck);
+        }
+        fix(deckDisplay);
+    }
+    
     public void setColors() {
         createButton.setBackground(buttonColor);
         createButton.setForeground(fontColor);
@@ -194,8 +133,8 @@ public class Yaad extends JFrame implements ActionListener, KeyListener {
         // deleteButton.setBackground(buttonColor);
         // deleteButton.setForeground(fontColor);
         
-        //edit.setBackground(buttonColor);
-        //edit.setForeground(fontColor);
+        // edit.setBackground(buttonColor);
+        // edit.setForeground(fontColor);
         
         settingsButton.setBackground(buttonColor);
         settingsButton.setForeground(fontColor);

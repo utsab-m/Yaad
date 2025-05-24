@@ -15,143 +15,92 @@ public class DeckHandler {
     String currentPath = System.getProperty("user.dir") + File.separator + "src";
     String decksPath = currentPath + File.separator + "decks";
     
-    List<Deck> decks;
+    List<Deck> decks = new ArrayList();
     
     public DeckHandler(int w) {
         getSettings();
         width = w;
-        decks = new ArrayList();
+        updateDecks();
+    }
+    
+    public void updateDecks() {
+        if (changed()) {
+            for (Deck deck: decksToRemove()) removeDeck(deck);
+            for (Deck deck: decksToAdd()) addDeck(deck);
+        }
+    }
+    
+    public boolean changed() {
+        return toFileArray().equals(listFiles());
     }
     
     public List<Deck> decksToAdd() {
-        List<Deck> newDecks = new ArrayList();
-        List<File> fileList = listFiles();
+        List<Deck> decksToAdd = new ArrayList();
+        List<File> oldFileList = new ArrayList(), newFileList = listFiles();
         
-        for (Deck d: decks) {
-            if (!fileList.contains(d.getFile())) {
-                Deck deck = new Deck(f);
-                decks.add(deck);
-                System.out.println("Added " + deck.getTitle());
-            }
+        for (Deck deck: decks) oldFileList.add(deck.getFile());
+        
+        for (File newFile: newFileList) if (!oldFileList.contains(newFile)) {
+            Deck deck = new Deck(newFile, fontName, fontColor, backgroundColor, buttonColor, width);
+            decksToAdd.add(deck);
         }
         
-        return newDecks;
+        return decksToAdd;
     }
     
     public List<Deck> decksToRemove() {
+        List<Deck> decksToRemove = new ArrayList();
+        List<File> fileList = listFiles();
         
-    }
-    
-    public void update() {
-        
-        ArrayList<Deck> removedDecks = new ArrayList();
-        
-        deckLoop:
-        for (Deck d: decks) {
-            for (File f: listFiles()) {
-                if (d.getFile().getAbsolutePath().equals(f.getAbsolutePath())) continue deckLoop;
-            }
-            System.out.println("Removed " + d.getTitle());
-            removedDecks.add(d);
+        for (Deck deck: decks) {
+            if (!fileList.contains(deck.getFile())) decksToRemove.add(deck);
         }
         
-        for (Deck d: removedDecks) {
-            decks.remove(d);
-            System.out.println("Removed " + d.getFile().getName());
-        }
+        return decksToRemove;
     }
     
-    public ArrayList<File> listFiles() {
+    public List<File> listFiles() {
         File dir = new File(decksPath);
         dir.mkdirs();
         return new ArrayList(Arrays.asList(dir.listFiles()));
     }
     
-    public SortedSet<File> setFiles() {
-        File dir = new File(decksPath);
-        dir.mkdirs();
-        return new TreeSet(Arrays.asList(dir.listFiles()));
+    public void addDeck(Deck deck) {
+        int index = findIndex(deck);
+        decks.add(index, deck);
     }
     
-    /*
-    public void addDeck(File f) {
-        int i = findInsertionPoint(f);
-        addDeck(i, f);
-        System.out.println("Method: addDeck(f), File name: " + f.getName() + ", Files size: " + files.size() + ", Decks size: " + decks.size());
+    public void removeDeck(Deck deck) {
+        decks.remove(deck);
     }
     
-    public void addDeck(int i, File f) {
-        files.add(i, f);
-        String deckTitle = removeExt(f.getName());
-        JLabel deck = createDeck(deckTitle);
+    public int findIndex(Deck deck) {
+        String title = deck.getTitle();
+        List<String> stringArray = toStringArray();
+        int n = stringArray.size();
         
-        try {
-            deckDisplay.add(deck, i);
-            decks.add(i, deck);
-        } catch (Exception e) {
-            e.printStackTrace();
+        for (int i = 0; i < n; i++) {
+            if (title.compareToIgnoreCase(stringArray.get(i)) < -1) return i;
         }
         
-        fix(deckDisplay);
-        System.out.println("Method: addDeck(i, f), Index: " + i + ", Files size: " + files.size() + ", Decks size: " + decks.size());
+        return n;
     }
     
-    public void updateDecks(Collection<File> fileList) {
-        for (File f: fileList) {
-            addDeck(f);
+    public List<File> toFileArray() {
+        List<File> files = new ArrayList();
+        for (File file: listFiles()) {
+            files.add(file);
         }
-        fix(deckDisplay);
+        return files;
     }
     
-    public void removeDeck(int i) {
-        deckDisplay.remove(i);
-        fix(deckDisplay);
-        decks.remove(i);
-        files.remove(i);
-        System.out.println("Method: removeDeck, Index: " + i + ", Files size: " + files.size() + ", Decks size: " + decks.size());
-    }
-    
-    public void removeDeck(File f) {
-        int i = findIndex(f);
-        removeDeck(i);
-        System.out.println("Method: removeDeck, Index: " + i + ", Files size: " + files.size() + ", Decks size: " + decks.size());
-    }
-    
-    public void removeAllDecks() {
-        for (File f: files) removeDeck(f);
-        fix(deckDisplay);
-    }
-    
-    public String removeExt(String fileName) {
-        System.out.println("Removed ext for fileName");
-        return (fileName.replace(".json", ""));
-    }
-    
-    public String getFileName(int i) {
-        System.out.println("Method: getFileName, Index: " + i + ", Files size: " + files.size() + ", Decks size: " + decks.size());
-        return files.get(i).getName();
-    }
-    
-    public int findInsertionPoint(File f) {
-        //Assume files is updated because it is called from methods where files is fixed before findIndex is called\
-        int size = files.size();
-        
-        String newFileName = f.getName();
-        
-        for (int i = 0; i < size; i++) {
-            String oldFileName = files.get(i).getName();
-            if (newFileName.compareToIgnoreCase(oldFileName) < 0) return i;
+    public List<String> toStringArray() {
+        List<String> stringArray = new ArrayList();
+        for (Deck deck: decks) {
+            stringArray.add(deck.getTitle());
         }
-        return size;
+        return stringArray;
     }
-    
-    public int findIndex(File f) {
-        for (int i = 0; i < files.size(); i++) {
-            if (files.get(i).equals(f)) return i;
-        }
-        return -1;
-    }
-    */
     
     public void getSettings() {
         sh.setSettings();

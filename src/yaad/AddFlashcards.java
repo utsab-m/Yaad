@@ -39,9 +39,8 @@ public class AddFlashcards extends JFrame implements ActionListener {
         
         setLayout(null);
         
-        ImageIcon icon = new ImageIcon(ClassLoader.getSystemResource("images/add.png"));
-        Image iconSmooth = icon.getImage().getScaledInstance(128, 128, Image.SCALE_SMOOTH);
-        setIconImage(iconSmooth);
+        Image icon = ImageHandler.scaleImage("add", 128, 128);
+        setIconImage(icon);
         
         JLabel termLabel = createLabel("Term", 20);
         add(termLabel);
