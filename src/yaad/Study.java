@@ -1,7 +1,6 @@
 package yaad;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.JsonNode;
 import javax.swing.border.*;
 import javax.swing.*;
 import java.awt.*;
@@ -13,6 +12,7 @@ public class Study extends JFrame implements ActionListener, KeyListener {
     final int W = 800, H = 600;
     
     SettingsHandler sh = new SettingsHandler();
+    DeckHandler dh = new DeckHandler(W);
     
     Deck deck;
     File file;
@@ -58,15 +58,9 @@ public class Study extends JFrame implements ActionListener, KeyListener {
         String filePath = currentPath + File.separator + "src" + File.separator + "decks";
         File file = new File(filePath + File.separator + deckTitle + ".json");
         
-        ObjectMapper mapper = new ObjectMapper();
-        
-        try {
-            flashcards = mapper.readValue(file, Flashcard[].class);
-            total = flashcards.length;
+        flashcards = dh.getFlashcards(deckTitle);
+        total = flashcards.length;
             if (total > 0) flashcardNumber++;
-        } catch (IOException e) {
-            System.out.println(e);
-        }
         
         for (Flashcard flashcard: flashcards) {
             System.out.println(flashcard.getTerm());

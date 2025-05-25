@@ -31,6 +31,7 @@ public class Deck extends JPanel {
         this.title = removeExt(f);
         
         setBackground(backgroundColor);
+        setBorder(BorderFactory.createLineBorder(buttonColor));
         add(createDeckLabel());
         
     }
@@ -47,7 +48,6 @@ public class Deck extends JPanel {
         deckLabel.setFont(bold);
         deckLabel.setForeground(fontColor);
         deckLabel.setBackground(backgroundColor);
-        deckLabel.setBorder(BorderFactory.createLineBorder(buttonColor));
         deckLabel.setMaximumSize(new Dimension(width, 50));
         deckLabel.setHorizontalAlignment(SwingConstants.CENTER);
         deckLabel.setAlignmentX(Component.CENTER_ALIGNMENT);

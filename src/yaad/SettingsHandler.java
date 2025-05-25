@@ -6,6 +6,8 @@ import java.io.File;
 
 public class SettingsHandler {
     
+    FileHandler fh = new FileHandler();
+    
     Settings settings;
     String currentPath = System.getProperty("user.dir") + File.separator + "src";
     File settingsFile = new File(currentPath + File.separator + "settings.json");
@@ -34,9 +36,8 @@ public class SettingsHandler {
     }
     
     public Settings getSettingsData() {
-        checkSettingsFile();
+        fh.checkSettingsFile();
         Settings s = new Settings();
-        if (settingsFile.length() == 0) defaultSettings();
         try {
             Settings s2 = mapper.readValue(settingsFile, Settings.class);
             s.setBackgroundColor(s2.getBackgroundColor());
@@ -44,7 +45,6 @@ public class SettingsHandler {
             s.setFontColor(s2.getFontColor());
             s.setFontName(s2.getFontName());
         } catch (Exception e) {
-            makeSettingsFile();
             defaultSettings();
             e.printStackTrace();
         }
@@ -62,22 +62,9 @@ public class SettingsHandler {
         }
     }
     
-    public void makeSettingsFile() {
-        settingsFile.getParentFile().mkdirs();
-        try {
-            settingsFile.createNewFile();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    
     public boolean defaultSettings() {
         Settings def = new Settings();
         return updateSettings(def);        
-    }
-    
-    public void checkSettingsFile() {
-        if (!settingsFile.exists()) makeSettingsFile();
     }
     
     public boolean changed() {

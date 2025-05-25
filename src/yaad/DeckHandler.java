@@ -1,12 +1,15 @@
 package yaad;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.awt.Color;
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 public class DeckHandler {
     
     SettingsHandler sh = new SettingsHandler();
+    FileHandler fh = new FileHandler();
     Color backgroundColor, buttonColor, fontColor;
     String fontName;
     
@@ -16,6 +19,8 @@ public class DeckHandler {
     String decksPath = currentPath + File.separator + "decks";
     
     List<Deck> decks = new ArrayList();
+    
+    ObjectMapper mapper = new ObjectMapper();
     
     public DeckHandler(int w) {
         getSettings();
@@ -31,7 +36,7 @@ public class DeckHandler {
     }
     
     public boolean changed() {
-        return toFileArray().equals(listFiles());
+        return toFileArray().equals(fh.listDecksFiles());
     }
     
     public List<Deck> decksToAdd() {
@@ -50,7 +55,7 @@ public class DeckHandler {
     
     public List<Deck> decksToRemove() {
         List<Deck> decksToRemove = new ArrayList();
-        List<File> fileList = listFiles();
+        List<File> fileList = fh.listDecksFiles();
         
         for (Deck deck: decks) {
             if (!fileList.contains(deck.getFile())) decksToRemove.add(deck);
@@ -59,11 +64,7 @@ public class DeckHandler {
         return decksToRemove;
     }
     
-    public List<File> listFiles() {
-        File dir = new File(decksPath);
-        dir.mkdirs();
-        return new ArrayList(Arrays.asList(dir.listFiles()));
-    }
+    
     
     public void addDeck(Deck deck) {
         int index = findIndex(deck);
@@ -88,8 +89,8 @@ public class DeckHandler {
     
     public List<File> toFileArray() {
         List<File> files = new ArrayList();
-        for (File file: listFiles()) {
-            files.add(file);
+        for (Deck deck: decks) {
+            files.add(deck.getFile());
         }
         return files;
     }
@@ -108,6 +109,17 @@ public class DeckHandler {
         buttonColor = sh.getButtonColor();
         fontColor = sh.getFontColor();
         fontName = sh.getFontName();
+    }
+    
+    public Flashcard[] getFlashcards() {
+        Flashcard[] flashcards;
+        try {
+            flashcards = mapper.readValue(file, Flashcard[].class);
+            total = flashcards.length;
+            if (total > 0) flashcardNumber++;
+        } catch (IOException e) {
+            System.out.println(e);
+        }
     }
     
     public Color getBackgroundColor() {return backgroundColor;}
