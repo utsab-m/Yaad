@@ -1,11 +1,9 @@
 package yaad;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import javax.swing.border.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.*;
 
 public class Study extends JFrame implements ActionListener, KeyListener {
     
@@ -15,7 +13,6 @@ public class Study extends JFrame implements ActionListener, KeyListener {
     DeckHandler dh = new DeckHandler(W);
     
     Deck deck;
-    File file;
     
     JButton add, back, left, right, termButton, definitionButton;
     JLabel flashcard, number;
@@ -30,12 +27,9 @@ public class Study extends JFrame implements ActionListener, KeyListener {
     Color backgroundColor, buttonColor, fontColor;
     String fontName = "Raleway";
     
-    ObjectMapper mapper = new ObjectMapper();
-    
     public Study(String deckTitle) {
         
         this.deckTitle = deckTitle;
-        file = new File(System.getProperty("user.dir") + File.separator + "src" + File.separator + "decks" + File.separator + deckTitle + ".json");
         
         getSettings();
         setLayout(null);
@@ -53,10 +47,6 @@ public class Study extends JFrame implements ActionListener, KeyListener {
         deckDisplay.setBounds(100, 100, 600, 600);
         deckDisplay.setOpaque(true);
         deckDisplay.setBackground(buttonColor);
-        
-        String currentPath = System.getProperty("user.dir");
-        String filePath = currentPath + File.separator + "src" + File.separator + "decks";
-        File file = new File(filePath + File.separator + deckTitle + ".json");
         
         flashcards = dh.getFlashcards(deckTitle);
         total = flashcards.length;
@@ -235,4 +225,8 @@ public class Study extends JFrame implements ActionListener, KeyListener {
         fontName = settings.getFontName();
     }
     
+    
+    public static void main(String[] args) {
+        new Study("Capitals");
+    }
 }

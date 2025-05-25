@@ -26,6 +26,11 @@ public class DeckHandler {
         getSettings();
         width = w;
         updateDecks();
+        
+        for (File file: fh.listDecksFiles()) {
+            Deck deck = new Deck(file, sh.getSettings(), width);
+            addDeck(deck);
+        }
     }
     
     public void updateDecks() {
@@ -63,8 +68,6 @@ public class DeckHandler {
         
         return decksToRemove;
     }
-    
-    
     
     public void addDeck(Deck deck) {
         int index = findIndex(deck);
@@ -111,14 +114,15 @@ public class DeckHandler {
         fontName = sh.getFontName();
     }
     
-    public Flashcard[] getFlashcards() {
+    public Flashcard[] getFlashcards(String deckTitle) {
+        String json = fh.readDeckFile(deckTitle);
         Flashcard[] flashcards;
         try {
-            flashcards = mapper.readValue(file, Flashcard[].class);
-            total = flashcards.length;
-            if (total > 0) flashcardNumber++;
+            flashcards = mapper.readValue(json, Flashcard[].class);
+            return flashcards;
         } catch (IOException e) {
             System.out.println(e);
+            return new Flashcard[0];
         }
     }
     

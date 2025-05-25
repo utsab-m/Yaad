@@ -1,16 +1,14 @@
 package yaad;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.*;
 import java.awt.*;
-import java.io.File;
 
 public class SettingsHandler {
     
     FileHandler fh = new FileHandler();
     
     Settings settings;
-    String currentPath = System.getProperty("user.dir") + File.separator + "src";
-    File settingsFile = new File(currentPath + File.separator + "settings.json");
     
     ObjectMapper mapper = new ObjectMapper();
     
@@ -39,13 +37,9 @@ public class SettingsHandler {
         fh.checkSettingsFile();
         Settings s = new Settings();
         try {
-            Settings s2 = mapper.readValue(settingsFile, Settings.class);
-            s.setBackgroundColor(s2.getBackgroundColor());
-            s.setButtonColor(s2.getButtonColor());
-            s.setFontColor(s2.getFontColor());
-            s.setFontName(s2.getFontName());
-        } catch (Exception e) {
-            defaultSettings();
+            String settingsString = fh.readSettingsFile();
+            s = mapper.readValue(settingsString, Settings.class);
+        } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
         return s;

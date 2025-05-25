@@ -27,29 +27,56 @@ public class FileHandler {
         return decksFolder.exists();
     }
     
+    public boolean fileExists(File file) {
+        return file.exists();
+    }
+    
     public boolean settingsFileExists() {
-        return settingsFile.exists();
+        return fileExists(settingsFile);
+    }
+    
+    public boolean deckFileExists(String deckTitle) {
+        File deckFile = getDeckFile(deckTitle);
+        return fileExists(deckFile);
     }
     
     public void createDecksFolder() {
         decksFolder.mkdirs();
     }
     
-    public void createSettingsFile() {
-        settingsFile.getParentFile().mkdirs();
+    public void createFile(File file) {
+        file.getParentFile().mkdirs();
         try {
-            settingsFile.createNewFile();
+            file.createNewFile();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    
+    public void createDeckFile(String deckTitle) {
+        File deckFile = getDeckFile(deckTitle);
+        createFile(deckFile);
+    }
+    
+    public void createSettingsFile() {
+        createFile(settingsFile);
     }
     
     public void checkDecksFolder() {
         if (!decksFolderExists()) createDecksFolder();
     }
     
+    public void checkFile(File file) {
+        if (!file.exists()) createFile(file);
+    }
+    
+    public void checkDecksFile(String deckTitle) {
+        File deckFile = getDeckFile(deckTitle);
+        checkFile(deckFile);
+    }
+    
     public void checkSettingsFile() {
-        if (!settingsFileExists()) createSettingsFile();
+        checkFile(settingsFile);
     }
     
     public boolean updateFile(String s, File f) {
@@ -90,15 +117,12 @@ public class FileHandler {
     }
     
     public String readDeckFile(String deckTitle) {
-        return readFile(getDeckFile(deckTitle));
+        File deckFile = getDeckFile(deckTitle);
+        return readFile(deckFile);
     }
     
     public String readSettingsFile() {
-        
-    }
-    
-    public boolean createDeckFile(String deckTitle) {
-        
+        return readFile(settingsFile);
     }
     
     public File getDeckFile(String deckTitle) {

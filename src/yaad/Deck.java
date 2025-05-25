@@ -33,10 +33,21 @@ public class Deck extends JPanel {
         setBackground(backgroundColor);
         setBorder(BorderFactory.createLineBorder(buttonColor));
         add(createDeckLabel());
-        
     }
     
-    
+    public Deck(File f, Settings s, int w) {
+        this.file = f;
+        this.backgroundColor = s.getBackgroundColor();
+        this.buttonColor = s.getButtonColor();
+        this.fontColor = s.getFontColor();
+        this.fontName = s.getFontName();
+        this.width = w;
+        this.title = removeExt(f);
+        
+        setBackground(backgroundColor);
+        setBorder(BorderFactory.createLineBorder(buttonColor));
+        add(createDeckLabel());
+    }
     
     public JLabel createDeckLabel() {
         Font bold = new Font(fontName, Font.BOLD, 22);
