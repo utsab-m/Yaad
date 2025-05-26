@@ -6,19 +6,22 @@ public class Settings {
     
     Color backgroundColor, buttonColor, fontColor;
     String fontName;
+    int width;
     
     public Settings() {
         backgroundColor = Color.DARK_GRAY;
         buttonColor = Color.BLACK;
         fontColor = Color.WHITE;
         fontName = "Raleway";
+        width = 600;
     }
     
-    public Settings(Color backgroundC, Color buttonC, Color fontC, String fontN) {
-        backgroundColor = backgroundC;
-        buttonColor = buttonC;
-        fontColor = fontC;
-        fontName = fontN;
+    public Settings(Color backgroundColor, Color buttonColor, Color fontColor, String fontName, int width) {
+        this.backgroundColor = backgroundColor;
+        this.buttonColor = buttonColor;
+        this.fontColor = fontColor;
+        this.fontName = fontName;
+        this.width = width;
     }
     
     public Color getBackgroundColor() {return backgroundColor;}
@@ -37,16 +40,20 @@ public class Settings {
     
     public void setFontName(String n) {fontName = n;} 
     
+    public int getWidth() {return width;}
+    
+    public void setWidth(int w) {width = w;}
+    
     @Override
     public String toString() {
-        return "Background color: " + backgroundColor.getRGB() + ", Button color: " + buttonColor.getRGB() + ", Font color: " + fontColor.getRGB() + ", Font name: " + fontName;
+        return "Background color: " + backgroundColor.getRGB() + 
+                ", Button color: " + buttonColor.getRGB() + 
+                ", Font color: " + fontColor.getRGB() + 
+                ", Font name: " + fontName + 
+                ", Width: " + width;
     }
     
     public boolean equals(Settings settings) {
-        return (this.backgroundColor.equals(settings.backgroundColor) &&
-                this.buttonColor.equals(settings.buttonColor) && 
-                this.fontColor.equals(settings.fontColor) &&
-                this.fontName.equals(settings.fontName)
-                );
+        return this.toString().equals(settings.toString());
     }
 }

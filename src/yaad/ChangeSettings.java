@@ -7,17 +7,17 @@ import java.io.*;
 
 public class ChangeSettings extends JFrame implements ActionListener {
     
-    final int W = 300, H = 250;
+    final int W = 600, H = 270;
     
-    SettingsHandler settingsHandler = new SettingsHandler();
+    SettingsHandler sh = new SettingsHandler();
     FileHandler fh = new FileHandler();
     Settings settings;
     
     JButton save, close, reset, backgroundChooser, buttonChooser, fontColorChooser;
     JButton[] buttons = new JButton[3];
     
-    JLabel backgroundLabel, buttonLabel, fontColorLabel, fontLabel;
-    JLabel[] labels = new JLabel[4];
+    JLabel backgroundLabel, buttonLabel, fontColorLabel, fontLabel, widthLabel;
+    JLabel[] labels = new JLabel[5];
     
     Color backgroundColor, buttonColor, fontColor;
     String fontName;
@@ -25,6 +25,8 @@ public class ChangeSettings extends JFrame implements ActionListener {
     GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
     String[] fonts = ge.getAvailableFontFamilyNames();
     JComboBox<String> fontComboBox = new JComboBox(fonts);
+    
+    JTextField widthTextField = new JTextField(String.valueOf(W));
     
     ChangeSettings() throws IOException {
         
@@ -70,6 +72,13 @@ public class ChangeSettings extends JFrame implements ActionListener {
         fontComboBox.setSelectedItem("Raleway");
         add(fontComboBox);
         
+        widthLabel = createLabel("Change width", 4, 180);
+        add(widthLabel);
+        
+        widthTextField.setBounds(150, 180, 125, 25);
+        widthTextField.setHorizontalAlignment(JTextField.CENTER);
+        add(widthTextField);
+        
         setTitle("Settings");
         getContentPane().setBackground(backgroundColor);
         getContentPane().setPreferredSize(new Dimension(W, H));
@@ -86,7 +95,7 @@ public class ChangeSettings extends JFrame implements ActionListener {
         button.setBackground(buttonColor);
         button.setForeground(fontColor);
         button.setFont(new Font(fontName, Font.BOLD, 16));
-        button.setBounds(x, 200, 80, 40);
+        button.setBounds(x, 220, 80, 40);
         button.setFocusable(false);
         button.addActionListener(this);
         return button;
@@ -110,11 +119,12 @@ public class ChangeSettings extends JFrame implements ActionListener {
     }
     
     public void changeSettings() {
-        settingsHandler.getSettings();
-        backgroundColor = settingsHandler.getBackgroundColor();
-        buttonColor = settingsHandler.getButtonColor();
-        fontColor = settingsHandler.getFontColor();
-        fontName = settingsHandler.getFontName();
+        sh.getSettings();
+        backgroundColor = sh.getBackgroundColor();
+        buttonColor = sh.getButtonColor();
+        fontColor = sh.getFontColor();
+        fontName = sh.getFontName();
+        width = sh.getWidth();
     }
     
     @Override
@@ -141,7 +151,7 @@ public class ChangeSettings extends JFrame implements ActionListener {
                 return;
             }
             settings = getSelections();
-            if (settingsHandler.updateSettings(settings)) {
+            if (sh.updateSettings(settings)) {
                 color();
                 JOptionPane.showMessageDialog(null, "Successfully saved settings!");
             }
@@ -158,7 +168,7 @@ public class ChangeSettings extends JFrame implements ActionListener {
         } else if (ae.getSource() == reset) {
             int choice = JOptionPane.showConfirmDialog(null, "Are you sure you want to reset the settings?");
             if (choice == JOptionPane.YES_OPTION) {
-                if (settingsHandler.defaultSettings()) {
+                if (sh.defaultSettings()) {
                     color();
                     JOptionPane.showMessageDialog(null, "Successfully saved settings!");
                 }
@@ -171,7 +181,8 @@ public class ChangeSettings extends JFrame implements ActionListener {
         Color buttonC = buttonChooser.getBackground();
         Color fontC = fontColorChooser.getBackground();
         String fontN = fontComboBox.getSelectedItem().toString();
-        return new Settings(backgroundC, buttonC, fontC, fontN);
+        int w = Integer.parseInt(widthTextField.getText());
+        return new Settings(backgroundC, buttonC, fontC, fontN, w);
     }
     
     public Color showColorChooser(Color initialColor) {
@@ -180,7 +191,7 @@ public class ChangeSettings extends JFrame implements ActionListener {
     }
     
     public boolean same() {
-        return settingsHandler.getSettings().equals(getSelections());
+        return sh.equals(getSelections());
     }
     
     public void color() {
@@ -198,8 +209,6 @@ public class ChangeSettings extends JFrame implements ActionListener {
             label.setForeground(fontColor);
         }
     }
-    
-    
     
     public static void main(String args[]) {
         try {

@@ -14,7 +14,9 @@ public class SettingsHandler {
     
     public SettingsHandler() {
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        
         setSettings();
+        updateSettings();
     }
     
     public Color getBackgroundColor() {return settings.getBackgroundColor();}
@@ -24,6 +26,8 @@ public class SettingsHandler {
     public Color getFontColor() {return settings.getFontColor();}
     
     public String getFontName() {return settings.getFontName();}
+    
+    public int getWidth() {return settings.getWidth();}
     
     public Settings getSettings() {
         return settings;
@@ -57,6 +61,19 @@ public class SettingsHandler {
         }
     }
     
+    public boolean updateSettings() {
+        Settings s = new Settings(getBackgroundColor(), getButtonColor(), getFontColor(), getFontName(), 600);
+        fh.checkSettingsFile();
+        try {
+            mapper.writeValue(fh.getSettingsFile(), s);
+            settings = s;
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
     public boolean defaultSettings() {
         Settings def = new Settings();
         return updateSettings(def);        
@@ -74,4 +91,12 @@ public class SettingsHandler {
                ", \"fontName\": " + settings.fontName + "}";
     }
     
+    public boolean equals(Settings settings) {
+        return this.settings.equals(settings);
+    }
+    
+    public static void main(String[] LOL) {
+        System.out.println(LOL.length);
+        new SettingsHandler();
+    }
 }

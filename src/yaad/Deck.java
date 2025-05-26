@@ -1,5 +1,6 @@
 package yaad;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -14,39 +15,36 @@ public class Deck extends JPanel {
     int width;
     File file;
     String fontName, title;    
-    Color fontColor, backgroundColor, buttonColor;
+    Color fontColor, backgroundColor, borderColor;
     List<Flashcard> flashcards = new ArrayList();
+    DeckActionListener listener;
     
     public Deck(File f) {
         this.file = f;
     }
     
-    public Deck(File f, String fontName, Color fontColor, Color backgroundColor, Color buttonColor, int width) {
-        this.file = f;
-        this.fontName = fontName;
-        this.fontColor = fontColor;
-        this.backgroundColor = backgroundColor;
-        this.buttonColor = buttonColor;
-        this.width = width;
-        this.title = removeExt(f);
-        
-        setBackground(backgroundColor);
-        setBorder(BorderFactory.createLineBorder(buttonColor));
-        add(createDeckLabel());
-    }
-    
-    public Deck(File f, Settings s, int w) {
+    public Deck(File f, Settings s, int w, DeckActionListener listener) {
         this.file = f;
         this.backgroundColor = s.getBackgroundColor();
-        this.buttonColor = s.getButtonColor();
+        this.borderColor = s.getButtonColor();
         this.fontColor = s.getFontColor();
         this.fontName = s.getFontName();
         this.width = w;
         this.title = removeExt(f);
+        this.listener = listener;
         
+        setPanel();
+    }
+    
+    public void setPanel() {
+        setLayout(new BorderLayout());
         setBackground(backgroundColor);
-        setBorder(BorderFactory.createLineBorder(buttonColor));
-        add(createDeckLabel());
+        setBorder(BorderFactory.createLineBorder(borderColor));
+        
+        JLabel deckLabel = createDeckLabel();
+        add(deckLabel, BorderLayout.CENTER);
+        
+        JButton deleteButton = new DeleteDeckButton(deck);
     }
     
     public JLabel createDeckLabel() {
@@ -109,11 +107,14 @@ public class Deck extends JPanel {
     
     public Color getBackgroundColor() {return backgroundColor;}
     
-    public void setBackgroundColor(Color c) {backgroundColor = c;}
+    public void setBackgroundColor(Color c) {
+        setBackground(c);
+        backgroundColor = c;
+    }
     
-    public Color getButtonColor() {return buttonColor;}
+    public Color getBorderColor() {return borderColor;}
     
-    public void setButtonColor(Color c) {buttonColor = c;}
+    public void setBorderColor(Color c) {borderColor = c;}
     
     public String getTitle() {return title;}
     
