@@ -46,8 +46,9 @@ public class SettingsHandler {
     }
     
     public boolean updateSettings(Settings s) {
+        fh.checkSettingsFile();
         try {
-            mapper.writeValue(settingsFile, s);
+            mapper.writeValue(fh.getSettingsFile(), s);
             settings = s;
             return true;
         } catch (Exception e) {

@@ -6,7 +6,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 
-public class Yaad extends JFrame implements ActionListener, KeyListener {
+public class Yaad extends JFrame implements ActionListener, KeyListener, DeckActionListener {
     
     final int width = 600, height = 600;
     
@@ -186,5 +186,15 @@ public class Yaad extends JFrame implements ActionListener, KeyListener {
         } else if (ae.getSource() == refresh) {
             update();
         }
+    }
+    
+    @Override
+    public void onEditDeck(Deck deck) {
+        
+    }
+    
+    @Override
+    public void onDeleteDeck(Deck deck) {
+        if (dh.deleteDeckFile(deck)) deckDisplay.remove(deck);
     }
 }

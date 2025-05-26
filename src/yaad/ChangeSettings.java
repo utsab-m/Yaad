@@ -10,6 +10,7 @@ public class ChangeSettings extends JFrame implements ActionListener {
     final int W = 300, H = 250;
     
     SettingsHandler settingsHandler = new SettingsHandler();
+    FileHandler fh = new FileHandler();
     Settings settings;
     
     JButton save, close, reset, backgroundChooser, buttonChooser, fontColorChooser;
@@ -133,8 +134,8 @@ public class ChangeSettings extends JFrame implements ActionListener {
         } else if (ae.getSource() == save) {
             System.out.println(same());
             if (same()) {
-                int input = JOptionPane.showConfirmDialog(null, "Are you sure you don't want to make any changes?");
-                if (input == JOptionPane.YES_OPTION) {
+                int choice = JOptionPane.showConfirmDialog(null, "Are you sure you don't want to make any changes?");
+                if (choice == JOptionPane.YES_OPTION) {
                     setVisible(false);
                 }
                 return;
@@ -147,16 +148,16 @@ public class ChangeSettings extends JFrame implements ActionListener {
         } else if (ae.getSource() == close) {
             
             if (!same()) {
-                int input = JOptionPane.showConfirmDialog(null, "Are you sure you want to close settings without saving your choices?");
-                if (input == JOptionPane.YES_OPTION) {
+                int choice = JOptionPane.showConfirmDialog(null, "Are you sure you want to close settings without saving your choices?");
+                if (choice == JOptionPane.YES_OPTION) {
                     setVisible(false);
                 }
             } else {
                 setVisible(false);
             }
         } else if (ae.getSource() == reset) {
-            int input = JOptionPane.showConfirmDialog(null, "Are you sure you want to reset the settings?");
-            if (input == JOptionPane.YES_OPTION) {
+            int choice = JOptionPane.showConfirmDialog(null, "Are you sure you want to reset the settings?");
+            if (choice == JOptionPane.YES_OPTION) {
                 if (settingsHandler.defaultSettings()) {
                     color();
                     JOptionPane.showMessageDialog(null, "Successfully saved settings!");

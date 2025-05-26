@@ -119,8 +119,8 @@ public class AddFlashcards extends JFrame implements ActionListener {
 
             }
         } else if (ae.getSource() == cancel) {
-            int a = JOptionPane.showConfirmDialog(null, "Are you sure you want to cancel? You will lose all your new flashcards.");
-            if (a == JOptionPane.YES_OPTION) {
+            int choice = JOptionPane.showConfirmDialog(null, "Are you sure you want to cancel? You will lose all your new flashcards.");
+            if (choice == JOptionPane.YES_OPTION) {
                 setVisible(false);
             }
         }

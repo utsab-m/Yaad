@@ -34,19 +34,20 @@ public class DeckHandler {
     }
     
     public void updateDecks() {
-        if (changed()) {
+        updateColors();
+        if (different()) {
             for (Deck deck: decksToRemove()) removeDeck(deck);
             for (Deck deck: decksToAdd()) addDeck(deck);
         }
     }
     
-    public boolean changed() {
+    public boolean different() {
         return toFileArray().equals(fh.listDecksFiles());
     }
     
     public List<Deck> decksToAdd() {
         List<Deck> decksToAdd = new ArrayList();
-        List<File> oldFileList = new ArrayList(), newFileList = listFiles();
+        List<File> oldFileList = new ArrayList(), newFileList = fh.listDecksFiles();
         
         for (Deck deck: decks) oldFileList.add(deck.getFile());
         
@@ -76,6 +77,10 @@ public class DeckHandler {
     
     public void removeDeck(Deck deck) {
         decks.remove(deck);
+    }
+    
+    public boolean deleteDeckFile(Deck deck) {
+        return fh.deleteDeckFile(deck.getTitle());
     }
     
     public int findIndex(Deck deck) {
@@ -112,6 +117,13 @@ public class DeckHandler {
         buttonColor = sh.getButtonColor();
         fontColor = sh.getFontColor();
         fontName = sh.getFontName();
+    }
+    
+    public void updateColors() {
+        getSettings();
+        for (Deck deck: decks) {
+            deck.setBackgroundColor(backgroundColor);
+        }
     }
     
     public Flashcard[] getFlashcards(String deckTitle) {

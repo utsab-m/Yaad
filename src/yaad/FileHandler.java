@@ -129,6 +129,15 @@ public class FileHandler {
         return new File(decksPath + File.separator + deckTitle + ".json");
     }
     
+    public File getSettingsFile() {
+        return settingsFile;
+    }
+    
+    public boolean deleteDeckFile(String deckTitle) {
+        File deckFile = getDeckFile(deckTitle);
+        return deckFile.delete();
+    }
+    
     public List<File> listDecksFiles() {
         checkDecksFolder();
         return new ArrayList(Arrays.asList(decksFolder.listFiles()));
