@@ -16,11 +16,12 @@ public class Deck extends JPanel {
     File file;
     String fontName, title;    
     Color fontColor, backgroundColor, borderColor;
-    List<Flashcard> flashcards = new ArrayList();
+    List<Flashcard> flashcards;
     DeckActionListener listener;
     
     public Deck(File f) {
         this.file = f;
+        setFlashcards();
     }
     
     public Deck(File f, Settings s, DeckActionListener listener) {
@@ -33,62 +34,20 @@ public class Deck extends JPanel {
         this.title = removeExt(f);
         this.listener = listener;
         
-        setPanel();
+        setFlashcards();
+        setPanel(s);
     }
     
-    public void setPanel() {
+    public void setPanel(Settings settings) {
         setLayout(new BorderLayout());
         setBackground(backgroundColor);
         setBorder(BorderFactory.createLineBorder(borderColor));
         
-        JLabel deckLabel = createDeckLabel();
+        DeckLabel deckLabel = new DeckLabel(this, settings);
         add(deckLabel, BorderLayout.CENTER);
         
         JButton deleteButton = new DeleteDeckButton(this, listener);
         add(deleteButton, BorderLayout.EAST);
-    }
-    
-    public JLabel createDeckLabel() {
-        Deck d = this;
-        Font bold = new Font(fontName, Font.BOLD, 22);
-        Font italic = new Font(fontName, Font.ITALIC, 22);
-        
-        JLabel deckLabel = new JLabel(title);
-        deckLabel.setText(title);
-        deckLabel.setOpaque(false);
-        deckLabel.setFont(bold);
-        deckLabel.setForeground(fontColor);
-        deckLabel.setBackground(backgroundColor);
-        deckLabel.setMaximumSize(new Dimension(width, 50));
-        deckLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        deckLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        deckLabel.setFocusable(false);
-        deckLabel.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent me) {
-                new Study(d);
-            }
-            @Override
-            public void mouseEntered(MouseEvent me) {
-                JLabel source = (JLabel)me.getSource();
-                String sourceText = source.getText();
-                source.setFont(italic);
-                source.setText("<html><u>" + sourceText + "</u></html>");
-                source.setForeground(Color.BLUE);
-            }
-            @Override
-            public void mouseExited(MouseEvent me) {
-                JLabel source = (JLabel)me.getSource();
-                String sourceText = source.getText();
-                String text = sourceText.replace("<html><u>", "");
-                text = text.replace("</u></html>", "");
-                source.setFont(bold);
-                source.setText(text);
-                source.setForeground(fontColor);
-            }
-        });
-        
-        return deckLabel;
     }
     
     public int getDeckWidth() {return width;}
@@ -124,7 +83,7 @@ public class Deck extends JPanel {
     
     public List<Flashcard> getFlashcards() {return flashcards;}
     
-    public void setFlashcards() {}
+    public void setFlashcards() {flashcards = DeckHandler.getFlashcards(this);}
     
     public static String removeExt(File f) {return f.getName().replace(".json", "");}
     

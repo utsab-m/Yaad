@@ -19,24 +19,26 @@ public class DeckLabel extends JLabel {
     public DeckLabel(Deck deck, Settings settings) {
         this.settings = settings;
         this.deck = deck;
+        this.title = deck.getTitle();
         this.fontName = settings.getFontName();
+        this.fontColor = settings.getFontColor();
+        
         Font bold = new Font(fontName, Font.BOLD, 22);
         Font italic = new Font(fontName, Font.ITALIC, 22);
         
-        JLabel deckLabel = new JLabel(title);
-        deckLabel.setText(title);
-        deckLabel.setOpaque(false);
-        deckLabel.setFont(bold);
-        deckLabel.setForeground(fontColor);
-        deckLabel.setBackground(backgroundColor);
-        deckLabel.setMaximumSize(new Dimension(width, 50));
-        deckLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        deckLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        deckLabel.setFocusable(false);
-        deckLabel.addMouseListener(new MouseAdapter() {
+        setText(title);
+        setOpaque(false);
+        setFont(bold);
+        setForeground(fontColor);
+        setBackground(backgroundColor);
+        setMaximumSize(new Dimension(settings.getWidth(), 50));
+        setHorizontalAlignment(SwingConstants.CENTER);
+        setAlignmentX(Component.CENTER_ALIGNMENT);
+        setFocusable(false);
+        addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent me) {
-                new Study(title);
+                new Study(deck);
             }
             @Override
             public void mouseEntered(MouseEvent me) {
@@ -57,7 +59,5 @@ public class DeckLabel extends JLabel {
                 source.setForeground(fontColor);
             }
         });
-        
-        return deckLabel;
     }
 }

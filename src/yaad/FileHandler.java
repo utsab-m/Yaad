@@ -1,5 +1,6 @@
 package yaad;
 
+import org.apache.commons.io.FilenameUtils;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -128,6 +129,12 @@ public final class FileHandler {
     
     public static File getSettingsFile() {
         return settingsFile;
+    }
+    
+    public static String removeExt(File file) {
+        String fileName = file.getName();
+        if (!fileName.contains(".")) return fileName;
+        return fileName.substring(0, fileName.lastIndexOf("."));
     }
     
     public static boolean deleteDeckFile(String deckTitle) {

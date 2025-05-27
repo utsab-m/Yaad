@@ -1,9 +1,11 @@
 package yaad;
 
+import java.util.List;
 import javax.swing.border.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
 
 public class Study extends JFrame implements ActionListener, KeyListener {
     
@@ -16,10 +18,9 @@ public class Study extends JFrame implements ActionListener, KeyListener {
     JButton add, back, left, right, termButton, definitionButton;
     JLabel flashcard, number;
     String deckTitle;
-    Flashcard[] flashcards;
+    List<Flashcard> flashcards;
     int flashcardNumber = 0, total = 0;
-    boolean term = true;
-    boolean termIsShowing = true;
+    boolean term = true, termIsShowing = true;
     
     LineBorder thinBorder, thickBorder;
     
@@ -47,9 +48,9 @@ public class Study extends JFrame implements ActionListener, KeyListener {
         deckDisplay.setOpaque(true);
         deckDisplay.setBackground(buttonColor);
         
-        flashcards = dh.getFlashcards(deckTitle);
-        total = flashcards.length;
-            if (total > 0) flashcardNumber++;
+        flashcards = deck.getFlashcards();
+        total = flashcards.size();
+        if (total > 0) flashcardNumber++;
         
         for (Flashcard flashcard: flashcards) {
             System.out.println(flashcard.getTerm());
@@ -63,7 +64,7 @@ public class Study extends JFrame implements ActionListener, KeyListener {
         title.setHorizontalAlignment(SwingConstants.CENTER);
         add(title);
         
-        String firstText = (total == 0) ? "You have no flashcards in this deck. Go back to edit this deck." : "<html>" + flashcards[0].getTerm() + "</html>";
+        String firstText = (total == 0) ? "You have no flashcards in this deck. Go back to edit this deck." : "<html>" + flashcards.get(0).getTerm() + "</html>";
         flashcard = new JLabel(firstText);
         flashcard.setOpaque(true);
         flashcard.setBackground(buttonColor);
@@ -182,8 +183,8 @@ public class Study extends JFrame implements ActionListener, KeyListener {
     
     public void left() {
         flashcardNumber--;
-        String flashcardText = term == true ? flashcards[flashcardNumber - 1].getTerm() : flashcards[flashcardNumber - 1].getDefinition();
-        flashcard.setText("<html><p style=\"text-align: center;\">" + flashcardText + "</p></html>");
+        String flashcardText = getFlashcardText();
+        flashcard.setText(getCenteredText(flashcardText));
         number.setText(Integer.toString(flashcardNumber) + "/" + total);
         if (flashcardNumber < 2) {
             left.setVisible(false);
@@ -193,8 +194,8 @@ public class Study extends JFrame implements ActionListener, KeyListener {
     
     public void right() {
         flashcardNumber++;
-        String flashcardText = (term == true) ? flashcards[flashcardNumber - 1].getTerm() : flashcards[flashcardNumber - 1].getDefinition();
-        flashcard.setText("<html><p style=\"text-align: center;\">" + flashcardText + "</p></html>");
+        String flashcardText = getFlashcardText();
+        flashcard.setText(getCenteredText(flashcardText));
         number.setText(Integer.toString(flashcardNumber) + "/" + total);
         if (flashcardNumber == total) {
             right.setVisible(false);
@@ -202,18 +203,29 @@ public class Study extends JFrame implements ActionListener, KeyListener {
         if (total != 0) left.setVisible(true);
     }
     
+    public String getFlashcardText() {
+        String flashcardText = term == true ? flashcards.get(flashcardNumber - 1).getTerm() : flashcards.get(flashcardNumber - 1).getDefinition();
+        return flashcardText;
+    }
+    
     public void showCard(int number) {
-        String flashcardText = (term == true) ? flashcards[flashcardNumber - 1].getTerm() : flashcards[flashcardNumber - 1].getDefinition();
+        String flashcardText = getFlashcardText();
     }
     
     public void flip() {
         if (termIsShowing) {
-            flashcard.setText("<html><p style=\"text-align: center;\">" + flashcards[flashcardNumber - 1].getDefinition() + "</p></html>");
+            String definition = flashcards.get(flashcardNumber - 1).getDefinition();
+            flashcard.setText(getCenteredText(definition));
             termIsShowing = false;
         } else {
-            flashcard.setText("<html><p style=\"text-align: center;\">" + flashcards[flashcardNumber - 1].getTerm() + "</p></html>");
+            String term = flashcards.get(flashcardNumber - 1).getTerm();
+            flashcard.setText(getCenteredText(term));
             termIsShowing = true;
         }
+    }
+    
+    public String getCenteredText(String text) {
+        return "<html><p style=\"text-align: center;\">" + text + "</p></html>";
     }
     
     public void getSettings() {
@@ -224,8 +236,9 @@ public class Study extends JFrame implements ActionListener, KeyListener {
         fontName = settings.getFontName();
     }
     
-    
     public static void main(String[] args) {
-        new Study("Capitals");
+        File file = FileHandler.getDeckFile("Capitals");
+        Deck deck = new Deck(file);
+        new Study(deck);
     }
 }

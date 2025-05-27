@@ -23,7 +23,9 @@ public class DeckHandler {
     
     List<Deck> decks = new ArrayList();
     
-    ObjectMapper mapper = new ObjectMapper();
+    static ObjectMapper mapper = new ObjectMapper();
+    
+    public DeckHandler() {}
     
     public DeckHandler(DeckActionListener listener) {
         this.listener = listener;
@@ -131,11 +133,11 @@ public class DeckHandler {
         }
     }
     
-    public List<Flashcard> getFlashcards(Deck deck) {
+    public static List<Flashcard> getFlashcards(Deck deck) {
         String json = FileHandler.readDeckFile(deck.getTitle());
         List<Flashcard> flashcards;
         try {
-            flashcards = mapper.readValue(json, new TypeReference<List<Flashcard>>());
+            flashcards = mapper.readValue(json, new TypeReference<List<Flashcard>>() {});
             return flashcards;
         } catch (IOException e) {
             System.out.println(e);
