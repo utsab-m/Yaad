@@ -6,8 +6,6 @@ import java.awt.*;
 
 public class SettingsHandler {
     
-    FileHandler fh = new FileHandler();
-    
     Settings settings;
     
     ObjectMapper mapper = new ObjectMapper();
@@ -38,10 +36,10 @@ public class SettingsHandler {
     }
     
     public Settings getSettingsData() {
-        fh.checkSettingsFile();
+        FileHandler.checkSettingsFile();
         Settings s = new Settings();
         try {
-            String settingsString = fh.readSettingsFile();
+            String settingsString = FileHandler.readSettingsFile();
             s = mapper.readValue(settingsString, Settings.class);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
@@ -50,9 +48,9 @@ public class SettingsHandler {
     }
     
     public boolean updateSettings(Settings s) {
-        fh.checkSettingsFile();
+        FileHandler.checkSettingsFile();
         try {
-            mapper.writeValue(fh.getSettingsFile(), s);
+            mapper.writeValue(FileHandler.getSettingsFile(), s);
             settings = s;
             return true;
         } catch (Exception e) {
@@ -63,9 +61,9 @@ public class SettingsHandler {
     
     public boolean updateSettings() {
         Settings s = new Settings(getBackgroundColor(), getButtonColor(), getFontColor(), getFontName(), 600);
-        fh.checkSettingsFile();
+        FileHandler.checkSettingsFile();
         try {
-            mapper.writeValue(fh.getSettingsFile(), s);
+            mapper.writeValue(FileHandler.getSettingsFile(), s);
             settings = s;
             return true;
         } catch (Exception e) {

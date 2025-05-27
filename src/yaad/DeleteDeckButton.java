@@ -1,5 +1,7 @@
 package yaad;
 
+import java.awt.Color;
+import java.awt.Dimension;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 
@@ -13,8 +15,9 @@ public class DeleteDeckButton extends JButton {
     
     public DeleteDeckButton(Deck deck, DeckActionListener listener) {
         this.deck = deck;
-        dh = new DeckHandler(W);
         
+        setBackground(Color.RED);
+        setPreferredSize(new Dimension(W, H));
         setIcon(ImageHandler.scaleImageIcon("delete", W, H));
         addActionListener(e -> listener.onDeleteDeck(deck));
     }

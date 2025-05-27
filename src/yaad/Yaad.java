@@ -8,10 +8,10 @@ import java.util.*;
 
 public class Yaad extends JFrame implements ActionListener, KeyListener, DeckActionListener {
     
-    final int width = 600, height = 600;
+    int width, height = 600;
     
     SettingsHandler sh = new SettingsHandler();
-    DeckHandler dh = new DeckHandler(width);
+    DeckHandler dh = new DeckHandler(this);
     
     JButton createButton, 
             // deleteButton = createStyledButton("Delete Deck"), 
@@ -113,6 +113,7 @@ public class Yaad extends JFrame implements ActionListener, KeyListener, DeckAct
         buttonColor = sh.getButtonColor();
         fontColor = sh.getFontColor();
         fontName = sh.getFontName();
+        width = sh.getWidth();
     }
     
     public void updateDecks() {
@@ -195,6 +196,10 @@ public class Yaad extends JFrame implements ActionListener, KeyListener, DeckAct
     
     @Override
     public void onDeleteDeck(Deck deck) {
-        if (dh.deleteDeckFile(deck)) deckDisplay.remove(deck);
+        int choice = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete " + deck.getTitle());
+        if (choice == JOptionPane.YES_OPTION) {
+            if (dh.deleteDeckFile(deck)) deckDisplay.remove(deck);
+            else JOptionPane.showMessageDialog(null, "Unable to delete " + deck.getTitle());
+        }
     }
 }

@@ -10,7 +10,6 @@ public class Study extends JFrame implements ActionListener, KeyListener {
     final int W = 800, H = 600;
     
     SettingsHandler sh = new SettingsHandler();
-    DeckHandler dh = new DeckHandler(W);
     
     Deck deck;
     
@@ -27,9 +26,9 @@ public class Study extends JFrame implements ActionListener, KeyListener {
     Color backgroundColor, buttonColor, fontColor;
     String fontName = "Raleway";
     
-    public Study(String deckTitle) {
-        
-        this.deckTitle = deckTitle;
+    public Study(Deck deck) {
+        this.deck = deck;
+        this.deckTitle = deck.getTitle();
         
         getSettings();
         setLayout(null);

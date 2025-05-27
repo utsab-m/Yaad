@@ -1,5 +1,6 @@
 package yaad;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.awt.Color;
 import java.io.File;
@@ -9,7 +10,9 @@ import java.util.*;
 public class DeckHandler {
     
     SettingsHandler sh = new SettingsHandler();
-    FileHandler fh = new FileHandler();
+    Settings settings;
+    DeckActionListener listener;
+    
     Color backgroundColor, buttonColor, fontColor;
     String fontName;
     
@@ -22,13 +25,13 @@ public class DeckHandler {
     
     ObjectMapper mapper = new ObjectMapper();
     
-    public DeckHandler(int w) {
+    public DeckHandler(DeckActionListener listener) {
+        this.listener = listener;
         getSettings();
-        width = w;
         updateDecks();
         
-        for (File file: fh.listDecksFiles()) {
-            Deck deck = new Deck(file, sh.getSettings(), width);
+        for (File file: FileHandler.listDecksFiles()) {
+            Deck deck = new Deck(file, sh.getSettings(), listener);
             addDeck(deck);
         }
     }
@@ -42,17 +45,19 @@ public class DeckHandler {
     }
     
     public boolean different() {
-        return toFileArray().equals(fh.listDecksFiles());
+        return toFileArray().equals(FileHandler.listDecksFiles());
     }
     
     public List<Deck> decksToAdd() {
         List<Deck> decksToAdd = new ArrayList();
-        List<File> oldFileList = new ArrayList(), newFileList = fh.listDecksFiles();
+        List<File> oldFileList = new ArrayList(), newFileList = FileHandler.listDecksFiles();
         
         for (Deck deck: decks) oldFileList.add(deck.getFile());
         
+        settings = sh.getSettings();
+        
         for (File newFile: newFileList) if (!oldFileList.contains(newFile)) {
-            Deck deck = new Deck(newFile, fontName, fontColor, backgroundColor, buttonColor, width);
+            Deck deck = new Deck(newFile, settings, listener);
             decksToAdd.add(deck);
         }
         
@@ -61,7 +66,7 @@ public class DeckHandler {
     
     public List<Deck> decksToRemove() {
         List<Deck> decksToRemove = new ArrayList();
-        List<File> fileList = fh.listDecksFiles();
+        List<File> fileList = FileHandler.listDecksFiles();
         
         for (Deck deck: decks) {
             if (!fileList.contains(deck.getFile())) decksToRemove.add(deck);
@@ -80,7 +85,7 @@ public class DeckHandler {
     }
     
     public boolean deleteDeckFile(Deck deck) {
-        return fh.deleteDeckFile(deck.getTitle());
+        return FileHandler.deleteDeckFile(deck.getTitle());
     }
     
     public int findIndex(Deck deck) {
@@ -126,15 +131,15 @@ public class DeckHandler {
         }
     }
     
-    public Flashcard[] getFlashcards(String deckTitle) {
-        String json = fh.readDeckFile(deckTitle);
-        Flashcard[] flashcards;
+    public List<Flashcard> getFlashcards(Deck deck) {
+        String json = FileHandler.readDeckFile(deck.getTitle());
+        List<Flashcard> flashcards;
         try {
-            flashcards = mapper.readValue(json, Flashcard[].class);
+            flashcards = mapper.readValue(json, new TypeReference<List<Flashcard>>());
             return flashcards;
         } catch (IOException e) {
             System.out.println(e);
-            return new Flashcard[0];
+            return new ArrayList<Flashcard>();
         }
     }
     

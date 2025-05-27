@@ -11,6 +11,8 @@ public class EditDeck extends JFrame {
     
     final int width = 600, height = 600;
     
+    SettingsHandler sh = new SettingsHandler();
+    
     JPanel deckDisplay = new JPanel();
     Color backgroundColor, fontColor, buttonColor;
     
@@ -30,7 +32,7 @@ public class EditDeck extends JFrame {
         } else {
             setLayout(new BorderLayout());
         
-            JLabel deleteDeck = new JLabel("Edit Deck");
+            JLabel deleteDeck = new JLabel("Delete Deck");
             deleteDeck.setForeground(fontColor);
             deleteDeck.setFont(new Font("Raleway", Font.BOLD, 30));
             deleteDeck.setOpaque(false);
@@ -50,8 +52,9 @@ public class EditDeck extends JFrame {
 
             paintPanel();
 
-            setTitle("Edit Deck");
+            setTitle("Delete Deck");
             setVisible(true);
+            setResizable(false);
             getContentPane().setBackground(backgroundColor);
             getContentPane().setPreferredSize(new Dimension(width, height));
             pack();
@@ -95,7 +98,10 @@ public class EditDeck extends JFrame {
                     String sourceText = source.getText();
                     String text = sourceText.replace("<html><u>", "");
                     text = text.replace("</u></html>", "");
-                    new Edit(text);
+                    int input = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this deck? This cannot be reversed.");
+                    if (input == JOptionPane.YES_OPTION) {
+                        delete(text);
+                    } 
                 }
                 public void mouseEntered(MouseEvent me) {
                     JLabel source = (JLabel)me.getSource();

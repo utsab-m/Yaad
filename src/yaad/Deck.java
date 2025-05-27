@@ -23,13 +23,13 @@ public class Deck extends JPanel {
         this.file = f;
     }
     
-    public Deck(File f, Settings s, int w, DeckActionListener listener) {
+    public Deck(File f, Settings s, DeckActionListener listener) {
         this.file = f;
         this.backgroundColor = s.getBackgroundColor();
         this.borderColor = s.getButtonColor();
         this.fontColor = s.getFontColor();
         this.fontName = s.getFontName();
-        this.width = w;
+        this.width = s.getWidth();
         this.title = removeExt(f);
         this.listener = listener;
         
@@ -44,10 +44,12 @@ public class Deck extends JPanel {
         JLabel deckLabel = createDeckLabel();
         add(deckLabel, BorderLayout.CENTER);
         
-        JButton deleteButton = new DeleteDeckButton(deck);
+        JButton deleteButton = new DeleteDeckButton(this, listener);
+        add(deleteButton, BorderLayout.EAST);
     }
     
     public JLabel createDeckLabel() {
+        Deck d = this;
         Font bold = new Font(fontName, Font.BOLD, 22);
         Font italic = new Font(fontName, Font.ITALIC, 22);
         
@@ -64,7 +66,7 @@ public class Deck extends JPanel {
         deckLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent me) {
-                new Study(title);
+                new Study(d);
             }
             @Override
             public void mouseEntered(MouseEvent me) {
@@ -121,6 +123,8 @@ public class Deck extends JPanel {
     public void setTitle(String t) {title = t;}
     
     public List<Flashcard> getFlashcards() {return flashcards;}
+    
+    public void setFlashcards() {}
     
     public static String removeExt(File f) {return f.getName().replace(".json", "");}
     
