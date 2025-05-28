@@ -23,7 +23,7 @@ public class EditDeck extends JFrame {
     
     File[] fileList;
     
-    EditDeck() {
+    EditDeck(Deck deck) {
         
         getFiles();
         if (fileList.length == 0) {

@@ -191,7 +191,7 @@ public class Yaad extends JFrame implements ActionListener, KeyListener, DeckAct
     
     @Override
     public void onEditDeck(Deck deck) {
-        
+        new EditDeck(deck);
     }
     
     @Override

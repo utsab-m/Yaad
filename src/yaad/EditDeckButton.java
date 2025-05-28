@@ -1,13 +1,25 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package yaad;
 
-/**
- *
- * @author utsab
- */
-public class EditDeckButton {
+import java.awt.Color;
+import java.awt.Dimension;
+import javax.swing.JButton;
+import javax.swing.JOptionPane;
+
+public class EditDeckButton extends JButton {
+    
+    final int W = 60, H = 60;
+    
+    DeckHandler dh;
+    
+    Deck deck;
+    
+    public EditDeckButton(Deck deck, DeckActionListener listener) {
+        this.deck = deck;
+        
+        setBackground(Color.RED);
+        setPreferredSize(new Dimension(W, H));
+        setIcon(ImageHandler.scaleImageIcon("delete", W, H));
+        addActionListener(e -> listener.onEditDeck(deck));
+    }
     
 }
