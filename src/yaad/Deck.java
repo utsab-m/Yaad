@@ -54,8 +54,15 @@ public class Deck extends JPanel {
         DeckLabel deckLabel = new DeckLabel(this, settings);
         add(deckLabel, BorderLayout.CENTER);
         
+        JPanel buttonPanel = new JPanel(new BorderLayout());
+        
         JButton deleteButton = new DeleteDeckButton(this, listener);
-        add(deleteButton, BorderLayout.EAST);
+        buttonPanel.add(deleteButton, BorderLayout.WEST);
+        
+        JButton editButton = new EditDeckButton(this, listener);
+        buttonPanel.add(editButton, BorderLayout.EAST);
+        
+        add(buttonPanel, BorderLayout.EAST);
     }
     
     public int getDeckWidth() {return width;}
@@ -95,7 +102,6 @@ public class Deck extends JPanel {
     
     public static String removeExt(File f) {return f.getName().replace(".json", "");}
     
-    public boolean equals(Deck d) {
-        return this.file.equals(d.getFile());
-    }
+    public boolean equals(Deck d) {return this.file.equals(d.getFile());}
+    
 }

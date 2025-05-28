@@ -16,9 +16,9 @@ public class EditDeckButton extends JButton {
     public EditDeckButton(Deck deck, DeckActionListener listener) {
         this.deck = deck;
         
-        setBackground(Color.RED);
+        setBackground(Color.GREEN);
         setPreferredSize(new Dimension(W, H));
-        setIcon(ImageHandler.scaleImageIcon("delete", W, H));
+        setIcon(ImageHandler.scaleImageIcon("edit", W, H));
         addActionListener(e -> listener.onEditDeck(deck));
     }
     
