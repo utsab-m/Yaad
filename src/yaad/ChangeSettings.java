@@ -7,10 +7,9 @@ import java.io.*;
 
 public class ChangeSettings extends JFrame implements ActionListener {
     
-    final int W = 600, H = 270;
+    int W, H = 270;
     
     SettingsHandler sh = new SettingsHandler();
-    FileHandler fh = new FileHandler();
     Settings settings;
     
     JButton save, close, reset, backgroundChooser, buttonChooser, fontColorChooser;
@@ -124,7 +123,7 @@ public class ChangeSettings extends JFrame implements ActionListener {
         buttonColor = sh.getButtonColor();
         fontColor = sh.getFontColor();
         fontName = sh.getFontName();
-        width = sh.getWidth();
+        W = sh.getWidth()/2;
     }
     
     @Override
@@ -214,7 +213,7 @@ public class ChangeSettings extends JFrame implements ActionListener {
         try {
             new ChangeSettings();
         } catch (IOException e) {
-            System.out.println(e);
+            e.printStackTrace();
         }
     }
 }
