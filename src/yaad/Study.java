@@ -15,7 +15,7 @@ public class Study extends JFrame implements ActionListener, KeyListener {
     
     Deck deck;
     
-    JButton add, back, left, right, termButton, definitionButton;
+    JButton back, left, right, termButton, definitionButton;
     JLabel flashcard, number;
     String deckTitle;
     List<Flashcard> flashcards;
@@ -78,19 +78,6 @@ public class Study extends JFrame implements ActionListener, KeyListener {
             }
         });
         add(flashcard);
-        
-        if (total != 0) {
-            
-            ImageIcon i1 = new ImageIcon(ClassLoader.getSystemResource("images/add.png"));
-            Image i2 = i1.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
-            ImageIcon i3 = new ImageIcon(i2);
-            
-            add = new JButton(i3);
-            add.setBounds(650, 150, 100, 100);
-            add.setBackground(buttonColor);
-            add.setForeground(fontColor);
-            add(add);
-        }
         
         left = createStyledButton("←", 300, 400, 50, 30);
         left.setVisible(false);
@@ -169,15 +156,29 @@ public class Study extends JFrame implements ActionListener, KeyListener {
         switch (ke.getKeyCode()) {
             case 8 -> setVisible(false);
             case 32 -> flip();
-            case 37 -> {if (left.isShowing()) left();}
+            case 37 -> {
+                if (left.isShowing()) {
+                    pressButton(left);
+                    left();
+                }
+            }
             case 38 -> flip();
-            case 39 -> {if (right.isShowing()) right();}
+            case 39 -> {
+                if (right.isShowing()) {
+                    pressButton(right);
+                    right();
+                }
+            }
             case 40 -> flip();
         }
     }
     
     @Override
     public void keyReleased(KeyEvent ke) {
+        switch (ke.getKeyCode()) {
+            case 37 -> {if (left.isShowing()) unpressButton(left);}
+            case 39 -> {if (right.isShowing()) unpressButton(right);}
+        }
         System.out.println(flashcardNumber + "/" + total);
     }
     
@@ -201,6 +202,14 @@ public class Study extends JFrame implements ActionListener, KeyListener {
             right.setVisible(false);
         }
         if (total != 0) left.setVisible(true);
+    }
+    
+    public void pressButton(JButton button) {
+        button.getModel().setPressed(true);
+    }
+    
+    public void unpressButton(JButton button) {
+        button.getModel().setPressed(false);
     }
     
     public String getFlashcardText() {
@@ -238,7 +247,9 @@ public class Study extends JFrame implements ActionListener, KeyListener {
     
     public static void main(String[] args) {
         File file = FileHandler.getDeckFile("Capitals");
-        Deck deck = new Deck(file);
-        new Study(deck);
+        System.out.println(file.getName());
+        SettingsHandler settingsHandler = new SettingsHandler();
+        Deck d = new Deck(file, settingsHandler.getSettingsData());
+        new Study(d);
     }
 }

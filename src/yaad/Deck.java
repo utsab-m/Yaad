@@ -19,9 +19,17 @@ public class Deck extends JPanel {
     List<Flashcard> flashcards;
     DeckActionListener listener;
     
-    public Deck(File f) {
+    public Deck(File f, Settings s) {
         this.file = f;
+        this.backgroundColor = s.getBackgroundColor();
+        this.borderColor = s.getButtonColor();
+        this.fontColor = s.getFontColor();
+        this.fontName = s.getFontName();
+        this.width = s.getWidth();
+        this.title = removeExt(f);
+        
         setFlashcards();
+        setPanel(s);
     }
     
     public Deck(File f, Settings s, DeckActionListener listener) {
