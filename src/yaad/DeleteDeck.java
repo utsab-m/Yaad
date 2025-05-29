@@ -11,8 +11,11 @@ public class DeleteDeck extends JFrame {
     
     final int width = 600, height = 600;
     
+    SettingsHandler sh = new SettingsHandler();
+    
     JPanel deckDisplay = new JPanel();
     Color backgroundColor, fontColor, buttonColor;
+    String fontName;
     
     String currentPath = System.getProperty("user.dir");
     String filePath = currentPath + File.separator + "src" + File.separator + "decks";
@@ -32,9 +35,8 @@ public class DeleteDeck extends JFrame {
         
             JLabel deleteDeck = new JLabel("Delete Deck");
             deleteDeck.setForeground(fontColor);
-            deleteDeck.setFont(new Font("Raleway", Font.BOLD, 30));
+            deleteDeck.setFont(new Font(fontName, Font.BOLD, 30));
             deleteDeck.setOpaque(false);
-            deleteDeck.setBounds(100, 10, 400, 400);
             deleteDeck.setHorizontalAlignment(SwingConstants.CENTER);
             add(deleteDeck, BorderLayout.NORTH);
 
@@ -80,8 +82,8 @@ public class DeleteDeck extends JFrame {
             String fileName = f.getName();
             JLabel deck = new JLabel(fileName.replace(".json", ""));
             
-            Font bold = new Font("Raleway", Font.BOLD, 22);
-            Font italic = new Font("Raleway", Font.ITALIC, 22);
+            Font bold = new Font(fontName, Font.BOLD, 22);
+            Font italic = new Font(fontName, Font.ITALIC, 22);
             
             deck.setFont(bold);
             deck.setForeground(fontColor);
@@ -125,16 +127,11 @@ public class DeleteDeck extends JFrame {
     }
     
     public void getSettings() {
-        File file = new File(System.getProperty("user.dir") + File.separator + "src" + File.separator + "settings.json");
-        file.mkdirs();
-        try {
-            JsonNode node = mapper.readTree(file);
-            backgroundColor = new Color(node.get("backgroundColor").asInt());
-            buttonColor = new Color(node.get("buttonColor").asInt());
-            fontColor = new Color(node.get("fontColor").asInt());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Settings s = sh.getSettings();
+        backgroundColor = s.getBackgroundColor();
+        buttonColor = s.getButtonColor();
+        fontColor = s.getFontColor();
+        fontName = s.getFontName();
     }
     
     public void getFiles() {

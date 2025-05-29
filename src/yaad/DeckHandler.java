@@ -1,6 +1,7 @@
 package yaad;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.awt.Color;
 import java.io.File;
@@ -11,7 +12,6 @@ public class DeckHandler {
     
     SettingsHandler sh = new SettingsHandler();
     Settings settings;
-    DeckActionListener listener;
     
     Color backgroundColor, buttonColor, fontColor;
     String fontName;
@@ -25,21 +25,19 @@ public class DeckHandler {
     
     static ObjectMapper mapper = new ObjectMapper();
     
-    public DeckHandler() {}
-    
-    public DeckHandler(DeckActionListener listener) {
-        this.listener = listener;
+    public DeckHandler() {
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        
         getSettings();
         updateDecks();
         
         for (File file: FileHandler.listDecksFiles()) {
-            Deck deck = new Deck(file, sh.getSettings(), listener);
+            Deck deck = new Deck(file);
             addDeck(deck);
         }
     }
     
     public void updateDecks() {
-        updateColors();
         if (different()) {
             for (Deck deck: decksToRemove()) removeDeck(deck);
             for (Deck deck: decksToAdd()) addDeck(deck);
@@ -59,7 +57,7 @@ public class DeckHandler {
         settings = sh.getSettings();
         
         for (File newFile: newFileList) if (!oldFileList.contains(newFile)) {
-            Deck deck = new Deck(newFile, settings, listener);
+            Deck deck = new Deck(newFile);
             decksToAdd.add(deck);
         }
         
@@ -126,13 +124,6 @@ public class DeckHandler {
         fontName = sh.getFontName();
     }
     
-    public void updateColors() {
-        getSettings();
-        for (Deck deck: decks) {
-            deck.setBackgroundColor(backgroundColor);
-        }
-    }
-    
     public static List<Flashcard> getFlashcards(Deck deck) {
         String json = FileHandler.readDeckFile(deck.getTitle());
         List<Flashcard> flashcards;
@@ -142,6 +133,16 @@ public class DeckHandler {
         } catch (IOException e) {
             System.out.println(e);
             return new ArrayList<Flashcard>();
+        }
+    }
+    
+    public static boolean setFlashcards(Deck deck, List<Flashcard> flashcards) {
+        try {
+            mapper.writeValue(FileHandler.getDeckFile(deck.getTitle()), flashcards);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
     }
     

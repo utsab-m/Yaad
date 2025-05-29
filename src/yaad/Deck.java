@@ -1,16 +1,10 @@
 package yaad;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.event.*;
 import java.io.File;
 import java.util.*;
-import javax.swing.*;
 
-public class Deck extends JPanel {
+public class Deck {
     
     int width;
     File file;
@@ -19,78 +13,23 @@ public class Deck extends JPanel {
     List<Flashcard> flashcards;
     DeckActionListener listener;
     
-    public Deck(File f, Settings s) {
+    public Deck(File f) {
         this.file = f;
-        this.backgroundColor = s.getBackgroundColor();
-        this.borderColor = s.getButtonColor();
-        this.fontColor = s.getFontColor();
-        this.fontName = s.getFontName();
-        this.width = s.getWidth();
-        this.title = removeExt(f);
+        this.title = removeExt(file);
         
         setFlashcards();
-        setPanel(s);
     }
     
-    public Deck(File f, Settings s, DeckActionListener listener) {
-        this.file = f;
-        this.backgroundColor = s.getBackgroundColor();
-        this.borderColor = s.getButtonColor();
-        this.fontColor = s.getFontColor();
-        this.fontName = s.getFontName();
-        this.width = s.getWidth();
-        this.title = removeExt(f);
-        this.listener = listener;
+    public Deck(String s) {
+        this.file = FileHandler.getDeckFile(s);
+        this.title = removeExt(file);
         
         setFlashcards();
-        setPanel(s);
     }
-    
-    public void setPanel(Settings settings) {
-        setLayout(new BorderLayout());
-        setBackground(backgroundColor);
-        setBorder(BorderFactory.createLineBorder(borderColor));
-        
-        DeckLabel deckLabel = new DeckLabel(this, settings);
-        add(deckLabel, BorderLayout.CENTER);
-        
-        JPanel buttonPanel = new JPanel(new BorderLayout());
-        
-        JButton deleteButton = new DeleteDeckButton(this, listener);
-        buttonPanel.add(deleteButton, BorderLayout.WEST);
-        
-        JButton editButton = new EditDeckButton(this, listener);
-        buttonPanel.add(editButton, BorderLayout.EAST);
-        
-        add(buttonPanel, BorderLayout.EAST);
-    }
-    
-    public int getDeckWidth() {return width;}
-    
-    public void setDeckWidth(int w) {width=w;}
     
     public File getFile() {return file;}
     
     public void setFile(File f) {file = f;}
-    
-    public String getFontName() {return fontName;}
-    
-    public void setFontName(String name) {fontName = name;}
-        
-    public Color getFontColor() {return fontColor;}
-    
-    public void setFontColor(Color c) {fontColor = c;}
-    
-    public Color getBackgroundColor() {return backgroundColor;}
-    
-    public void setBackgroundColor(Color c) {
-        setBackground(c);
-        backgroundColor = c;
-    }
-    
-    public Color getBorderColor() {return borderColor;}
-    
-    public void setBorderColor(Color c) {borderColor = c;}
     
     public String getTitle() {return title;}
     

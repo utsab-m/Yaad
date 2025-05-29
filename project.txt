@@ -1,6 +1,5 @@
 Add font feature in settings
 - Change how settings.json is updated, just add fontName
-Put AddFlashcards in Study
 Add Import from Quizlet feature
 Fix connections between files
 
@@ -8,4 +7,3 @@ Fix connections between files
 * Implement that into Yaad
 
 Add edit feature (Study?)
-Add delete feature on top of the decks (Yaad) ?

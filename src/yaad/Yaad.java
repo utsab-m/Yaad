@@ -11,23 +11,20 @@ public class Yaad extends JFrame implements ActionListener, KeyListener, DeckAct
     int width, height = 600;
     
     SettingsHandler sh = new SettingsHandler();
-    DeckHandler dh = new DeckHandler(this);
+    DeckHandler dh = new DeckHandler();
     
-    JButton createButton, 
-            // deleteButton = createStyledButton("Delete Deck"), 
-            // edit = createStyledButton("Edit Deck"), 
-            settingsButton;
-    
+    JButton createButton, settingsButton;
     JMenuBar menuBar;
     JMenu fileMenu;
     JMenuItem refresh;
     JPanel deckDisplay;
     JScrollPane scrollPane;
+    
     Color backgroundColor, buttonColor, fontColor;
     String fontName = "Raleway";
     Font bold = new Font(fontName, Font.BOLD, 22), italic = new Font(fontName, Font.ITALIC, 22);
     
-    ArrayList<Deck> decks = new ArrayList<>();
+    ArrayList<DeckPanel> deckPanels = new ArrayList<>();
     
     Yaad() {
         setLayout(new BorderLayout());
@@ -65,7 +62,7 @@ public class Yaad extends JFrame implements ActionListener, KeyListener, DeckAct
         deckDisplay.setLayout(new BoxLayout(deckDisplay, BoxLayout.Y_AXIS));
         deckDisplay.setOpaque(false);
         
-        scrollPane = new JScrollPane(deckDisplay, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane = new JScrollPane(deckDisplay, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.getVerticalScrollBar().setUnitIncrement(10);
         scrollPane.setBackground(backgroundColor);
         scrollPane.getViewport().setBackground(backgroundColor);
@@ -97,8 +94,8 @@ public class Yaad extends JFrame implements ActionListener, KeyListener, DeckAct
     }
     
     public void printDecks() {
-        for (Deck d: decks) {
-            System.out.println(d.getFile().getName() + ", ");
+        for (DeckPanel deckPanel: deckPanels) {
+            System.out.println(deckPanel.getDeckTitle() + ", ");
         }
     }
     
@@ -120,7 +117,8 @@ public class Yaad extends JFrame implements ActionListener, KeyListener, DeckAct
         deckDisplay.removeAll();
         dh.updateDecks();
         for (Deck deck: dh.getDecks()) {
-            deckDisplay.add(deck);
+            DeckPanel deckPanel = new DeckPanel(deck, sh.getSettings(), this);
+            deckDisplay.add(deckPanel);
         }
         fix(deckDisplay);
     }
@@ -131,17 +129,11 @@ public class Yaad extends JFrame implements ActionListener, KeyListener, DeckAct
         System.out.println(createButton.getForeground().getRGB());
         System.out.println(fontColor.getRGB());
         
-        // deleteButton.setBackground(buttonColor);
-        // deleteButton.setForeground(fontColor);
-        
-        // edit.setBackground(buttonColor);
-        // edit.setForeground(fontColor);
-        
         settingsButton.setBackground(buttonColor);
         settingsButton.setForeground(fontColor);
         
-        for (Deck deck: decks) {
-            deck.setBorder(BorderFactory.createLineBorder(buttonColor));
+        for (DeckPanel deckPanel: deckPanels) {
+            deckPanel.setBorder(BorderFactory.createLineBorder(buttonColor));
         }
         
         scrollPane.getViewport().setBackground(backgroundColor);
@@ -195,10 +187,11 @@ public class Yaad extends JFrame implements ActionListener, KeyListener, DeckAct
     }
     
     @Override
-    public void onDeleteDeck(Deck deck) {
+    public void onDeleteDeck(DeckPanel deckPanel) {
+        Deck deck = deckPanel.getDeck();
         int choice = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete " + deck.getTitle());
         if (choice == JOptionPane.YES_OPTION) {
-            if (dh.deleteDeckFile(deck)) deckDisplay.remove(deck);
+            if (dh.deleteDeckFile(deck)) deckDisplay.remove(deckPanel);
             else JOptionPane.showMessageDialog(null, "Unable to delete " + deck.getTitle());
         }
     }
