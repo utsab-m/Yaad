@@ -2,24 +2,41 @@ package yaad;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JTextArea;
+import javax.swing.JLabel;
 
-public class Directions extends JFrame {
+public class Directions extends JFrame implements ActionListener {
     
-    int W = 300, H = 400;
+    int W = 420, H = 160;
     
     SettingsHandler sh = new SettingsHandler();
     
     Color backgroundColor, buttonColor, fontColor;
     String fontName;
     
+    JButton exit;
+    
     public Directions() {
         updateSettings();
         
-        JTextArea directionsLabel = new JTextArea(directions());
-        directionsLabel.setSize(200, 300);
+        setLayout(null);
+        
+        JLabel directionsLabel = new JLabel(directions());
+        directionsLabel.setFont(new Font(fontName, Font.BOLD, 20));
+        directionsLabel.setForeground(fontColor);
+        directionsLabel.setBounds(10, 0, 400, 120);
         add(directionsLabel);
+        
+        exit = new JButton("Exit");
+        exit.setBounds(160, 120, 100, 30);
+        exit.setBackground(buttonColor);
+        exit.setForeground(fontColor);
+        exit.addActionListener(this);
+        add(exit);
         
         setTitle("Quizlet Import Directions");
         getContentPane().setPreferredSize(new Dimension(W, H));
@@ -32,10 +49,12 @@ public class Directions extends JFrame {
     }
     
     public String directions() {
-        String text = "1) Go to Quizlet\n" +
-                "2) Go to the deck you would like to import\n" +
-                "3) Click the three dots and export\n" +
-                "4) Click copy text and paste it in";
+        String text = "<html>" +
+                "1) Go to Quizlet<br>" +
+                "2) Go to the deck you would like to import<br>" +
+                "3) Click the three dots and export<br>" +
+                "4) Click copy text and paste it in" +
+                "</html>";
         return text;
     }
     
@@ -45,6 +64,11 @@ public class Directions extends JFrame {
         buttonColor = sh.getButtonColor();
         fontColor = sh.getFontColor();
         fontName = sh.getFontName();
+    }
+    
+    public void actionPerformed(ActionEvent ae) {
+        JButton source = (JButton)ae.getSource();
+        if (source == exit) setVisible(false);
     }
     
     public static void main(String[] args) {
