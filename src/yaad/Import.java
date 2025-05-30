@@ -85,9 +85,11 @@ public class Import extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent ae) {
         JButton source = (JButton)ae.getSource();
         if (source == directions) {
-            
+            new Directions();
         } else if (source == save) {
             
+        } else if (source == cancel) {
+            setVisible(false);
         }
     }
     
