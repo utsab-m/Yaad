@@ -21,13 +21,14 @@ public class EditDeck extends JFrame implements ActionListener, FlashcardActionL
     JPanel flashcardDisplay = new JPanel();
     List<Flashcard> flashcards;
     
-    JButton save, add;
+    JButton save, add, cancel;
     
     File[] fileList;
     
     EditDeck(Deck deck) {
         this.deck = deck; 
         this.flashcards = deck.getFlashcards();
+        
         getSettings();
         
         setTitle("Edit " + deck.getTitle());
@@ -40,6 +41,7 @@ public class EditDeck extends JFrame implements ActionListener, FlashcardActionL
         add(deckTitleLabel, BorderLayout.NORTH);
         
         flashcardDisplay.setLayout(new BoxLayout(flashcardDisplay, BoxLayout.Y_AXIS));
+        flashcardDisplay.setBackground(buttonColor);
         add(flashcardDisplay, BorderLayout.CENTER);
         
         JScrollPane scrollPane = new JScrollPane(flashcardDisplay, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -55,13 +57,18 @@ public class EditDeck extends JFrame implements ActionListener, FlashcardActionL
         buttonPanel.add(add);
         save = createButton("Save");
         buttonPanel.add(save);
+        cancel = createButton("Cancel");
+        buttonPanel.add(cancel);
         add(buttonPanel, BorderLayout.SOUTH);
         
+        getContentPane().setPreferredSize(new Dimension(width, height));
+        pack();
+        setLocationRelativeTo(null);
         setVisible(true);
         setResizable(false);
         getContentPane().setBackground(backgroundColor);
-        getContentPane().setPreferredSize(new Dimension(width, height));
-        pack();
+        
+        if (flashcards.isEmpty()) JOptionPane.showMessageDialog(null, deck.getTitle() + " is empty");
     }
     
     public JButton createButton(String text) {
@@ -107,7 +114,7 @@ public class EditDeck extends JFrame implements ActionListener, FlashcardActionL
             flashcardDisplay.add(new FlashcardPanel(this));
             fix(flashcardDisplay);
         } else if (source == save) {
-            List<Flashcard> flashcards = new ArrayList();
+            flashcards = new ArrayList();
             for (Component component: flashcardDisplay.getComponents()) {
                 FlashcardPanel flashcardPanel = (FlashcardPanel)component;
                 String term = flashcardPanel.getTermText(), definition = flashcardPanel.getDefinitionText();
@@ -115,8 +122,14 @@ public class EditDeck extends JFrame implements ActionListener, FlashcardActionL
                 flashcards.add(flashcard);
             }
             System.out.println(flashcards.toString());
-            if (DeckHandler.setFlashcards(deck, flashcards)) JOptionPane.showMessageDialog(null, "Successfully saved flashcards to " + deck.getTitle());
+            if (DeckHandler.setFlashcards(deck, flashcards)) {
+                deck.setFlashcards(flashcards);
+                JOptionPane.showMessageDialog(null, "Successfully saved flashcards to " + deck.getTitle());
+                cancel.setText("Exit");
+            }
             else JOptionPane.showMessageDialog(null, "Unable to save flashcards to " + deck.getTitle());
+        } else if (source == cancel) {
+            setVisible(false);
         }
     }
     

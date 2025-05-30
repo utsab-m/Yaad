@@ -42,7 +42,9 @@ public class FlashcardPanel extends JPanel {
     
     public JTextField createTextField(String text) {
         JTextField textField = new JTextField(text);
-        textField.setPreferredSize(new Dimension(100, 50));
+        Dimension dimension = new Dimension(100, 50);
+        textField.setPreferredSize(dimension);
+        textField.setMaximumSize(dimension);
         textField.setFont(font);
         return textField;
     }

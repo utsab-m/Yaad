@@ -1,17 +1,13 @@
 package yaad;
 
-import java.awt.Color;
 import java.io.File;
 import java.util.*;
 
 public class Deck {
     
-    int width;
     File file;
-    String fontName, title;    
-    Color fontColor, backgroundColor, borderColor;
+    String title;    
     List<Flashcard> flashcards;
-    DeckActionListener listener;
     
     public Deck(File f) {
         this.file = f;
@@ -38,6 +34,8 @@ public class Deck {
     public List<Flashcard> getFlashcards() {return flashcards;}
     
     public void setFlashcards() {flashcards = DeckHandler.getFlashcards(this);}
+    
+    public void setFlashcards(List flashcards) {this.flashcards = flashcards;}
     
     public static String removeExt(File f) {return f.getName().replace(".json", "");}
     

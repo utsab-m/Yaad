@@ -16,11 +16,6 @@ public class DeckHandler {
     Color backgroundColor, buttonColor, fontColor;
     String fontName;
     
-    int width;
-    
-    String currentPath = System.getProperty("user.dir") + File.separator + "src";
-    String decksPath = currentPath + File.separator + "decks";
-    
     List<Deck> decks = new ArrayList();
     
     static ObjectMapper mapper = new ObjectMapper();
@@ -131,8 +126,8 @@ public class DeckHandler {
             flashcards = mapper.readValue(json, new TypeReference<List<Flashcard>>() {});
             return flashcards;
         } catch (IOException e) {
-            System.out.println(e);
-            return new ArrayList<Flashcard>();
+            System.out.println(e); 
+           return new ArrayList();
         }
     }
     

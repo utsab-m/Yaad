@@ -2,22 +2,14 @@ package yaad;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.event.*;
-import java.io.File;
-import java.util.*;
 import javax.swing.*;
 
 public class DeckPanel extends JPanel {
     
     Deck deck;
     int width;
-    File file;
     String fontName, title;    
     Color fontColor, backgroundColor, borderColor;
-    List<Flashcard> flashcards;
     DeckActionListener listener;
     
     public DeckPanel(Deck d, Settings s, DeckActionListener listener) {
@@ -43,7 +35,7 @@ public class DeckPanel extends JPanel {
         
         JPanel buttonPanel = new JPanel(new BorderLayout());
         
-        JButton deleteButton = new DeleteDeckButton(deck, listener);
+        JButton deleteButton = new DeleteDeckButton(this, listener);
         buttonPanel.add(deleteButton, BorderLayout.WEST);
         
         JButton editButton = new EditDeckButton(deck, listener);

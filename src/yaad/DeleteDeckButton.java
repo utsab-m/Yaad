@@ -6,12 +6,12 @@ public class DeleteDeckButton extends DeleteButton {
     
     DeckHandler dh;
     
-    Deck deck;
+    DeckPanel deckPanel;
     
-    public DeleteDeckButton(Deck deck, DeckActionListener listener) {
-        this.deck = deck;
+    public DeleteDeckButton(DeckPanel deckPanel, DeckActionListener listener) {
+        this.deckPanel = deckPanel;
         
-        addActionListener(e -> listener.onDeleteDeck(deck));
+        addActionListener(e -> listener.onDeleteDeck(deckPanel));
     }
     
 }

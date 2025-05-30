@@ -13,7 +13,7 @@ public class Yaad extends JFrame implements ActionListener, KeyListener, DeckAct
     SettingsHandler sh = new SettingsHandler();
     DeckHandler dh = new DeckHandler();
     
-    JButton createButton, settingsButton;
+    JButton importButton, createButton, settingsButton;
     JMenuBar menuBar;
     JMenu fileMenu;
     JMenuItem refresh;
@@ -33,13 +33,8 @@ public class Yaad extends JFrame implements ActionListener, KeyListener, DeckAct
         
         updateSettings();
         
-        createButton = new JButton("Create Deck");
-        createButton.setFont(new Font(fontName, Font.BOLD, 16));
-        createButton.setForeground(fontColor);
-        createButton.setBackground(buttonColor);
-        createButton.addActionListener(this);
-        createButton.setFocusable(false);
-        createButton.setOpaque(true);
+        importButton = createButton("Import from Quizlet");
+        createButton = createButton("Create Deck");
         
         ImageIcon settingsImage = ImageHandler.scaleImageIcon("whiteSettings", 60, 60);
         settingsButton = new JButton(settingsImage);
@@ -51,6 +46,7 @@ public class Yaad extends JFrame implements ActionListener, KeyListener, DeckAct
         buttonPanel.setOpaque(false);
         buttonPanel.setPreferredSize(new Dimension (width, 110));
         buttonPanel.setBackground(backgroundColor);
+        buttonPanel.add(importButton);
         buttonPanel.add(createButton);
         buttonPanel.add(settingsButton);
         add(buttonPanel, BorderLayout.NORTH);
@@ -82,6 +78,16 @@ public class Yaad extends JFrame implements ActionListener, KeyListener, DeckAct
         update();
     }
     
+    public JButton createButton(String text) {
+        JButton button = new JButton(text);
+        button.setFont(new Font(fontName, Font.BOLD, 16));
+        button.setForeground(fontColor);
+        button.setBackground(buttonColor);
+        button.addActionListener(this);
+        button.setFocusable(false);
+        button.setOpaque(true);
+        return button;
+    }
     
     public void update() {
         System.out.println("updated");
@@ -168,7 +174,9 @@ public class Yaad extends JFrame implements ActionListener, KeyListener, DeckAct
     
     @Override
     public void actionPerformed(ActionEvent ae) {
-        if (ae.getSource() == createButton) {
+        if (ae.getSource() == importButton) {
+            new Import();
+        } else if (ae.getSource() == createButton) {
             new CreateDeck();
         } else if (ae.getSource() == settingsButton) {
             try {
@@ -178,7 +186,7 @@ public class Yaad extends JFrame implements ActionListener, KeyListener, DeckAct
             }
         } else if (ae.getSource() == refresh) {
             update();
-        }
+        } 
     }
     
     @Override

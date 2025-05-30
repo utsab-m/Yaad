@@ -248,8 +248,7 @@ public class Study extends JFrame implements ActionListener, KeyListener {
     public static void main(String[] args) {
         File file = FileHandler.getDeckFile("Capitals");
         System.out.println(file.getName());
-        SettingsHandler settingsHandler = new SettingsHandler();
-        Deck d = new Deck(file, settingsHandler.getSettingsData());
+        Deck d = new Deck(file);
         new Study(d);
     }
 }
