@@ -136,8 +136,8 @@ public final class FileHandler {
         return fileName.substring(0, fileName.lastIndexOf("."));
     }
     
-    public static boolean deleteDeckFile(String deckTitle) {
-        File deckFile = getDeckFile(deckTitle);
+    public static boolean deleteDeckFile(Deck deck) {
+        File deckFile = deck.getFile();
         return deckFile.delete();
     }
     

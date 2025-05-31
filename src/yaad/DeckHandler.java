@@ -85,7 +85,7 @@ public class DeckHandler {
     }
     
     public boolean deleteDeckFile(Deck deck) {
-        return FileHandler.deleteDeckFile(deck.getTitle());
+        return FileHandler.deleteDeckFile(deck);
     }
     
     public int findIndex(Deck deck) {
