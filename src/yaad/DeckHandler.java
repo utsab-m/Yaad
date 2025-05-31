@@ -40,7 +40,7 @@ public class DeckHandler {
     }
     
     public boolean different() {
-        return toFileArray().equals(FileHandler.listDecksFiles());
+        return !toFileArray().equals(FileHandler.listDecksFiles());
     }
     
     public List<Deck> decksToAdd() {
@@ -131,9 +131,25 @@ public class DeckHandler {
         }
     }
     
+    public static List<Flashcard> getFlashcards(String text) {
+        System.out.println(text);
+        List<Flashcard> flashcards = new ArrayList();
+        String[] flashcardText = text.split("\n\n");
+        System.out.println(flashcardText.length);
+        for (String flashcard: flashcardText) {
+            String[] flashcardInfo = flashcard.split("\t");
+            System.out.println(flashcard);
+            String term = flashcardInfo[0];
+            String definition = flashcardInfo[1];
+            Flashcard f = new Flashcard(term, definition);
+            flashcards.add(f);
+        }
+        return flashcards;
+    }
+    
     public static boolean setFlashcards(Deck deck, List<Flashcard> flashcards) {
         try {
-            mapper.writeValue(FileHandler.getDeckFile(deck.getTitle()), flashcards);
+            mapper.writeValue(deck.getFile(), flashcards);
             return true;
         } catch (Exception e) {
             e.printStackTrace();

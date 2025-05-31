@@ -21,7 +21,7 @@ public class Import extends JFrame implements ActionListener {
     JPanel panel = new JPanel();
     JTextField title;
     JTextArea text;
-    JButton directions, save, cancel;
+    JButton directions, save, exit;
     
     File[] fileList;
     
@@ -39,7 +39,19 @@ public class Import extends JFrame implements ActionListener {
         add(deckTitleLabel, BorderLayout.NORTH);
         
         panel.setBackground(buttonColor);
-        add(panel, BorderLayout.CENTER);   
+        panel.setForeground(fontColor);
+        text = new JTextArea();
+        text.setCaretPosition(0);
+        text.setFont(new Font(fontName, Font.PLAIN, 12));
+        text.setBackground(buttonColor);
+        text.setForeground(fontColor);
+        panel.add(text);
+        add(panel, BorderLayout.CENTER);
+        
+        JScrollPane scrollPane = new JScrollPane(panel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(10);
+        scrollPane.getHorizontalScrollBar().setUnitIncrement(10);
+        add(scrollPane, BorderLayout.CENTER);
         
         JPanel buttonPanel = new JPanel();
         buttonPanel.setBackground(backgroundColor);
@@ -47,8 +59,8 @@ public class Import extends JFrame implements ActionListener {
         buttonPanel.add(directions);
         save = createButton("Save");
         buttonPanel.add(save);
-        cancel = createButton("Cancel");
-        buttonPanel.add(cancel);
+        exit = createButton("Exit");
+        buttonPanel.add(exit);
         add(buttonPanel, BorderLayout.SOUTH);
         
         getContentPane().setPreferredSize(new Dimension(width, height));
@@ -65,6 +77,7 @@ public class Import extends JFrame implements ActionListener {
         button.setBackground(buttonColor);
         button.setForeground(fontColor);
         button.setFont(new Font(fontName, Font.BOLD, 20));
+        button.setFocusable(false);
         button.addActionListener(this);
         return button;
     }
@@ -81,6 +94,15 @@ public class Import extends JFrame implements ActionListener {
         new Import();
     }
     
+    public void updateDeck(String deckTitle, String text) {
+        FileHandler.createDeckFile(deckTitle);
+        List<Flashcard> flashcards = DeckHandler.getFlashcards(text);
+        File deckFile = FileHandler.getDeckFile(deckTitle);
+        Deck deck = new Deck(deckFile);
+        DeckHandler.setFlashcards(deck, flashcards);
+        JOptionPane.showMessageDialog(null, "Deck " + deckTitle + " successfully updated");
+    }
+    
     @Override
     public void actionPerformed(ActionEvent ae) {
         JButton source = (JButton)ae.getSource();
@@ -88,7 +110,22 @@ public class Import extends JFrame implements ActionListener {
             new Directions();
         } else if (source == save) {
             
-        } else if (source == cancel) {
+            String importedText = text.getText();
+            importedText = importedText.trim();
+            if (importedText.trim().equals("")) {
+                JOptionPane.showMessageDialog(null, "You haven't imported anything");
+            } else {
+                String deckTitle = JOptionPane.showInputDialog(null, "Enter title");
+                if (FileHandler.deckFileExists(deckTitle)) {
+                    int choice = JOptionPane.showConfirmDialog(null, "This deck already exists. Would you like to overwrite?");
+                    if (choice == JOptionPane.YES_OPTION) {
+                        updateDeck(deckTitle, importedText);
+                    }
+                } else {
+                    updateDeck(deckTitle, importedText);
+                }
+            }
+        } else if (source == exit) {
             setVisible(false);
         }
     }

@@ -11,7 +11,7 @@ import javax.swing.JLabel;
 
 public class Directions extends JFrame implements ActionListener {
     
-    int W = 420, H = 160;
+    int W = 420, H = 170;
     
     SettingsHandler sh = new SettingsHandler();
     
@@ -28,11 +28,11 @@ public class Directions extends JFrame implements ActionListener {
         JLabel directionsLabel = new JLabel(directions());
         directionsLabel.setFont(new Font(fontName, Font.BOLD, 20));
         directionsLabel.setForeground(fontColor);
-        directionsLabel.setBounds(10, 0, 400, 120);
+        directionsLabel.setBounds(10, 0, 400, 130);
         add(directionsLabel);
         
         exit = new JButton("Exit");
-        exit.setBounds(160, 120, 100, 30);
+        exit.setBounds(160, 135, 100, 30);
         exit.setBackground(buttonColor);
         exit.setForeground(fontColor);
         exit.addActionListener(this);
@@ -53,7 +53,8 @@ public class Directions extends JFrame implements ActionListener {
                 "1) Go to Quizlet<br>" +
                 "2) Go to the deck you would like to import<br>" +
                 "3) Click the three dots and export<br>" +
-                "4) Click copy text and paste it in" +
+                "4) Between rows, select custom<br>" +
+                "5) Click copy text and paste it in" +
                 "</html>";
         return text;
     }
