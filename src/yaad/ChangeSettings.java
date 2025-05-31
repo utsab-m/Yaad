@@ -143,7 +143,7 @@ public class ChangeSettings extends JFrame implements ActionListener {
         } else if (ae.getSource() == save) {
             System.out.println(same());
             if (same()) {
-                int choice = JOptionPane.showConfirmDialog(null, "Are you sure you don't want to make any changes?");
+                int choice = confirmNoChanges();
                 if (choice == JOptionPane.YES_OPTION) {
                     setVisible(false);
                 }
@@ -152,12 +152,11 @@ public class ChangeSettings extends JFrame implements ActionListener {
             settings = getSelections();
             if (sh.updateSettings(settings)) {
                 color();
-                JOptionPane.showMessageDialog(null, "Successfully saved settings!");
+                success();
             }
         } else if (ae.getSource() == close) {
-            
             if (!same()) {
-                int choice = JOptionPane.showConfirmDialog(null, "Are you sure you want to close settings without saving your choices?");
+                int choice = confirmNoSave();
                 if (choice == JOptionPane.YES_OPTION) {
                     setVisible(false);
                 }
@@ -165,14 +164,34 @@ public class ChangeSettings extends JFrame implements ActionListener {
                 setVisible(false);
             }
         } else if (ae.getSource() == reset) {
-            int choice = JOptionPane.showConfirmDialog(null, "Are you sure you want to reset the settings?");
+            int choice = confirmReset();
             if (choice == JOptionPane.YES_OPTION) {
                 if (sh.defaultSettings()) {
                     color();
-                    JOptionPane.showMessageDialog(null, "Successfully saved settings!");
+                    success();
                 }
             }
         }
+    }
+    
+    public int confirm(String message) {
+        return JOptionPane.showConfirmDialog(null, message);
+    }
+    
+    public int confirmReset() {
+        return confirm("Are you sure you want to reset the settings?");
+    }
+    
+    public int confirmNoChanges() {
+        return confirm("Are you sure you don't want to make any changes?");
+    }
+    
+    public int confirmNoSave() {
+        return confirm("Are you sure you want to close settings without saving your choices?");
+    }
+    
+    public void success() {
+        JOptionPane.showMessageDialog(null, "Successfully saved settings!");
     }
     
     public Settings getSelections() {

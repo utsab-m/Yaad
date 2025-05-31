@@ -17,7 +17,7 @@ public class Yaad extends JFrame implements ActionListener, KeyListener, DeckAct
     JMenuBar menuBar;
     JMenu fileMenu;
     JMenuItem refresh;
-    JPanel deckDisplay;
+    JPanel buttonPanel, deckDisplay;
     JScrollPane scrollPane;
     
     Color backgroundColor, buttonColor, fontColor;
@@ -42,7 +42,7 @@ public class Yaad extends JFrame implements ActionListener, KeyListener, DeckAct
         settingsButton.setFocusable(false);
         settingsButton.addActionListener(this);
         
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
+        buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
         buttonPanel.setOpaque(false);
         buttonPanel.setPreferredSize(new Dimension (width, 110));
         buttonPanel.setBackground(backgroundColor);
@@ -130,11 +130,11 @@ public class Yaad extends JFrame implements ActionListener, KeyListener, DeckAct
     }
     
     public void setColors() {
-        createButton.setBackground(buttonColor);
-        createButton.setForeground(fontColor);
-        
-        settingsButton.setBackground(buttonColor);
-        settingsButton.setForeground(fontColor);
+        for (Component component: buttonPanel.getComponents()) {
+            JButton button = (JButton)component;
+            button.setBackground(buttonColor);
+            button.setForeground(fontColor);
+        }
         
         for (DeckPanel deckPanel: deckPanels) {
             deckPanel.setBorder(BorderFactory.createLineBorder(buttonColor));
