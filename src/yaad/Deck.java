@@ -9,15 +9,15 @@ public class Deck {
     String title;    
     List<Flashcard> flashcards;
     
-    public Deck(File f) {
-        this.file = f;
+    public Deck(File file) {
+        this.file = file;
         this.title = removeExt(file);
         
         setFlashcards();
     }
     
-    public Deck(String s) {
-        this.file = FileHandler.getDeckFile(s);
+    public Deck(String deckTitle) {
+        this.file = FileHandler.getDeckFile(deckTitle);
         this.title = removeExt(file);
         
         setFlashcards();

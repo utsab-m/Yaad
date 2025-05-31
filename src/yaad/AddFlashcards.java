@@ -1,8 +1,6 @@
 package yaad;
 
 import java.io.*;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.JsonNode;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -20,18 +18,17 @@ public class AddFlashcards extends JFrame implements ActionListener {
     String deckTitle;
     JTextField term, definition;
     JButton add, done, cancel;
-    ArrayList<Flashcard> deck = new ArrayList<>();
+    ArrayList<Flashcard> flashcards = new ArrayList<>();
     
-    ImageIcon check = new ImageIcon(ClassLoader.getSystemResource("images/check.png")); 
-    Image iconSmooth = check.getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH);
+    ImageIcon check = ImageHandler.scaleImageIcon("check", 32, 32);
     
     File deckFile;
-    
-    ObjectMapper mapper = new ObjectMapper();
+    Deck deck;
     
     AddFlashcards(File file) {
         
-        deckFile = file;
+        this.deckFile = file;
+        this.deck = new Deck(file);
         
         getSettings();
         
@@ -81,8 +78,7 @@ public class AddFlashcards extends JFrame implements ActionListener {
             if (term.getText().equals("") || definition.getText().equals("")) {
                 JOptionPane.showMessageDialog(null, "Must enter text for term and definition.");
             } else {
-                deck.add(new Flashcard(term.getText(), definition.getText()));
-                
+                flashcards.add(new Flashcard(term.getText(), definition.getText()));
                 JOptionPane.showMessageDialog(null, "Successfully added '" + term.getText() + "' to '" + deckTitle + "!'", "Success", JOptionPane.INFORMATION_MESSAGE, new ImageIcon(iconSmooth));
                 term.setText("");
                 definition.setText("");
@@ -90,6 +86,7 @@ public class AddFlashcards extends JFrame implements ActionListener {
         } else if (ae.getSource() == done) {
             if (term.getText().equals("") || definition.getText().equals("")) {
                 try {
+                    // write flashcards to decktitle file
                     String currentPath = System.getProperty("user.dir");
                     String filePath = currentPath + File.separator + "src" + File.separator + "decks";
                     File dir = new File(filePath);
@@ -104,19 +101,18 @@ public class AddFlashcards extends JFrame implements ActionListener {
                     setVisible(false);
                 }
             } else {
-                deck.add(new Flashcard(term.getText(), definition.getText()));
+                flashcards.add(new Flashcard(term.getText(), definition.getText()));
                 try {
                     String currentPath = System.getProperty("user.dir");
                     File newFile = new File(currentPath + File.separator + "src" + File.separator + "decks" + File.separator + deckTitle + ".json");
                     mapper.writeValue(newFile, deck);
-                    JOptionPane.showMessageDialog(null, "Successfully added all the card(s) to '" + deckTitle + "'", "Success", JOptionPane.INFORMATION_MESSAGE, new ImageIcon(iconSmooth));
+                    JOptionPane.showMessageDialog(null, "Successfully added all the card(s) to '" + deckTitle + "'", "Success", JOptionPane.INFORMATION_MESSAGE, check);
                     setVisible(false);
                 } catch (Exception e) {
                     System.out.println(e);
                     JOptionPane.showMessageDialog(null, "An error occurred.");
                     setVisible(false);
                 }
-
             }
         } else if (ae.getSource() == cancel) {
             int choice = JOptionPane.showConfirmDialog(null, "Are you sure you want to cancel? You will lose all your new flashcards.");

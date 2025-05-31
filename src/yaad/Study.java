@@ -109,6 +109,7 @@ public class Study extends JFrame implements ActionListener, KeyListener {
         setTitle("Study " + deckTitle);
         getContentPane().setBackground(backgroundColor);
         getContentPane().setPreferredSize(new Dimension(W, H));
+        setLocationRelativeTo(null);
         pack();
         setVisible(true);
         setResizable(false);
