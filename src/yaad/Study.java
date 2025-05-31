@@ -192,6 +192,7 @@ public class Study extends JFrame implements ActionListener, KeyListener {
         String flashcardText = getFlashcardText();
         flashcard.setText(getCenteredText(flashcardText));
         number.setText(Integer.toString(flashcardNumber) + "/" + total);
+        termIsShowing = term;
         if (flashcardNumber < 2) {
             left.setVisible(false);
         }
@@ -203,6 +204,7 @@ public class Study extends JFrame implements ActionListener, KeyListener {
         String flashcardText = getFlashcardText();
         flashcard.setText(getCenteredText(flashcardText));
         number.setText(Integer.toString(flashcardNumber) + "/" + total);
+        termIsShowing = term;
         if (flashcardNumber == total) {
             right.setVisible(false);
         }
