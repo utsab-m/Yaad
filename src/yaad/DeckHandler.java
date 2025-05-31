@@ -24,7 +24,6 @@ public class DeckHandler {
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         
         getSettings();
-        updateDecks();
         
         for (File file: FileHandler.listDecksFiles()) {
             Deck deck = new Deck(file);
@@ -40,7 +39,9 @@ public class DeckHandler {
     }
     
     public boolean different() {
-        return !toFileArray().equals(FileHandler.listDecksFiles());
+        boolean different = !toFileArray().equals(FileHandler.listDecksFiles());
+        System.out.println("Different is " + different);
+        return different;
     }
     
     public List<Deck> decksToAdd() {
@@ -49,11 +50,13 @@ public class DeckHandler {
         
         for (Deck deck: decks) oldFileList.add(deck.getFile());
         
-        settings = sh.getSettings();
+        System.out.println("Old File List: " + oldFileList.toString());
+        System.out.println("New File List: " + newFileList.toString());
         
         for (File newFile: newFileList) if (!oldFileList.contains(newFile)) {
             Deck deck = new Deck(newFile);
             decksToAdd.add(deck);
+            System.out.println("Added " + deck.getTitle() + " to decksToAdd");
         }
         
         return decksToAdd;
@@ -64,7 +67,10 @@ public class DeckHandler {
         List<File> fileList = FileHandler.listDecksFiles();
         
         for (Deck deck: decks) {
-            if (!fileList.contains(deck.getFile())) decksToRemove.add(deck);
+            if (!fileList.contains(deck.getFile())) {
+                decksToRemove.add(deck);
+                System.out.println("Added " + deck.getTitle() + " to decksToRemove");
+            }
         }
         
         return decksToRemove;

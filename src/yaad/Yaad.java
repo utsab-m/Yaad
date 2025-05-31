@@ -132,8 +132,6 @@ public class Yaad extends JFrame implements ActionListener, KeyListener, DeckAct
     public void setColors() {
         createButton.setBackground(buttonColor);
         createButton.setForeground(fontColor);
-        System.out.println(createButton.getForeground().getRGB());
-        System.out.println(fontColor.getRGB());
         
         settingsButton.setBackground(buttonColor);
         settingsButton.setForeground(fontColor);

@@ -1,9 +1,1 @@
-Add font feature in settings
-- Change how settings.json is updated, just add fontName
-Add Import from Quizlet feature
-Fix connections between files
-
-* Test out how removing stuff from a BoxLayout works with an array
-* Implement that into Yaad
-
-Add edit feature (Study?)
+Fix the DeckPanel doubling on screen
