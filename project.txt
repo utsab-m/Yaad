@@ -1,1 +1,1 @@
-Fix bugs on Study
+Fix AddFlashcards/CreateDeck file handling logic

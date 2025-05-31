@@ -5,6 +5,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class AddFlashcards extends JFrame implements ActionListener {
     
@@ -18,7 +19,7 @@ public class AddFlashcards extends JFrame implements ActionListener {
     String deckTitle;
     JTextField term, definition;
     JButton add, done, cancel;
-    ArrayList<Flashcard> flashcards = new ArrayList<>();
+    List<Flashcard> flashcards;
     
     ImageIcon check = ImageHandler.scaleImageIcon("check", 32, 32);
     
@@ -26,7 +27,7 @@ public class AddFlashcards extends JFrame implements ActionListener {
     Deck deck;
     
     AddFlashcards(File file) {
-        
+        this.flashcards = new ArrayList();
         this.deckFile = file;
         this.deck = new Deck(file);
         
@@ -76,50 +77,57 @@ public class AddFlashcards extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent ae) {
         if (ae.getSource() == add) {
             if (term.getText().equals("") || definition.getText().equals("")) {
-                JOptionPane.showMessageDialog(null, "Must enter text for term and definition.");
+                empty();
             } else {
                 flashcards.add(new Flashcard(term.getText(), definition.getText()));
-                JOptionPane.showMessageDialog(null, "Successfully added '" + term.getText() + "' to '" + deckTitle + "!'", "Success", JOptionPane.INFORMATION_MESSAGE, new ImageIcon(iconSmooth));
+                flashcardSuccess(term.getText());
                 term.setText("");
                 definition.setText("");
             }
         } else if (ae.getSource() == done) {
             if (term.getText().equals("") || definition.getText().equals("")) {
-                try {
-                    // write flashcards to decktitle file
-                    String currentPath = System.getProperty("user.dir");
-                    String filePath = currentPath + File.separator + "src" + File.separator + "decks";
-                    File dir = new File(filePath);
-                    dir.mkdirs();
-                    File newFile = new File(filePath + File.separator + deckTitle + ".json");
-                    mapper.writeValue(newFile, deck);
-                    JOptionPane.showMessageDialog(null, "Successfully added all the card(s) to '" + deckTitle + "'", "Success", JOptionPane.INFORMATION_MESSAGE, new ImageIcon(iconSmooth));
-                    setVisible(false);
-                } catch (Exception e) {
-                    System.out.println(e);
-                    JOptionPane.showMessageDialog(null, "An error occurred.");
-                    setVisible(false);
-                }
+                addToDeck();
             } else {
                 flashcards.add(new Flashcard(term.getText(), definition.getText()));
-                try {
-                    String currentPath = System.getProperty("user.dir");
-                    File newFile = new File(currentPath + File.separator + "src" + File.separator + "decks" + File.separator + deckTitle + ".json");
-                    mapper.writeValue(newFile, deck);
-                    JOptionPane.showMessageDialog(null, "Successfully added all the card(s) to '" + deckTitle + "'", "Success", JOptionPane.INFORMATION_MESSAGE, check);
-                    setVisible(false);
-                } catch (Exception e) {
-                    System.out.println(e);
-                    JOptionPane.showMessageDialog(null, "An error occurred.");
-                    setVisible(false);
-                }
+                addToDeck();
             }
+            setVisible(false);
         } else if (ae.getSource() == cancel) {
             int choice = JOptionPane.showConfirmDialog(null, "Are you sure you want to cancel? You will lose all your new flashcards.");
             if (choice == JOptionPane.YES_OPTION) {
                 setVisible(false);
             }
         }
+    }
+    
+    public void error() {
+        JOptionPane.showMessageDialog(null, "An error occurred.");
+    }
+    
+    public void empty() {
+        JOptionPane.showMessageDialog(null, "Must enter text for term and definition.");
+    }
+    
+    public void success(String text) {
+        JOptionPane.showMessageDialog(null, text, "Success", JOptionPane.INFORMATION_MESSAGE, check);
+    }
+    
+    public void flashcardSuccess(String termText) {
+        String message = "Successfully added '" + termText + "' to '" + deckTitle + "!'";
+        success(message);
+    }
+    
+    public void allFlashcardsSuccess() {
+        String message = "Successfully added all the card(s) to '" + deckTitle + "'";
+        success(message);
+    };
+    
+    public void addToDeck() {
+        if (DeckHandler.setFlashcards(deck, flashcards)) {
+            JOptionPane.showMessageDialog(null, "Successfully added all the card(s) to '" + deckTitle + "'", "Success", JOptionPane.INFORMATION_MESSAGE, check);
+            allFlashcardsSuccess();
+            setVisible(false);
+        } else error();
     }
     
     public JTextField createTextField(int x, int w, int h) {

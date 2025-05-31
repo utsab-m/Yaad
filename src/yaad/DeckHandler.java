@@ -11,7 +11,6 @@ import java.util.*;
 public class DeckHandler {
     
     SettingsHandler sh = new SettingsHandler();
-    Settings settings;
     
     Color backgroundColor, buttonColor, fontColor;
     String fontName;
