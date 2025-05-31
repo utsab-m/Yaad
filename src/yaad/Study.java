@@ -134,15 +134,20 @@ public class Study extends JFrame implements ActionListener, KeyListener {
         } else if (ae.getSource() == right) {
             right();
         } else if (ae.getSource() == termButton) {
-            term = true;
-            termButton.setBorder(thickBorder);
-            definitionButton.setBorder(thinBorder);
-            flip();
+            if (!term) {
+                term = true;
+                termButton.setBorder(thickBorder);
+                definitionButton.setBorder(thinBorder);
+                if (!termIsShowing) flip();
+            }
+            
         } else if (ae.getSource() == definitionButton) {
-            term = false;
-            definitionButton.setBorder(thickBorder);
-            termButton.setBorder(thinBorder);
-            flip();
+            if (term) {
+                term = false;
+                definitionButton.setBorder(thickBorder);
+                termButton.setBorder(thinBorder);
+                if (termIsShowing) flip();
+            }
         }
     }
     

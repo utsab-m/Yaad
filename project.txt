@@ -1,1 +1,1 @@
-Fix the DeckPanel doubling on screen
+Fix bugs on Study
