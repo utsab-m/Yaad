@@ -1,11 +1,24 @@
 package yaad;
 
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
-import javax.swing.border.*;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
 import java.io.File;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import javax.swing.border.LineBorder;
 
 public class Study extends JFrame implements ActionListener, KeyListener {
     
@@ -112,7 +125,7 @@ public class Study extends JFrame implements ActionListener, KeyListener {
         setLocationRelativeTo(null);
         pack();
         setVisible(true);
-        setResizable(false);
+        setResizable(true);
         
     }
     

@@ -1,10 +1,29 @@
 package yaad;
 
-import java.io.*;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
 
 public class Yaad extends JFrame implements ActionListener, KeyListener, DeckActionListener {
     
@@ -24,7 +43,7 @@ public class Yaad extends JFrame implements ActionListener, KeyListener, DeckAct
     String fontName = "Raleway";
     Font bold = new Font(fontName, Font.BOLD, 22), italic = new Font(fontName, Font.ITALIC, 22);
     
-    ArrayList<DeckPanel> deckPanels = new ArrayList<>();
+    List<DeckPanel> deckPanels = new ArrayList();
     
     Yaad() {
         setLayout(new BorderLayout());
@@ -66,12 +85,11 @@ public class Yaad extends JFrame implements ActionListener, KeyListener, DeckAct
         
         setUpMenu();
         
-        setTitle("Yaad");
         getContentPane().setPreferredSize(new Dimension(width, height));
         pack();
         setLocationRelativeTo(null);
         setVisible(true);
-        setResizable(false);
+        setResizable(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         getContentPane().setBackground(backgroundColor);
         

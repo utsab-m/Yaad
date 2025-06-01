@@ -2,7 +2,9 @@ package yaad;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JPanel;
 
 public class DeckPanel extends JPanel {
     

@@ -48,7 +48,7 @@ public class CreateDeck extends JFrame implements ActionListener {
         getContentPane().setPreferredSize(new Dimension(W, H));
         pack();
         setTitle("Create Deck");
-        setResizable(false);
+        setResizable(true);
         setVisible(true);
         setLocationRelativeTo(null);
     }

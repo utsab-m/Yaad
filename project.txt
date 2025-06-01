@@ -1,1 +1,4 @@
-Fix AddFlashcards/CreateDeck file handling logic
+✅ Make windows resizable
+Make rounded corners for all elements in the app
+Change default colors to something more aesthetically appealing
+Reset button works in ChangeSettings, but it gives a message that settings haven't been changed bc it compares selections to current settings

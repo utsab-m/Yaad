@@ -65,7 +65,7 @@ public class EditDeck extends JFrame implements ActionListener, FlashcardActionL
         pack();
         setLocationRelativeTo(null);
         setVisible(true);
-        setResizable(false);
+        setResizable(true);
         getContentPane().setBackground(backgroundColor);
         
         if (flashcards.isEmpty()) JOptionPane.showMessageDialog(null, deck.getTitle() + " is empty");
