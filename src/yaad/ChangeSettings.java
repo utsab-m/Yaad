@@ -155,11 +155,7 @@ public class ChangeSettings extends JFrame implements ActionListener {
         } else if (ae.getSource() == save) {
             System.out.println(same());
             if (same()) {
-                int choice = confirmNoChanges();
-                if (choice == JOptionPane.YES_OPTION) {
-                    setVisible(false);
-                }
-                return;
+                noChanges();
             }
             settings = getSelections();
             if (sh.updateSettings(settings)) {
@@ -176,13 +172,23 @@ public class ChangeSettings extends JFrame implements ActionListener {
                 setVisible(false);
             }
         } else if (ae.getSource() == reset) {
-            int choice = confirmReset();
-            if (choice == JOptionPane.YES_OPTION) {
-                if (sh.defaultSettings()) {
+            sh.defaultSettings();
+            if (sh.changed()) {
+                int choice = confirmReset();
+                if (choice == JOptionPane.YES_OPTION) {
                     color();
                     success();
-                }
+                }   
+            } else {
+                noChanges();
             }
+        }
+    }
+    
+    public void noChanges() {
+        int choice = confirmNoChanges();
+        if (choice == JOptionPane.YES_OPTION) {
+            setVisible(false);
         }
     }
     

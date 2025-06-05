@@ -27,13 +27,9 @@ public class SettingsHandler {
     
     public int getWidth() {return settings.getWidth();}
     
-    public Settings getSettings() {
-        return settings;
-    }
+    public Settings getSettings() {return settings;}
     
-    public void setSettings() {
-        settings = getSettingsData();
-    }
+    public void setSettings() {settings = getSettingsData();}
     
     public Settings getSettingsData() {
         FileHandler.checkSettingsFile();
