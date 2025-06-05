@@ -9,9 +9,9 @@ public class Settings {
     int width;
     
     public Settings() {
-        backgroundColor = Color.PINK;
-        buttonColor = Color.RED;
-        fontColor = Color.BLACK;
+        backgroundColor = Color.LIGHT_GRAY;
+        buttonColor = Color.BLUE;
+        fontColor = Color.WHITE;
         fontName = "Raleway";
         width = 600;
     }
