@@ -1,11 +1,20 @@
 package yaad;
 
-import java.io.*;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 
-public class CreateDeck extends JFrame implements ActionListener {
+public final class CreateDeck extends JFrame implements ActionListener {
     
     final int W = 600, H = 120;
     
@@ -76,7 +85,7 @@ public class CreateDeck extends JFrame implements ActionListener {
                     dir.mkdirs();
                     File newFile = new File(filePath + File.separator + deckTitle + ".json");
                     if (newFile.createNewFile()) {
-                        new AddFlashcards(newFile); 
+                        AddFlashcards addFlashcards = new AddFlashcards(newFile); 
                         setVisible(false);
                     } else {
                         JOptionPane.showMessageDialog(null, "Deck with this title already exists!");
