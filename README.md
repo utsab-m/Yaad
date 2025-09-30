@@ -40,8 +40,8 @@ public static void main(String[] args) {
 This ensures the GUI starts correctly on the Swing Event Dispatch Thread.
 
 ## 🧪 Project Structure
-Yaad/
 ~~~
+Yaad/
 ├─ src/
 │  ├─ main/
 │  │  └─ java/
