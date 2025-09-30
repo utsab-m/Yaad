@@ -41,6 +41,7 @@ This ensures the GUI starts correctly on the Swing Event Dispatch Thread.
 
 ## 🧪 Project Structure
 Yaad/
+~~~
 ├─ src/
 │  ├─ main/
 │  │  └─ java/
@@ -48,6 +49,7 @@ Yaad/
 │  └─ lib/                  # External libraries (add these to classpath)
 ├─ compile.bat              # Build script (Windows)
 └─ README.md                # Project documentation
+~~~
 
 ## 🧠 How It Works
 
@@ -68,6 +70,6 @@ Compilation errors – Ensure you’re using a compatible JDK (Java 17+ recommen
 
 No GUI appears – Check if the main class is being run and that the Yaad constructor sets up the Swing components.
 
-##📜 License
+## 📜 License
 
 --
